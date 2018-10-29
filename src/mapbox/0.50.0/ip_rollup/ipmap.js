@@ -44,8 +44,10 @@ define(['./shared.js'], function (__shared__js) {
     //  Returns the actual mapboxgl (i.e. src/index.js)
 });
 */
+
+// This filename cannot be changed to other than "index"????
 // import './build/mapboxgl/index';
-// import './build/ipmap/ip_index';
+// import './build/ipmap/ip_index_2.3.0.js';
 import './build/ipmap/index';
 
 export default mapboxgl;
