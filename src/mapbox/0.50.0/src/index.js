@@ -3,10 +3,11 @@
 import assert from 'assert';
 import supported from '@mapbox/mapbox-gl-supported';
 
-import {version} from '../package.json';
+// import {version} from '../package.json';
 import Map from './ui/map';
 
-import IPMap from '../../../ipmap/v2.3.0/map/map'
+// import IPMap from '../../../ipmap/v2.3.0/map/map'
+import {version, IPMap} from '../../../ipmap/v2.3.0/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
 import GeolocateControl from './ui/control/geolocate_control';
