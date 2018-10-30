@@ -21,8 +21,8 @@ class IPMap extends BoxMap {
     constructor(options) {
         super(options);
 
-        console.log("IPMap.constructor");
-        console.log("Version: " + version);
+        // console.log("IPMap.constructor");
+        // console.log("Version: " + version);
 
         if (options._apiHost == null) options._apiHost = "http://localhost:8112";
         if (options._apiPath == null) options._apiPath = "BrtMapServer";
@@ -74,12 +74,12 @@ class IPMap extends BoxMap {
         });
 
         this._dataManager.on("cbm-error", function (error) {
-            console.log("cbm-error");
+            // console.log("cbm-error");
             map.fire("error", error);
         });
 
         this.on("load", function () {
-            console.log("on load");
+            // console.log("on load");
             if (map.__abort) {
                 map.fire("error", {"description": "Invalid Token: " + options.token + " for " + options.buildingID});
                 return;
@@ -89,12 +89,12 @@ class IPMap extends BoxMap {
     }
 
     _requestCBM() {
-        console.log("requestCBM");
+        // console.log("requestCBM");
         this._dataManager.getCBM();
     }
 
     __cbmReady(data) {
-        console.log("cbmReady");
+        // console.log("cbmReady");
         let map = this;
         map.city = new IPCity(data["Cities"][0]);
         map.building = new IPBuilding(data["Buildings"][0]);
@@ -103,8 +103,8 @@ class IPMap extends BoxMap {
 
         let initInfo = map.mapInfoArray[0];
         let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0);
-        console.log("initBounds");
-        console.log(initBounds);
+        // console.log("initBounds");
+        // console.log(initBounds);
 
         map.addSource("innerpeacer", {
             "tiles": map._dataManager.getTilePath(),
@@ -123,7 +123,7 @@ class IPMap extends BoxMap {
     }
 
     setFloor(floorID, outerCallback) {
-        console.log("setFloor: " + floorID);
+        // console.log("setFloor: " + floorID);
         let map = this;
         map._targetFloorID = floorID;
         map._outerFloorCallback = outerCallback;
@@ -149,7 +149,7 @@ class IPMap extends BoxMap {
     }
 
     _loadFloorData(result) {
-        console.log("_loadFloorData");
+        // console.log("_loadFloorData");
         let map = this;
         map.fire("floorstart", {});
         // map._layerGroup.hideLayers();
@@ -159,8 +159,8 @@ class IPMap extends BoxMap {
 
         requestAnimationFrame(function () {
             let c = map.currentMapInfo.getCenter();
-            console.log("requestAnimationFrame");
-            console.log(c);
+            // console.log("requestAnimationFrame");
+            // console.log(c);
             let lngLat = CoordProjection.mercatorToLngLat(c.x, c.y);
 
             let maxBounds = IPEntityUtils.extendedBounds(result.mapInfo, 0.2);

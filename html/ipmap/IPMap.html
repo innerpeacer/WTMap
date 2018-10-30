@@ -4,29 +4,25 @@
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
 
-    <script src="../../src/mapbox/0.50.0/dist/ipmap-gl.js"></script>
-    <link href="../../src/mapbox/0.50.0/dist/mapbox-gl.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
+    <script src="js/config-dev-2.3.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/floor-switch.css">
 
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
 
 <div id='map'></div>
+<div class='floor-switch-overlay top'>
+    <div class='floor-switch-overlay-inner'>
+        <fieldset>
+            <label>Select Floor</label>
+            <select id='floorSwitch' name='floorSwitch'></select>
+        </fieldset>
+    </div>
+</div>
+
 <script>
     console.log(ipmap);
 
-    //    ipmap.accessToken = 'pk.eyJ1IjoiaW5uZXJwZWFjZXIiLCJhIjoiY2lvdHJpa3dtMDBjanU5bTQ1NGJ5azc3MyJ9.lIu8RdS7tUD3uKvsqIjJlg';
     var map = new ipmap.IPMap({
         container: 'map',
         buildingID: "00270005",
@@ -39,12 +35,23 @@
         console.log(evt.lngLat.lat);
     });
 
+    var floorSwitch = document.getElementById('floorSwitch');
+    floorSwitch.onchange = function () {
+        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
+    };
+
     map.on("mapready", function (evt) {
-       console.log("mapready")
+        console.log("mapready")
+        map.mapInfoArray.forEach(function (mapInfo) {
+            var floorButton = document.createElement('option');
+            floorButton.value = mapInfo.floorName;
+            floorButton.text = mapInfo.floorName;
+            floorSwitch.appendChild(floorButton);
+        });
     });
 
     map.on("wheel", function () {
-        console.log("wheel");
+//        console.log("wheel");
     });
 
     map.on("error", function (error) {
