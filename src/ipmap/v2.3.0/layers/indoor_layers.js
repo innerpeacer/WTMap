@@ -11,6 +11,8 @@ import FillLayer from "./indoor_layergroup_fill"
 import FacilityLayer from "./indoor_layergroup_facility"
 import LabelLayer from "./indoor_layergroup_label"
 
+import ExtrusionLayer from "./indoor_layergroup_extrusion"
+
 class indoor_layers {
     constructor(map, use3D) {
         this._map = map;
@@ -22,7 +24,7 @@ class indoor_layers {
 
         // this._routeLayer = new MultiStopRouteLayer(map).addToMap();
 
-        // this._extrusionLayer = new ExtrusionLayer(map, "indoor", this._use3D).addToMap();
+        this._extrusionLayer = new ExtrusionLayer(map, "indoor", this._use3D).addToMap();
 
         this._facilityLayer = new FacilityLayer(map).addToMap();
         this._labelLayer = new LabelLayer(map).addToMap();
@@ -69,7 +71,7 @@ class indoor_layers {
         this._roomLayer.hide();
         this._assetLayer.hide();
         // this._routeLayer.hide();
-        // this._extrusionLayer.hide();
+        this._extrusionLayer.hide();
         this._facilityLayer.hide();
         this._labelLayer.hide();
     }
@@ -79,7 +81,7 @@ class indoor_layers {
         this._roomLayer.show();
         this._assetLayer.show();
         // this._routeLayer.show();
-        // this._extrusionLayer.show();
+        this._extrusionLayer.show();
         this._facilityLayer.show();
         this._labelLayer.show();
     }
@@ -105,7 +107,7 @@ class indoor_layers {
         this._floorLayer._setFloor(index);
         this._roomLayer._setFloor(index);
         this._assetLayer._setFloor(index);
-        // this._extrusionLayer._setFloor(index);
+        this._extrusionLayer._setFloor(index);
         this._facilityLayer._setFloor(index);
         this._labelLayer._setFloor(index);
 

@@ -28,13 +28,9 @@
 
     //    ipmap.accessToken = 'pk.eyJ1IjoiaW5uZXJwZWFjZXIiLCJhIjoiY2lvdHJpa3dtMDBjanU5bTQ1NGJ5azc3MyJ9.lIu8RdS7tUD3uKvsqIjJlg';
     var map = new ipmap.IPMap({
-//    var map = new ipmap.Map({
         container: 'map',
-//        style: 'mapbox://styles/mapbox/streets-v9',
-        center: [-74.50, 40],
-
         buildingID: "00270005",
-        zoom: 9
+//        use3D: false,
     });
     map.showTileBoundaries = true;
     map.on("click", function (evt) {

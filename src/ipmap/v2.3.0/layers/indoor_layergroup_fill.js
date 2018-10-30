@@ -17,14 +17,8 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             "source-layer": "fill",
             'layout': {},
             'paint': {
-                'fill-color': {
-                    'type': 'identity',
-                    'property': 'fill-color'
-                },
-                'fill-opacity': {
-                    'type': 'identity',
-                    'property': 'fill-opacity'
-                },
+                'fill-color': ["get", "fill-color"],
+                'fill-opacity': ["get", "fill-opacity"],
             },
             "filter": ["all"]
         };
@@ -32,24 +26,20 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
 
         let outlineLayerID = `${subLayerName}-outline`;
         let outlineLayer = {
-                'id': outlineLayerID,
-                "type": "line",
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round",
-                },
-                'source': this.sourceID,
-                "source-layer": "fill",
-                "paint": {
-                    "line-color": {
-                        'type': 'identity',
-                        'property': 'outline-color'
-                    },
-                    'line-opacity': 1,
-                    "line-width": 2
-                }
+            'id': outlineLayerID,
+            "type": "line",
+            "layout": {
+                "line-join": "round",
+                "line-cap": "round",
+            },
+            'source': this.sourceID,
+            "source-layer": "fill",
+            "paint": {
+                "line-color": ["get", "outline-color"],
+                'line-opacity': 1,
+                "line-width": ["get", "outline-width"]
             }
-        ;
+        };
         this.styleLayers[outlineLayerID] = outlineLayer;
     }
 

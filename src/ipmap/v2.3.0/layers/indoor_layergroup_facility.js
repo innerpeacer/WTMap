@@ -14,10 +14,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
             'source': this.sourceID,
             "source-layer": subLayerName,
             'layout': {
-                "icon-image": {
-                    'type': 'identity',
-                    'property': 'image-normal'
-                },
+                "icon-image": ["get", "image-normal"],
                 "icon-size": {
                     "stops": [
                         [19, 0.25],

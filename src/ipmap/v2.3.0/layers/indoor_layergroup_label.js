@@ -19,8 +19,9 @@ class indoor_layergroup_label extends IndoorGroupLayer {
                 "text-halo-width": 1
             },
             'layout': {
-                "text-field": "{NAME}",
-                "text-font": ["Fangsong"],
+                // "text-field": "{NAME}",
+                "text-field": ["get", "NAME"],
+                "text-font": ["simhei"],
                 "text-size": 15,
                 "text-anchor": "center",
                 "text-padding": 0,
