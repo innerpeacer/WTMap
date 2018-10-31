@@ -1,4 +1,3 @@
-// let evented = require("./brt_evented");
 import {Evented} from "./ip_evented"
 
 class http_request extends Evented {
@@ -47,5 +46,4 @@ class http_request extends Evented {
     }
 }
 
-// module.exports = http_request;
 export default http_request;

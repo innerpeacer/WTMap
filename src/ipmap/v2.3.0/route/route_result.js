@@ -109,5 +109,4 @@ class route_result {
     }
 }
 
-// module.exports = route_result;
 export default route_result

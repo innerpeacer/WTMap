@@ -1,4 +1,3 @@
-// let CoordProjection = require("../utils/coord_projection");
 import CoordProjection from "../utils/coord_projection"
 
 class map_extent {

@@ -1,9 +1,3 @@
-// let TYHttpRequest = require("../utils/http_request");
-// let config = require("../config/config");
-// let root = config.root;
-// let evented = require("../utils/brt_evented");
-// let TYPoiParser = require("../pbf-parse/t_y_poi_parser");
-
 import {Evented} from "../utils/ip_evented"
 import IPHttpRequest from "../utils/http_request"
 
@@ -88,5 +82,4 @@ class data_manager extends Evented {
     };
 }
 
-// module.exports = data_manager;
 export default data_manager;

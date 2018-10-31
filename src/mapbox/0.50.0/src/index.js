@@ -7,7 +7,15 @@ import supported from '@mapbox/mapbox-gl-supported';
 import Map from './ui/map';
 
 // import IPMap from '../../../ipmap/v2.3.0/map/map'
-import {version, IPMap, CoordProjection, Turf} from '../../../ipmap/v2.3.0/config/output'
+import {
+    version,
+    IPMap,
+    CoordProjection,
+    Turf,
+    MapInfo,
+    LocalPoint,
+    LngLatPoint
+} from '../../../ipmap/v2.3.0/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
 import GeolocateControl from './ui/control/geolocate_control';
@@ -34,6 +42,9 @@ const exported = {
     IPMap,
     CoordProjection,
     Turf,
+    MapInfo,
+    LocalPoint,
+    LngLatPoint,
 
     NavigationControl,
     GeolocateControl,

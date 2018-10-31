@@ -1,4 +1,3 @@
-// let IndoorGroupLayer = require("./indoor_layer_base");
 import IndoorGroupLayer from "./indoor_layer_base"
 
 class indoor_layergroup_facility extends IndoorGroupLayer {
@@ -59,5 +58,4 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
     }
 }
 
-// module.exports = indoor_layergroup_facility;
 export default indoor_layergroup_facility

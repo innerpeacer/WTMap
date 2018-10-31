@@ -12,5 +12,4 @@ class multi_stop_route_result {
     }
 }
 
-// module.exports = multi_stop_route_result;
 export default multi_stop_route_result

@@ -1,20 +1,3 @@
-// module.exports = {
-//     point: require('@turf/helpers').point,
-//     featureCollection: require('@turf/helpers').featureCollection,
-//     lineString: require('@turf/helpers').lineString,
-//
-//     bearing: require('@turf/bearing'),
-//
-//     nearest: require('@turf/nearest'),
-//
-//     along: require('@turf/along'),
-//     lineDistance: require('@turf/line-distance'),
-//     lineSlice: require('@turf/line-slice'),
-//     lineSliceAlong: require('@turf/line-slice-along'),
-//     lineChunk: require('@turf/line-chunk'),
-//     pointOnLine: require('@turf/point-on-line')
-// };
-
 import {point, featureCollection, lineString} from "@turf/helpers";
 import bearing from "@turf/bearing";
 import nearest from "@turf/nearest";

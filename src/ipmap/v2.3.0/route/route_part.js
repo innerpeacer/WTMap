@@ -48,5 +48,4 @@ class route_part {
     }
 }
 
-// module.exports = route_part;
 export default route_part

@@ -258,5 +258,4 @@ class route_layer_object {
     }
 }
 
-// module.exports = route_layer_object;
 export default route_layer_object

@@ -1,4 +1,3 @@
-// import Map from "../../../mapbox/0.50.0/src/ui/map";
 import {BoxMap} from "../config/inherit"
 
 import {version} from "../config/config"
@@ -192,6 +191,38 @@ class IPMap extends BoxMap {
         }
     }
 
+    getBaseZoom() {
+        return this._baseZoom;
+    }
+
+    setLabelVisibleRange(minZoom, maxZoom) {
+        this._layerGroup._setLabelVisibleRange(minZoom, maxZoom);
+    }
+
+    setIconVisibleRange(minZoom, maxZoom) {
+        this._layerGroup._setIconVisibleRange(minZoom, maxZoom);
+    }
+
+    setLabelLayout(property, value) {
+        this._layerGroup.setLabelLayout(property, value);
+    }
+
+    setLabelPaint(property, value) {
+        this._layerGroup.setLabelPaint(property, value);
+    }
+
+    setFacilityLayout(propetry, value) {
+        this._layerGroup.setFacilityLayout(propetry, value);
+    }
+
+    setFacilityPaint(property, value) {
+        this._layerGroup.setFacilityPaint(property, value);
+    }
+
+    setBackgroundColor(color) {
+        this.setPaintProperty("background", 'background-color', color);
+    }
+
     setFloor(floorID, outerCallback) {
         // console.log("setFloor: " + floorID);
         let map = this;
@@ -257,6 +288,10 @@ class IPMap extends BoxMap {
 
     setFont(fontName) {
         this._layerGroup.setFont(fontName);
+    }
+
+    getFloorInfoArray(){
+        return this.mapInfoArray;
     }
 }
 

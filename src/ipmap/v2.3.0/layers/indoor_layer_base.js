@@ -34,5 +34,5 @@ class indoor_layer_base {
         }
     }
 }
-// module.exports = indoor_layer_base;
+
 export default indoor_layer_base

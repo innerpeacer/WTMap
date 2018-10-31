@@ -1,12 +1,3 @@
-// let FillLayer = require("./indoor_layergroup_fill");
-
-// let FacilityLayer = require("./indoor_layergroup_facility");
-// let LabelLayer = require("./indoor_layergroup_label");
-// let ExtrusionLayer = require("./indoor_layergroup_extrusion");
-
-// let RouteLayer = require("./indoor_layergroup_route");
-// let MultiStopRouteLayer = require("./indoor_layergroup_multi_stop_route");
-
 import FillLayer from "./indoor_layergroup_fill"
 import FacilityLayer from "./indoor_layergroup_facility"
 import LabelLayer from "./indoor_layergroup_label"
@@ -116,6 +107,5 @@ class indoor_layers {
     }
 }
 
-// module.exports = indoor_layers;
 export default indoor_layers
 

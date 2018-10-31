@@ -1,6 +1,3 @@
-// let TYLocalPoint = require("./local_point");
-// let TYLngLatPoint = require("./lnglat_point");
-// let CoordProjection = require("../utils/coord_projection");
 import CoordProjection from "../utils/coord_projection"
 import {local_point as TYLocalPoint} from "./local_point"
 import {lnglat_point as TYLngLatPoint} from "./lnglat_point"

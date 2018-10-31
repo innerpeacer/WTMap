@@ -1,8 +1,3 @@
-// let ipTurf = require("../utils/brt_turf");
-// let CoordProjection = require("../utils/coord_projection");
-// let RouteLayerObject = require("./route_layer_object");
-// let AnimationObject = require("../utils/route_animation_object");
-
 import ipTurf from "../utils/ip_turf"
 import CoordProjection from "../utils/coord_projection"
 import RouteLayerObject from "./route_layer_object"
@@ -225,5 +220,4 @@ class indoor_layergroup_multi_stop_route {
     }
 }
 
-// module.exports = indoor_layergroup_multi_stop_route;
 export default indoor_layergroup_multi_stop_route

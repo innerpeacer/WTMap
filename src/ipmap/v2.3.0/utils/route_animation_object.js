@@ -32,5 +32,4 @@ class route_animation_object {
     }
 }
 
-// module.exports = route_animation_object;
 export default route_animation_object

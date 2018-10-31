@@ -4,14 +4,6 @@ import ipTurf from "../utils/ip_turf"
 let Point = ipTurf.point;
 let FeatureCollection = ipTurf.featureCollection;
 
-// let IPRoutePart = require("./route_part");
-// let IPRouteResult = require("./route_result");
-// let IPMutliRouteResult = require("./multi_stop_route_result");
-// let IPHttpRequest = require("../utils/http_request");
-// let CoordProjection = require("../utils/coord_projection");
-// let EntityUtils = require("../entity/entity_utils");
-// let IPLocalPoint = require("../entity/local_point");
-
 import IPRoutePart from "./route_part"
 import IPRouteResult from "./route_result"
 import IPMutliRouteResult from "./multi_stop_route_result"
@@ -290,5 +282,4 @@ class multi_stop_route_manager extends Evented {
     }
 }
 
-// module.exports = multi_stop_route_manager;
 export default multi_stop_route_manager
