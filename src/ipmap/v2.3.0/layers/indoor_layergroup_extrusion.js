@@ -28,7 +28,7 @@ class indoor_layergroup_extrusion extends IndoorGroupLayer {
             ]
         };
 
-        this.styleLayers[extrusionLayerID] = extrusionLayer;
+        // this.styleLayers[extrusionLayerID] = extrusionLayer;
     }
 
     _setFloor(floor) {

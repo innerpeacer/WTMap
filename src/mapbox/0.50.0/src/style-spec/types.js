@@ -199,6 +199,37 @@ export type LineLayerSpecification = {|
     |}
 |}
 
+export type IPLineLayerSpecification = {|
+    "id": string,
+    "type": "line",
+    "metadata"?: mixed,
+    "source": string,
+    "source-layer"?: string,
+    "minzoom"?: number,
+    "maxzoom"?: number,
+    "filter"?: FilterSpecification,
+    "layout"?: {|
+    "ipline-cap"?: PropertyValueSpecification<"butt" | "round" | "square">,
+    "ipline-join"?: DataDrivenPropertyValueSpecification<"bevel" | "round" | "miter">,
+    "ipline-miter-limit"?: PropertyValueSpecification<number>,
+    "ipline-round-limit"?: PropertyValueSpecification<number>,
+    "visibility"?: "visible" | "none"
+        |},
+"paint"?: {|
+"ipline-opacity"?: DataDrivenPropertyValueSpecification<number>,
+    "ipline-color"?: DataDrivenPropertyValueSpecification<ColorSpecification>,
+    "ipline-translate"?: PropertyValueSpecification<[number, number]>,
+    "ipline-translate-anchor"?: PropertyValueSpecification<"map" | "viewport">,
+    "ipline-width"?: DataDrivenPropertyValueSpecification<number>,
+    "ipline-gap-width"?: DataDrivenPropertyValueSpecification<number>,
+    "ipline-offset"?: DataDrivenPropertyValueSpecification<number>,
+    "ipline-blur"?: DataDrivenPropertyValueSpecification<number>,
+    "ipline-dasharray"?: PropertyValueSpecification<Array<number>>,
+    "line-pattern"?: DataDrivenPropertyValueSpecification<string>,
+    "ipline-gradient"?: ExpressionSpecification
+        |}
+|}
+
 export type SymbolLayerSpecification = {|
     "id": string,
     "type": "symbol",
@@ -402,6 +433,7 @@ export type BackgroundLayerSpecification = {|
 export type LayerSpecification =
     | FillLayerSpecification
     | LineLayerSpecification
+    | IPLineLayerSpecification
     | SymbolLayerSpecification
     | CircleLayerSpecification
     | HeatmapLayerSpecification

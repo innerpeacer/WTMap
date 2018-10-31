@@ -6,6 +6,7 @@ import hillshade from './style_layer/hillshade_style_layer';
 import fill from './style_layer/fill_style_layer';
 import fillExtrusion from './style_layer/fill_extrusion_style_layer';
 import line from './style_layer/line_style_layer';
+import ipline from "./style_layer/ipline_style_layer"
 import symbol from './style_layer/symbol_style_layer';
 import background from './style_layer/background_style_layer';
 import raster from './style_layer/raster_style_layer';
@@ -19,12 +20,15 @@ const subclasses = {
     fill,
     'fill-extrusion': fillExtrusion,
     line,
+    ipline,
     symbol,
     background,
     raster
 };
 
 export default function createStyleLayer(layer: LayerSpecification) {
+    // console.log("createStyleLayer: ")
+    // console.log(layer)
     return new subclasses[layer.type](layer);
 }
 
