@@ -23,18 +23,53 @@
 
 <script>
     var buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00270005";
+//    if (buildingID == null) buildingID = "00270005";
+//
+//    var startPoint, endPoint, stopPoints = [];
+//    startPoint = {
+//        x: 12719504.085452927,
+//        y: 3584281.715507033,
+//        lng: 114.26124926383198,
+//        lat: 30.62606903794945,
+//        floor: 2
+//    };
+//    endPoint = {
+//        x: 12719546.581111344,
+//        y: 3584260.916575968,
+//        lng: 114.26163100882661,
+//        lat: 30.62590826008615,
+//        floor: 2
+//    };
+
+    if (buildingID == null) buildingID = "05910001";
 
     var startPoint, endPoint, stopPoints = [];
+    startPoint = {
+        x: 12719504.085452927,
+        y: 3584281.715507033,
+        lng: 114.26124926383198,
+        lat: 30.62606903794945,
+        floor: 2
+    };
+    endPoint = {
+        x: 12719546.581111344,
+        y: 3584260.916575968,
+        lng: 114.26163100882661,
+        lat: 30.62590826008615,
+        floor: 2
+    };
+
     var currentPoint;
     var locationPoint;
 
-    console.log(ipmap);
+    console.log(ipmap.IPMap);
     var map = new ipmap.IPMap({
         container: 'map',
         buildingID: buildingID,
 //        use3D: false,
+//        floorID: "00270005F02"
     });
+    console.log(map);
 
     map.showTileBoundaries = true;
     map.on("click", function (evt) {
@@ -97,6 +132,24 @@
         console.log("resetStops");
         stopPoints = [];
         showParams();
+    }
+
+    function requestRoute() {
+        showParams();
+
+        map.requestRoute(startPoint, endPoint, stopPoints, function (routeResult) {
+            console.log(routeResult);
+            map.showRoute();
+        }, function (error) {
+            console.log("route error callback");
+            console.log(error);
+        }, {
+//            rearrangeStops: false,
+            version: "V2",
+//            vehicle: true,        // 车行路线
+//            ignore: ["150014"] // 忽略扶梯
+            ignore: ["150013"]  // 忽略直梯
+        });
     }
 
     var status000 = false;

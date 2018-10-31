@@ -8,7 +8,9 @@ import IPMapInfo from "../entity/mapinfo"
 
 import IPDataManager from "../data/data_manager"
 
-import IPEntityUtils from  "../entity/entity_utils"
+import IPMultiStopRouteManager from "../route/multi_stop_route_manager"
+
+import IPEntityUtils from "../entity/entity_utils"
 
 import IndoorLayers from "../layers/indoor_layers"
 import CoordProjection from "../utils/coord_projection"
@@ -67,6 +69,15 @@ class IPMap extends BoxMap {
         this.resourceBuildingID = this.buildingID;
         options._dataRootDir = options._mDataRoot;
 
+
+        this._msRouteManager = new IPMultiStopRouteManager(options);
+        this._msRouteManager.on('route-result', function (result) {
+            map.__routeReady(result);
+        });
+        this._msRouteManager.on('route-error', function (error) {
+            map.__routeError(error);
+        });
+
         this._dataManager = new IPDataManager(this.resourceBuildingID, options);
         this.on("inner-cbm-ready", this.__cbmReady);
         this._dataManager.on("cbm-ready", function (data) {
@@ -88,6 +99,65 @@ class IPMap extends BoxMap {
         });
     }
 
+    __routeError(error) {
+        if (this._outerRouteErrorCallback != null) {
+            this._outerRouteErrorCallback(error);
+        }
+    }
+
+    __routeReady(result) {
+        this._routeResult = result;
+        // console.log(result);
+        if (this._outerRouteCallback != null) this._outerRouteCallback({
+            startPoint: result.startPoint,
+            endPoint: result.endPoint,
+            stopPoints: result.stopPoints,
+            rearrangedPoints: result.rearrangedPoints,
+            indices: result.indices,
+            completeResult: result.completeResult,
+            detailedResult: result.detailedResult
+        });
+    }
+
+    showRoute(location, segment) {
+        console.log("showRoute");
+        let map = this;
+        map._layerGroup.showRoute(map._routeResult, location, segment);
+    }
+
+    resetRoute() {
+        let map = this;
+        map.hideRoute();
+        map._routeResult = null;
+    }
+
+    hideRoute() {
+        let map = this;
+        map._layerGroup.hideRoute();
+    }
+
+    __requestRoute(start, end, stops, callback, errorCallback, params) {
+        console.log("__requestRoute");
+        console.log(stops);
+        this._outerRouteCallback = callback;
+        this._outerRouteErrorCallback = errorCallback;
+        this._msRouteManager.getRouteData(start, end, stops, callback, errorCallback, params);
+    }
+
+    requestRoute(start, end, arg3, arg4, arg5, arg6) {
+        console.log("requestRoute");
+        // console.log(stops);
+        if (arg3.constructor == Array) {
+            this.__requestRoute(start, end, arg3, arg4, arg5, arg6);
+        } else {
+            this.__requestRoute(start, end, [], arg3, arg4, arg5);
+        }
+    }
+
+    setRouteColor(color1, color2, color3) {
+        this._layerGroup._setRouteColor(color1, color2, color3);
+    }
+
     _requestCBM() {
         // console.log("requestCBM");
         this._dataManager.getCBM();
@@ -99,7 +169,7 @@ class IPMap extends BoxMap {
         map.city = new IPCity(data["Cities"][0]);
         map.building = new IPBuilding(data["Buildings"][0]);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data["MapInfo"]);
-        // map._msRouteManager.setBM(map.building, map.mapInfoArray);
+        map._msRouteManager.setBM(map.building, map.mapInfoArray);
 
         let initInfo = map.mapInfoArray[0];
         let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0);
