@@ -28,7 +28,31 @@ class indoor_layergroup_extrusion extends IndoorGroupLayer {
             ]
         };
 
-        // this.styleLayers[extrusionLayerID] = extrusionLayer;
+        this.styleLayers[extrusionLayerID] = extrusionLayer;
+
+        var useIpLine = false;
+        // useIpLine = true;
+        if (useIpLine) {
+            let outlineLayerID = extrusionLayerID + "-fill-outline";
+            let outlineLayer = {
+                'id': outlineLayerID,
+                "type": "ipline",
+                "layout": {
+                    "ipline-join": "round",
+                    "ipline-cap": "round",
+                },
+                'source': this.sourceID,
+                "source-layer": "fill",
+                "paint": {
+                    "ipline-color": ["get", "outline-color"],
+                    'ipline-opacity': 1,
+                    "ipline-width": ["get", "outline-width"],
+                    "ipline-height": ["/", ["get", 'extrusion-height'], 10],
+                }
+            };
+            this.styleLayers[outlineLayerID] = outlineLayer;
+        }
+
     }
 
     _setFloor(floor) {

@@ -7,7 +7,7 @@
 
 
 
-#测试过程
+#测试过程(添加ipline)
     以添加一个ipline层为例，与line的功能完全一样，熟悉新版本mapbox的过程。
 1、在style-spec/reference/v8.json中，复制line相关属性至ipline，并修改相关属性前缀。
     （1）在layer/type下，复制line，添加ipline
@@ -46,3 +46,10 @@
 5、在render/program/program_uniforms下，注册ipLine
     
 6、在render/painter中，引入ipLine，并在draw中添加ipLine
+
+
+
+#测试过程（为ipline添加高度）
+1、在ipline.vertex.glsl上添加height定义，及height坐标输出。
+2、在v8.json中声明ipline-height属性。
+3、在ipline_style_layer_properties下paint中添加属性声明。

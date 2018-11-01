@@ -14,8 +14,10 @@
         container: 'map',
         buildingID: "00270005",
         use3D: false,
+        showTileBoundaries: true,
     });
     map.showTileBoundaries = true;
+
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
 //        console.log("Bounds: "+  map.getBounds());
@@ -23,7 +25,7 @@
     });
 
     map.on("mapready", function (evt) {
-       console.log("mapready")
+        console.log("mapready")
     });
 
     map.on("wheel", function () {

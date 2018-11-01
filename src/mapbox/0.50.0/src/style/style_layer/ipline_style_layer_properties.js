@@ -26,6 +26,7 @@ const paint = new Properties({
     "ipline-translate": new DataConstantProperty(styleSpec["paint_ipline"]["ipline-translate"]),
     "ipline-translate-anchor": new DataConstantProperty(styleSpec["paint_ipline"]["ipline-translate-anchor"]),
     "ipline-width": new DataDrivenProperty(styleSpec["paint_ipline"]["ipline-width"]),
+    "ipline-height": new DataDrivenProperty(styleSpec["paint_ipline"]["ipline-height"]),
     "ipline-gap-width": new DataDrivenProperty(styleSpec["paint_ipline"]["ipline-gap-width"]),
     "ipline-offset": new DataDrivenProperty(styleSpec["paint_ipline"]["ipline-offset"]),
     "ipline-blur": new DataDrivenProperty(styleSpec["paint_ipline"]["ipline-blur"]),
