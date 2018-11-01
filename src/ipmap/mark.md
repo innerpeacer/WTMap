@@ -53,3 +53,44 @@
 1、在ipline.vertex.glsl上添加height定义，及height坐标输出。
 2、在v8.json中声明ipline-height属性。
 3、在ipline_style_layer_properties下paint中添加属性声明。
+
+
+
+#测试过程（添加ipfill-extrusion)
+######1、在style-spec/reference/v8.json中，复制fill-extrusion相关属性至ipfill-extrusion，并修改相关属性前缀。
+    （1）在layer/type下，复制fill-extrusion，添加ipfill-extrusion
+    （2）复制layout-fill-extrusion，添加layout-ipfill-extrusion，并修改相关前缀为ipfill-extrusion
+    （3）复制paint-fill-extrusion，添加paint-ipfill-extrusion，并修改相关前缀为ipfill-extrusion
+
+######2、复制style/style_layer下的fill-extrusion_style_layer和fill-extrusion_style_layer_properties，添加ipfill-extrusion_style_layer和ipfill-extrusion_style_layer_properties，并修改相关前缀
+    （1）将ipfill-extrusion_style_layer_properties中的相关前缀，改为ipfill-extrusion
+    （2）修改ipfill-extrusion_style_layer引入正确的bucket和layer_properties
+    （3）修改fill-extrusionStyleLayer为IPfill-extrusionStyleLayer
+    （4）修改属性前缀为ipfill-extrusion
+    （5）修改export default
+
+######3、复制data/bucket下的fill-extrusion_bucket和fill-extrusion_attributes，添加ipfill-extrusion_bucket和ipfill-extrusion_attributes，并修改相关前缀。
+    （1）修改引入正确的styleLayer和layoutAttributes
+    （2）修改fill-extrusionBucket为IPfill-extrusionBucket
+    （3）pattern_bucket_feature暂时未改动。 修改hasPattern前缀
+    （4）修改属性前缀为ipfill-extrusion
+    （5）修改export default和register函数
+    
+######4、在style/create_style_layer中添加IPfill-extrusionStyleLayer
+    （1）在subclasses中注册ipfill-extrusion
+    
+    
+######5、复制render下draw_fill-extrusion、render/program下fill-extrusion_program，添加draw_ipfill-extrusion、ipfill-extrusion_program
+    （1）修改ipfill-extrusion_program，修改相应的引入及前缀
+    （2）修改draw_ipfill-extrusion，修改相应的引入及前缀。修改drawfill-extrusion为drawIPfill-extrusion
+    （3）复制着色器程序fill-extrusion，添加ipfill-extrusion
+    （4）在shaders/index中注册ipfill-extrusion
+    （5）修改programId为ipfill-
+    
+######6、在render/program/program_uniforms下，注册ipfill-extrusion
+
+######7、在render/painter中，引入ipfill-extrusion，并在draw中添加ipfill-extrusion
+
+
+
+

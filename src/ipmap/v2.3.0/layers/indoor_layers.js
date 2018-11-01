@@ -2,7 +2,8 @@ import FillLayer from "./indoor_layergroup_fill"
 import FacilityLayer from "./indoor_layergroup_facility"
 import LabelLayer from "./indoor_layergroup_label"
 
-import ExtrusionLayer from "./indoor_layergroup_extrusion"
+// import ExtrusionLayer from "./indoor_layergroup_extrusion"
+import ExtrusionLayer from "./indoor_layergroup_ipextrusion"
 import MultiStopRouteLayer from "./indoor_layergroup_multi_stop_route"
 
 class indoor_layers {
