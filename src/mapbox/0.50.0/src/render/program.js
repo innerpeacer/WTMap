@@ -33,6 +33,12 @@ class Program<Us: UniformBindings> {
                 configuration: ProgramConfiguration,
                 fixedUniforms: (Context, UniformLocations) => Us,
                 showOverdrawInspector: boolean) {
+        console.log("Program.constructor");
+        console.log(source);
+        console.log(configuration);
+        console.log(fixedUniforms);
+        console.log(showOverdrawInspector);
+
         const gl = context.gl;
         this.program = gl.createProgram();
 
@@ -90,6 +96,11 @@ class Program<Us: UniformBindings> {
 
         this.fixedUniforms = fixedUniforms(context, uniformLocations);
         this.binderUniforms = configuration.getUniforms(context, uniformLocations);
+
+        console.log(this.attributes);
+        console.log(uniformLocations);
+        console.log(this.fixedUniforms);
+        console.log(this.binderUniforms);
     }
 
     draw(context: Context,

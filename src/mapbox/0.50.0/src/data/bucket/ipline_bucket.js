@@ -2,7 +2,6 @@
 
 import { LineLayoutArray } from '../array_types';
 
-// import { members as layoutAttributes } from './line_attributes';
 import { members as layoutAttributes } from './ipline_attributes';
 import SegmentVector from '../segment';
 import { ProgramConfigurationSet } from '../program_configuration';
@@ -14,23 +13,6 @@ import { register } from '../../util/web_worker_transfer';
 import {hasPattern, addPatternDependencies} from './pattern_bucket_features';
 import loadGeometry from '../load_geometry';
 import EvaluationParameters from '../../style/evaluation_parameters';
-
-import type {
-    Bucket,
-    BucketParameters,
-    BucketFeature,
-    IndexedFeature,
-    PopulateParameters
-} from '../bucket';
-// import type LineStyleLayer from '../../style/style_layer/line_style_layer';
-import type IPLineStyleLayer from '../../style/style_layer/ipline_style_layer';
-import type Point from '@mapbox/point-geometry';
-import type {Segment} from '../segment';
-import type Context from '../../gl/context';
-import type IndexBuffer from '../../gl/index_buffer';
-import type VertexBuffer from '../../gl/vertex_buffer';
-import type {FeatureStates} from '../../source/source_state';
-import type {ImagePosition} from '../../render/image_atlas';
 
 // NOTE ON EXTRUDE SCALE:
 // scale the extrusion vector so that the normal length is this value.
@@ -130,7 +112,6 @@ class IPLineBucket implements Bucket {
     }
 
     populate(features: Array<IndexedFeature>, options: PopulateParameters) {
-        // console.log("ipline_bucket.populate")
         this.features = [];
         this.hasPattern = hasPattern('ipline', this.layers, options);
 
@@ -200,7 +181,7 @@ class IPLineBucket implements Bucket {
         this.segments.destroy();
     }
 
-    addFeature(feature: BucketFeature, geometry: Array<Array<Point>>, index: number, imagePositions: {[string]: ImagePosition}) {
+    addFeature(feature, geometry, index, imagePositions) {
         const layout = this.layers[0].layout;
         const join = layout.get('ipline-join').evaluate(feature, {});
         const cap = layout.get('ipline-cap');
@@ -212,7 +193,7 @@ class IPLineBucket implements Bucket {
         }
     }
 
-    addLine(vertices: Array<Point>, feature: BucketFeature, join: string, cap: string, miterLimit: number, roundLimit: number, index: number, imagePositions: {[string]: ImagePosition}) {
+    addLine(vertices, feature, join, cap, miterLimit, roundLimit, index, imagePositions) {
         let lineDistances = null;
         if (!!feature.properties &&
             feature.properties.hasOwnProperty('mapbox_clip_start') &&

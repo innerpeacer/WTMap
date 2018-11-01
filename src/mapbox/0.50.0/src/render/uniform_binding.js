@@ -2,8 +2,6 @@
 
 import Color from '../style-spec/util/color';
 
-import type Context from '../gl/context';
-
 export type UniformValues<Us: Object>
     = $Exact<$ObjMap<Us, <V>(u: Uniform<V>) => V>>;
 export type UniformLocations = {[string]: WebGLUniformLocation};

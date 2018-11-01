@@ -11,51 +11,51 @@ import pixelsToTileUnits from '../../source/pixels_to_tile_units';
 import { extend } from '../../util/util';
 import browser from '../../util/browser';
 
-import type Context from '../../gl/context';
-import type {UniformValues, UniformLocations} from '../uniform_binding';
-import type Transform from '../../geo/transform';
-import type Tile from '../../source/tile';
-import type {CrossFaded} from '../../style/properties';
-// import type LineStyleLayer from '../../style/style_layer/line_style_layer';
-import type IPLineStyleLayer from '../../style/style_layer/ipline_style_layer';
-import type Painter from '../painter';
-import type {CrossfadeParameters} from '../../style/evaluation_parameters';
+// import type Context from '../../gl/context';
+// import type {UniformValues, UniformLocations} from '../uniform_binding';
+// import type Transform from '../../geo/transform';
+// import type Tile from '../../source/tile';
+// import type {CrossFaded} from '../../style/properties';
+// // import type LineStyleLayer from '../../style/style_layer/line_style_layer';
+// import type IPLineStyleLayer from '../../style/style_layer/ipline_style_layer';
+// import type Painter from '../painter';
+// import type {CrossfadeParameters} from '../../style/evaluation_parameters';
 
-export type IPLineUniformsType = {|
-    'u_matrix': UniformMatrix4f,
-    'u_ratio': Uniform1f,
-    'u_gl_units_to_pixels': Uniform2f
-|};
-
-export type IPLineGradientUniformsType = {|
-    'u_matrix': UniformMatrix4f,
-    'u_ratio': Uniform1f,
-    'u_gl_units_to_pixels': Uniform2f,
-    'u_image': Uniform1i
-|};
-
-export type IPLinePatternUniformsType = {|
-    'u_matrix': UniformMatrix4f,
-    'u_texsize': Uniform2f,
-    'u_ratio': Uniform1f,
-    'u_gl_units_to_pixels': Uniform2f,
-    'u_image': Uniform1i,
-    'u_scale': Uniform4f,
-    'u_fade': Uniform1f
-|};
-
-export type IPLineSDFUniformsType = {|
-    'u_matrix': UniformMatrix4f,
-    'u_ratio': Uniform1f,
-    'u_gl_units_to_pixels': Uniform2f,
-    'u_patternscale_a': Uniform2f,
-    'u_patternscale_b': Uniform2f,
-    'u_sdfgamma': Uniform1f,
-    'u_image': Uniform1i,
-    'u_tex_y_a': Uniform1f,
-    'u_tex_y_b': Uniform1f,
-    'u_mix': Uniform1f
-|};
+// export type IPLineUniformsType = {|
+//     'u_matrix': UniformMatrix4f,
+//     'u_ratio': Uniform1f,
+//     'u_gl_units_to_pixels': Uniform2f
+// |};
+//
+// export type IPLineGradientUniformsType = {|
+//     'u_matrix': UniformMatrix4f,
+//     'u_ratio': Uniform1f,
+//     'u_gl_units_to_pixels': Uniform2f,
+//     'u_image': Uniform1i
+// |};
+//
+// export type IPLinePatternUniformsType = {|
+//     'u_matrix': UniformMatrix4f,
+//     'u_texsize': Uniform2f,
+//     'u_ratio': Uniform1f,
+//     'u_gl_units_to_pixels': Uniform2f,
+//     'u_image': Uniform1i,
+//     'u_scale': Uniform4f,
+//     'u_fade': Uniform1f
+// |};
+//
+// export type IPLineSDFUniformsType = {|
+//     'u_matrix': UniformMatrix4f,
+//     'u_ratio': Uniform1f,
+//     'u_gl_units_to_pixels': Uniform2f,
+//     'u_patternscale_a': Uniform2f,
+//     'u_patternscale_b': Uniform2f,
+//     'u_sdfgamma': Uniform1f,
+//     'u_image': Uniform1i,
+//     'u_tex_y_a': Uniform1f,
+//     'u_tex_y_b': Uniform1f,
+//     'u_mix': Uniform1f
+// |};
 
 const iplineUniforms = (context: Context, locations: UniformLocations): IPLineUniformsType => ({
     'u_matrix': new UniformMatrix4f(context, locations.u_matrix),

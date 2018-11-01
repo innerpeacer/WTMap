@@ -7,7 +7,6 @@ import {
     iplinePatternUniformValues,
     iplineSDFUniformValues,
     iplineGradientUniformValues
-// } from './program/line_program';
 } from './program/ipline_program';
 
 import type Painter from './painter';

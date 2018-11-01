@@ -145,6 +145,10 @@ uniform ${precision} ${type} u_${name};
         }
     });
 
+    // if (programName == "ipline") {
+    //     console.log(program.fragmentSource);
+    // }
+
     program.vertexSource = program.vertexSource.replace(re, (match: string, operation: string, precision: string, type: string, name: string) => {
         const attrType = type === 'float' ? 'vec2' : 'vec4';
         const unpackType = name.match(/color/) ? 'color' : attrType;
@@ -212,6 +216,11 @@ uniform ${precision} ${type} u_${name};
             }
         }
     });
+
+    // if (programName=="ipline"){
+    //     console.log(program.vertexSource);
+    // }
+
 }
 
 module.exports = shaders;

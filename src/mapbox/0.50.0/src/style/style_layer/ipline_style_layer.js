@@ -15,23 +15,6 @@ import EvaluationParameters from '../evaluation_parameters';
 import renderColorRamp from '../../util/color_ramp';
 import {Transitionable, Transitioning, Layout, PossiblyEvaluated, DataDrivenProperty} from '../properties';
 
-import type {FeatureState} from '../../style-spec/expression';
-import type {Bucket, BucketParameters} from '../../data/bucket';
-// import type {LayoutProps, PaintProps} from './line_style_layer_properties';
-import type {LayoutProps, PaintProps} from './ipline_style_layer_properties';
-import type
-
-Transform
-from
-'../../geo/transform';
-import type
-
-Texture
-from
-'../../render/texture';
-import type {LayerSpecification} from '../../style-spec/types';
-
-
 class LineFloorwidthProperty extends DataDrivenProperty<number> {
     useIntegerZoom: true;
 
@@ -67,9 +50,6 @@ class IPLineStyleLayer extends StyleLayer {
 
     constructor(layer: LayerSpecification) {
         // console.log("IPLineStyleLayer.constructor")
-        // console.log("layer")
-        // console.log("layer: " + layer)
-        // console.log("layer")
         super(layer, properties);
         // console.log("IPLineStyleLayer.constructor Over")
     }
@@ -88,12 +68,7 @@ class IPLineStyleLayer extends StyleLayer {
 
     recalculate(parameters: EvaluationParameters) {
         super.recalculate(parameters);
-
-        (this.paint._values
-    :
-        any
-    )
-        ['ipline-floorwidth'] =
+        (this.paint._values:any)['ipline-floorwidth'] =
             lineFloorwidthProperty.possiblyEvaluate(this._transitioningPaint._values['ipline-width'].value, parameters);
     }
 
@@ -110,21 +85,12 @@ class IPLineStyleLayer extends StyleLayer {
         return width / 2 + Math.abs(offset) + translateDistance(this.paint.get('ipline-translate'));
     }
 
-    queryIntersectsFeature(queryGeometry: Array<Array<Point
-
->>,
-    feature: VectorTileFeature
-,
-    featureState: FeatureState
-,
-    geometry: Array<Array<Point
->>,
-    zoom: number
-,
-    transform: Transform
-,
-    pixelsToTileUnits: number
-):
+    queryIntersectsFeature(queryGeometry: Array<Array<Point>>,
+    feature: VectorTileFeature,
+    featureState: FeatureState,geometry: Array<Array<Point>>,
+    zoom: number,
+    transform: Transform,
+    pixelsToTileUnits: number):
     boolean {
     const
     translatedPolygon = translate(queryGeometry,

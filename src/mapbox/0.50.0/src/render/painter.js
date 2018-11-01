@@ -49,28 +49,28 @@ const draw = {
     debug
 };
 
-import type Transform from '../geo/transform';
-import type Tile from '../source/tile';
-import type {OverscaledTileID} from '../source/tile_id';
-import type Style from '../style/style';
-import type StyleLayer from '../style/style_layer';
-import type {CrossFaded} from '../style/properties';
-import type LineAtlas from './line_atlas';
-import type ImageManager from './image_manager';
-import type GlyphManager from './glyph_manager';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type IndexBuffer from '../gl/index_buffer';
-import type {DepthMaskType, DepthFuncType} from '../gl/types';
+// import type Transform from '../geo/transform';
+// import type Tile from '../source/tile';
+// import type {OverscaledTileID} from '../source/tile_id';
+// import type Style from '../style/style';
+// import type StyleLayer from '../style/style_layer';
+// import type {CrossFaded} from '../style/properties';
+// import type LineAtlas from './line_atlas';
+// import type ImageManager from './image_manager';
+// import type GlyphManager from './glyph_manager';
+// import type VertexBuffer from '../gl/vertex_buffer';
+// import type IndexBuffer from '../gl/index_buffer';
+// import type {DepthMaskType, DepthFuncType} from '../gl/types';
 
-export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
-
-type PainterOptions = {
-    showOverdrawInspector: boolean,
-    showTileBoundaries: boolean,
-    rotating: boolean,
-    zooming: boolean,
-    fadeDuration: number
-}
+// export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
+//
+// type PainterOptions = {
+//     showOverdrawInspector: boolean,
+//     showTileBoundaries: boolean,
+//     rotating: boolean,
+//     zooming: boolean,
+//     fadeDuration: number
+// }
 
 /**
  * Initialize a new painter object.
