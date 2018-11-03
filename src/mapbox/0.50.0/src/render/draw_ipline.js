@@ -9,13 +9,6 @@ import {
     iplineGradientUniformValues
 } from './program/ipline_program';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-// import type LineStyleLayer from '../style/style_layer/line_style_layer';
-// import type LineBucket from '../data/bucket/line_bucket';
-import type IPLineStyleLayer from '../style/style_layer/ipline_style_layer';
-import type IPLineBucket from '../data/bucket/ipline_bucket';
-import type {OverscaledTileID} from '../source/tile_id';
 
 export default function drawIPLine(painter: Painter, sourceCache: SourceCache, layer: IPLineStyleLayer, coords: Array<OverscaledTileID>) {
     // console.log("drawIPLine")

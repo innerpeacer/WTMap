@@ -94,3 +94,21 @@
 
 
 
+#融合ipfill-extrusion与ipline
+######1、在v8.json中，将ipline的属性复制到ipfill-extrusion中，并修改相应前缀。
+######2、复制ipline_style_layer_properties中属性至extrusion_style_layer_properties中，并修改相关前缀。
+######3、融合ipline_style_layer进入ipfill-extrusion_style_layer
+######4、融合ipline_attributes至ipfill_extrusion_attributes中。将两组数据组合一起。
+######5、在array_types中添加StructArrayLayout2i4i4i4ub24，用于FillExtrusionLayoutArray
+
+######6、将ipline_style_layer复制至ipfill_extrusion_style_layer中
+
+######7、将ipline_bucket复制至ipfill_extrusion_bucket中
+
+######8、将ipline_program融合至ipfill_extrsion_program中
+
+######9、将draw_ipline复制至draw_ipfill_extrusion中
+
+######10、融合ipline_bucket至ipfill_extrusion_bucket中
+
+######11、复制ipline.glsl至ipfill_extrusion_outline.glsl，并注册到index.js中。在draw_ipfill_extrusion中使用相应的programId。在program_uniforms中补充ipfillExtrusionOutline，复制ipline内容，修改相应的着色器程序。

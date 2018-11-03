@@ -72,6 +72,10 @@ const shaders: {[string]: {fragmentSource: string, vertexSource: string}} = {
         fragmentSource: fs.readFileSync(__dirname + '/../shaders/ipfill_extrusion.fragment.glsl', 'utf8'),
         vertexSource: fs.readFileSync(__dirname + '/../shaders/ipfill_extrusion.vertex.glsl', 'utf8')
     },
+    ipfillExtrusionOutline: {
+        fragmentSource: fs.readFileSync(__dirname + '/../shaders/ipfill_extrusion_outline.fragment.glsl', 'utf8'),
+        vertexSource: fs.readFileSync(__dirname + '/../shaders/ipfill_extrusion_outline.vertex.glsl', 'utf8')
+    },
     fillExtrusionPattern: {
         fragmentSource: fs.readFileSync(__dirname + '/../shaders/fill_extrusion_pattern.fragment.glsl', 'utf8'),
         vertexSource: fs.readFileSync(__dirname + '/../shaders/fill_extrusion_pattern.vertex.glsl', 'utf8')

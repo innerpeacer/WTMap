@@ -6,12 +6,115 @@ import StencilMode from '../gl/stencil_mode';
 import {
     ipfillExtrusionUniformValues,
     ipfillExtrusionPatternUniformValues,
-    ipextrusionTextureUniformValues
+    ipextrusionTextureUniformValues,
+
+    // From ipline
+    ipfillExtrusionOutlineUniformValues,
+    ipfillExtrusionOutlinePatternUniformValues,
+    ipfillExtrusionOutlineSDFUniformValues,
+    ipfillExtrusionOutlineGradientUniformValues
 } from './program/ipfill_extrusion_program';
 
 export default draw;
+// export default drawIPLine;
 
-function draw(painter: Painter, source: SourceCache, layer: FillExtrusionStyleLayer, coords: Array<OverscaledTileID>) {
+// From ipline
+
+function drawIPLine(painter, sourceCache, layer, coords) {
+    // console.log("drawIPLine");
+    if (painter.renderPass !== 'translucent') return;
+
+    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
+    const width = layer.paint.get('ipfill-extrusion-outline-width');
+    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
+
+    const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
+    const colorMode = painter.colorModeForRenderPass();
+
+    const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
+    const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
+    const image = patternProperty.constantOr((1));
+
+    const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
+    const crossfade = layer.getCrossfadeParameters();
+
+    const programId =
+        dasharray ? 'lineSDF' :
+            image ? 'linePattern' :
+                gradient ? 'lineGradient' : 'ipfillExtrusionOutline';
+
+    const context = painter.context;
+    const gl = context.gl;
+
+    let firstTile = true;
+
+    if (gradient) {
+        context.activeTexture.set(gl.TEXTURE0);
+
+        let gradientTexture = layer.gradientTexture;
+        if (!layer.gradient) return;
+        if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
+        gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+    }
+
+    // console.log("programId");
+    // console.log(programId);
+    for (const coord of coords) {
+        const tile = sourceCache.getTile(coord);
+
+        if (image && !tile.patternsLoaded()) continue;
+
+        const bucket = (tile.getBucket(layer));
+        if (!bucket) continue;
+
+        const programConfiguration = bucket.programConfigurations.get(layer.id);
+        const prevProgram = painter.context.program.get();
+        // console.log("draw_ipline.useProgram: "+programId)
+        const program = painter.useProgram(programId, programConfiguration);
+        const programChanged = firstTile || program.program !== prevProgram;
+
+        const constantPattern = patternProperty.constantOr(null);
+        if (constantPattern && tile.imageAtlas) {
+            const posTo = tile.imageAtlas.patternPositions[constantPattern.to];
+            const posFrom = tile.imageAtlas.patternPositions[constantPattern.from];
+            if (posTo && posFrom) programConfiguration.setConstantPatternPositions(posTo, posFrom);
+        }
+
+        // console.log("Here OK");
+        const uniformValues = dasharray ? ipfillExtrusionOutlineSDFUniformValues(painter, tile, layer, dasharray, crossfade) :
+            image ? ipfillExtrusionOutlinePatternUniformValues(painter, tile, layer, crossfade) :
+                gradient ? ipfillExtrusionOutlineGradientUniformValues(painter, tile, layer) :
+                    ipfillExtrusionOutlineUniformValues(painter, tile, layer);
+        // console.log(uniformValues);
+        // console.log("Here OK2");
+        if (dasharray && (programChanged || painter.lineAtlas.dirty)) {
+            context.activeTexture.set(gl.TEXTURE0);
+            painter.lineAtlas.bind(context);
+            // console.log("Here OK3");
+        } else if (image) {
+            context.activeTexture.set(gl.TEXTURE0);
+            tile.imageAtlasTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+            programConfiguration.updatePatternPaintBuffers(crossfade);
+            // console.log("Here OK4");
+        }
+
+        // console.log("Here OK5");
+        program.draw(context, gl.TRIANGLES, depthMode,
+            painter.stencilModeForClipping(coord), colorMode, uniformValues,
+            layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
+            layer.paint, painter.transform.zoom, programConfiguration);
+        // console.log("Here OK6");
+
+        firstTile = false;
+        // once refactored so that bound texture state is managed, we'll also be able to remove this firstTile/programChanged logic
+    }
+    // console.log("drawIPLine Over")
+}
+
+
+// From ipline
+
+function draw(painter, source, layer, coords) {
     if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
         return;
     }
@@ -52,11 +155,11 @@ function drawToExtrusionFramebuffer(painter, layer) {
     renderTarget.depthAttachment.set(painter.depthRbo);
 
     if (painter.depthRboNeedsClear) {
-        context.clear({ depth: 1 });
+        context.clear({depth: 1});
         painter.depthRboNeedsClear = false;
     }
 
-    context.clear({ color: Color.transparent });
+    context.clear({color: Color.transparent});
 }
 
 function drawExtrusionTexture(painter, layer) {
@@ -81,12 +184,12 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
     const context = painter.context;
     const gl = context.gl;
     const patternProperty = layer.paint.get('ipfill-extrusion-pattern');
-    const image = patternProperty.constantOr((1: any));
+    const image = patternProperty.constantOr((1));
     const crossfade = layer.getCrossfadeParameters();
 
     for (const coord of coords) {
         const tile = source.getTile(coord);
-        const bucket = (tile.getBucket(layer): any);
+        const bucket = (tile.getBucket(layer));
         if (!bucket) continue;
 
         const programConfiguration = bucket.programConfigurations.get(layer.id);

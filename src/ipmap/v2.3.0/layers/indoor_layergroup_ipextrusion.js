@@ -36,12 +36,21 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                 'type': 'ipfill-extrusion',
                 'source': this.sourceID,
                 "source-layer": this.sourceLayer,
+                'layout': {
+                    "ipfill-extrusion-outline-join": "round",
+                    "ipfill-extrusion-outline-cap": "round",
+                },
                 'paint': {
                     'ipfill-extrusion-color': ["get", 'fill-color'],
                     'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
                     'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
                     // 'ipfill-extrusion-height': 20,
                     'ipfill-extrusion-opacity': 0.9,
+
+                    "ipfill-extrusion-outline-color": ["get", "outline-color"],
+                    'ipfill-extrusion-outline-opacity': 1,
+                    "ipfill-extrusion-outline-width": ["get", "outline-width"],
+                    "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
                 },
                 "filter": ["all",
                     ["has", "extrusion"],

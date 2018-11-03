@@ -3,7 +3,6 @@
 import Point from '@mapbox/point-geometry';
 
 import StyleLayer from '../style_layer';
-// import LineBucket from '../../data/bucket/line_bucket';
 import IPLineBucket from '../../data/bucket/ipline_bucket';
 import {RGBAImage} from '../../util/image';
 import {multiPolygonIntersectsBufferedMultiLine} from '../../util/intersection_tests';

@@ -8,69 +8,24 @@ import {
     UniformMatrix4f
 } from '../uniform_binding';
 import pixelsToTileUnits from '../../source/pixels_to_tile_units';
-import { extend } from '../../util/util';
+import {extend} from '../../util/util';
 import browser from '../../util/browser';
 
-// import type Context from '../../gl/context';
-// import type {UniformValues, UniformLocations} from '../uniform_binding';
-// import type Transform from '../../geo/transform';
-// import type Tile from '../../source/tile';
-// import type {CrossFaded} from '../../style/properties';
-// // import type LineStyleLayer from '../../style/style_layer/line_style_layer';
-// import type IPLineStyleLayer from '../../style/style_layer/ipline_style_layer';
-// import type Painter from '../painter';
-// import type {CrossfadeParameters} from '../../style/evaluation_parameters';
 
-// export type IPLineUniformsType = {|
-//     'u_matrix': UniformMatrix4f,
-//     'u_ratio': Uniform1f,
-//     'u_gl_units_to_pixels': Uniform2f
-// |};
-//
-// export type IPLineGradientUniformsType = {|
-//     'u_matrix': UniformMatrix4f,
-//     'u_ratio': Uniform1f,
-//     'u_gl_units_to_pixels': Uniform2f,
-//     'u_image': Uniform1i
-// |};
-//
-// export type IPLinePatternUniformsType = {|
-//     'u_matrix': UniformMatrix4f,
-//     'u_texsize': Uniform2f,
-//     'u_ratio': Uniform1f,
-//     'u_gl_units_to_pixels': Uniform2f,
-//     'u_image': Uniform1i,
-//     'u_scale': Uniform4f,
-//     'u_fade': Uniform1f
-// |};
-//
-// export type IPLineSDFUniformsType = {|
-//     'u_matrix': UniformMatrix4f,
-//     'u_ratio': Uniform1f,
-//     'u_gl_units_to_pixels': Uniform2f,
-//     'u_patternscale_a': Uniform2f,
-//     'u_patternscale_b': Uniform2f,
-//     'u_sdfgamma': Uniform1f,
-//     'u_image': Uniform1i,
-//     'u_tex_y_a': Uniform1f,
-//     'u_tex_y_b': Uniform1f,
-//     'u_mix': Uniform1f
-// |};
-
-const iplineUniforms = (context: Context, locations: UniformLocations): IPLineUniformsType => ({
+const iplineUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2f(context, locations.u_gl_units_to_pixels)
 });
 
-const iplineGradientUniforms = (context: Context, locations: UniformLocations): IPLineGradientUniformsType => ({
+const iplineGradientUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2f(context, locations.u_gl_units_to_pixels),
     'u_image': new Uniform1i(context, locations.u_image)
 });
 
-const iplinePatternUniforms = (context: Context, locations: UniformLocations): IPLinePatternUniformsType => ({
+const iplinePatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_texsize': new Uniform2f(context, locations.u_texsize),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
@@ -80,7 +35,7 @@ const iplinePatternUniforms = (context: Context, locations: UniformLocations): I
     'u_fade': new Uniform1f(context, locations.u_fade)
 });
 
-const iplineSDFUniforms = (context: Context, locations: UniformLocations): IPLineSDFUniformsType => ({
+const iplineSDFUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2f(context, locations.u_gl_units_to_pixels),
@@ -93,11 +48,7 @@ const iplineSDFUniforms = (context: Context, locations: UniformLocations): IPLin
     'u_mix': new Uniform1f(context, locations.u_mix)
 });
 
-const iplineUniformValues = (
-    painter: Painter,
-    tile: Tile,
-    layer: IPLineStyleLayer
-): UniformValues<IPLineUniformsType> => {
+const iplineUniformValues = (painter, tile, layer) => {
     const transform = painter.transform;
 
     return {
@@ -110,22 +61,13 @@ const iplineUniformValues = (
     };
 };
 
-const iplineGradientUniformValues = (
-    painter: Painter,
-    tile: Tile,
-    layer: IPLineStyleLayer
-): UniformValues<IPLineGradientUniformsType> => {
+const iplineGradientUniformValues = (painter, tile, layer) => {
     return extend(iplineUniformValues(painter, tile, layer), {
         'u_image': 0
     });
 };
 
-const iplinePatternUniformValues = (
-    painter: Painter,
-    tile: Tile,
-    layer: IPLineStyleLayer,
-    crossfade: CrossfadeParameters
-): UniformValues<IPLinePatternUniformsType> => {
+const iplinePatternUniformValues = (painter, tile, layer, crossfade) => {
     const transform = painter.transform;
     const tileZoomRatio = calculateTileRatio(tile, transform);
     return {
@@ -144,13 +86,7 @@ const iplinePatternUniformValues = (
     };
 };
 
-const iplineSDFUniformValues = (
-    painter: Painter,
-    tile: Tile,
-    layer: IPLineStyleLayer,
-    dasharray: CrossFaded<Array<number>>,
-    crossfade: CrossfadeParameters
-): UniformValues<IPLineSDFUniformsType> => {
+const iplineSDFUniformValues = (painter, tile, layer, dasharray, crossfade) => {
     const transform = painter.transform;
     const lineAtlas = painter.lineAtlas;
     const tileRatio = calculateTileRatio(tile, transform);

@@ -8,19 +8,6 @@ import ProgramConfiguration from '../data/program_configuration';
 import VertexArrayObject from './vertex_array_object';
 import Context from '../gl/context';
 
-import type SegmentVector from '../data/segment';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type IndexBuffer from '../gl/index_buffer';
-import type DepthMode from '../gl/depth_mode';
-import type StencilMode from '../gl/stencil_mode';
-import type ColorMode from '../gl/color_mode';
-import type {UniformBindings, UniformValues, UniformLocations} from './uniform_binding';
-
-export type DrawMode =
-    | $PropertyType<WebGLRenderingContext, 'LINES'>
-    | $PropertyType<WebGLRenderingContext, 'TRIANGLES'>
-    | $PropertyType<WebGLRenderingContext, 'LINE_STRIP'>;
-
 class Program<Us: UniformBindings> {
     program: WebGLProgram;
     attributes: {[string]: number};
@@ -53,13 +40,13 @@ class Program<Us: UniformBindings> {
         const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
         gl.shaderSource(fragmentShader, fragmentSource);
         gl.compileShader(fragmentShader);
-        assert(gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(fragmentShader): any));
+        assert(gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(fragmentShader)));
         gl.attachShader(this.program, fragmentShader);
 
         const vertexShader = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vertexShader, vertexSource);
         gl.compileShader(vertexShader);
-        assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader): any));
+        assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader)));
         gl.attachShader(this.program, vertexShader);
 
         // Manually bind layout attributes in the order defined by their
@@ -67,12 +54,20 @@ class Program<Us: UniformBindings> {
         // attribute at position 0, which can cause rendering to fail for an
         // entire layer (see #4607, #4728)
         const layoutAttributes = configuration.layoutAttributes || [];
+
+        // console.log("========================");
+        // console.log("configuration");
+        // console.log(configuration);
+        // console.log("vertexSource");
+        // console.log(vertexSource);
+        // console.log("layoutAttributes");
+        // console.log(layoutAttributes);
         for (let i = 0; i < layoutAttributes.length; i++) {
             gl.bindAttribLocation(this.program, i, layoutAttributes[i].name);
         }
 
         gl.linkProgram(this.program);
-        assert(gl.getProgramParameter(this.program, gl.LINK_STATUS), (gl.getProgramInfoLog(this.program): any));
+        assert(gl.getProgramParameter(this.program, gl.LINK_STATUS), (gl.getProgramInfoLog(this.program)));
 
         this.numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);
 
@@ -85,7 +80,9 @@ class Program<Us: UniformBindings> {
                 this.attributes[attribute.name] = gl.getAttribLocation(this.program, attribute.name);
             }
         }
-
+        // console.log("attributes");
+        // console.log(this.attributes);
+        // console.log("Here OK");
         const numUniforms = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
         for (let i = 0; i < numUniforms; i++) {
             const uniform = gl.getActiveUniform(this.program, i);
