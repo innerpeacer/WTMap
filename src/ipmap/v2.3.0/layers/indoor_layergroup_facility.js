@@ -24,7 +24,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
                 }
             },
         };
-        // this.styleLayers[layerID] = layer;
+        this.styleLayers[layerID] = layer;
         this.iconLayerID = layerID;
     }
 

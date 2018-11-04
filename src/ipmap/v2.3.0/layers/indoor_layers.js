@@ -15,15 +15,15 @@ class indoor_layers {
         this._roomLayer = new FillLayer(map, "room", 2).addToMap();
         this._assetLayer = new FillLayer(map, 'asset', 3).addToMap();
 
-        // this._routeLayer = new MultiStopRouteLayer(map).addToMap();
+        this._routeLayer = new MultiStopRouteLayer(map).addToMap();
 
         this._extrusionLayer = new ExtrusionLayer(map, "indoor", this._use3D).addToMap();
 
         this._facilityLayer = new FacilityLayer(map).addToMap();
         this._labelLayer = new LabelLayer(map).addToMap();
 
-        // this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
-        // this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
+        this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
+        this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {
@@ -63,7 +63,7 @@ class indoor_layers {
         this._floorLayer.hide();
         this._roomLayer.hide();
         this._assetLayer.hide();
-        // this._routeLayer.hide();
+        this._routeLayer.hide();
         this._extrusionLayer.hide();
         this._facilityLayer.hide();
         this._labelLayer.hide();
@@ -73,7 +73,7 @@ class indoor_layers {
         this._floorLayer.show();
         this._roomLayer.show();
         this._assetLayer.show();
-        // this._routeLayer.show();
+        this._routeLayer.show();
         this._extrusionLayer.show();
         this._facilityLayer.show();
         this._labelLayer.show();
@@ -81,15 +81,15 @@ class indoor_layers {
 
 
     hideRoute() {
-        // this._routeLayer.hideRoute();
+        this._routeLayer.hideRoute();
     }
 
     showRoute(result, location, segment) {
-        // this._routeLayer.showRoute(result, location, segment);
+        this._routeLayer.showRoute(result, location, segment);
     }
 
     _setRouteColor(color1, color2, color3) {
-        // this._routeLayer._setRouteColor(color1, color2, color3);
+        this._routeLayer._setRouteColor(color1, color2, color3);
     }
 
     _updateFloorIndex(index) {
@@ -100,7 +100,7 @@ class indoor_layers {
         this._facilityLayer._setFloor(index);
         this._labelLayer._setFloor(index);
 
-        // this._routeLayer._updateFloorIndex(index);
+        this._routeLayer._updateFloorIndex(index);
     }
 }
 

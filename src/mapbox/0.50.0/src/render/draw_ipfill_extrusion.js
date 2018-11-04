@@ -113,157 +113,54 @@ function finalDraw2(painter, sourceCache, layer, coords) {
             firstTile = false;
         }
     }
-
-    // const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-    // const width = layer.paint.get('ipfill-extrusion-outline-width');
-    // if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-    //
-    //
-    // const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
-    // const colorMode = painter.colorModeForRenderPass();
-    // const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-    // const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-    // const image = patternProperty.constantOr((1));
-    // const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-    // const crossfade = layer.getCrossfadeParameters();
-    //
-    // const context = painter.context;
-    // const gl = context.gl;
-    //
-    // let firstTile = true;
-
-    // if (gradient) {
-    //     context.activeTexture.set(gl.TEXTURE0);
-    //     let gradientTexture = layer.gradientTexture;
-    //     if (!layer.gradient) return;
-    //     if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-    //     gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-    // }
-
-    // for (const coord of coords) {
-    //     const tile = sourceCache.getTile(coord);
-    //     if (image && !tile.patternsLoaded()) continue;
-    //     drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
-    //         depthMode: depthMode,
-    //         colorMode: colorMode,
-    //         dasharray: dasharray,
-    //         patternProperty: patternProperty,
-    //         gradient: gradient,
-    //         image: image,
-    //         crossfade: crossfade,
-    //     });
-    //     firstTile = false;
-    // }
-}
-
-function finalDraw(painter, sourceCache, layer, coords) {
-    if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
-        return;
-    }
-
-    if (painter.renderPass === 'offscreen') {
-        drawToExtrusionFramebuffer(painter, layer);
-
-        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
-            stencilMode = StencilMode.disabled,
-            colorMode = painter.colorModeForRenderPass();
-
-        drawExtrusionTiles(painter, sourceCache, layer, coords, depthMode, stencilMode, colorMode);
-    } else if (painter.renderPass === 'translucent') {
-        drawExtrusionTexture(painter, layer);
-    }
-
-    if (painter.renderPass !== 'translucent') return;
-
-    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-    const width = layer.paint.get('ipfill-extrusion-outline-width');
-    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-
-    const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
-    const colorMode = painter.colorModeForRenderPass();
-    const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-    const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-    const image = patternProperty.constantOr((1));
-    const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-    const crossfade = layer.getCrossfadeParameters();
-
-    const context = painter.context;
-    const gl = context.gl;
-
-    let firstTile = true;
-
-    if (gradient) {
-        context.activeTexture.set(gl.TEXTURE0);
-        let gradientTexture = layer.gradientTexture;
-        if (!layer.gradient) return;
-        if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-        gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-    }
-
-    for (const coord of coords) {
-        const tile = sourceCache.getTile(coord);
-        if (image && !tile.patternsLoaded()) continue;
-        drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
-            depthMode: depthMode,
-            colorMode: colorMode,
-            dasharray: dasharray,
-            patternProperty: patternProperty,
-            gradient: gradient,
-            image: image,
-            crossfade: crossfade,
-        });
-        firstTile = false;
-    }
 }
 
 // From ipline
-
-function drawIPLine2(painter, sourceCache, layer, coords) {
-    // console.log("drawIPLine");
-    if (painter.renderPass !== 'translucent') return;
-
-    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-    const width = layer.paint.get('ipfill-extrusion-outline-width');
-    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-
-    const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
-    const colorMode = painter.colorModeForRenderPass();
-    const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-    const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-    const image = patternProperty.constantOr((1));
-    const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-    const crossfade = layer.getCrossfadeParameters();
-
-    const context = painter.context;
-    const gl = context.gl;
-
-    let firstTile = true;
-
-    if (gradient) {
-        context.activeTexture.set(gl.TEXTURE0);
-        let gradientTexture = layer.gradientTexture;
-        if (!layer.gradient) return;
-        if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-        gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-    }
-
-    for (const coord of coords) {
-        const tile = sourceCache.getTile(coord);
-        if (image && !tile.patternsLoaded()) continue;
-        drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
-            depthMode: depthMode,
-            colorMode: colorMode,
-            dasharray: dasharray,
-            patternProperty: patternProperty,
-            gradient: gradient,
-            image: image,
-            crossfade: crossfade,
-        });
-        firstTile = false;
-    }
-}
+// function drawIPLine2(painter, sourceCache, layer, coords) {
+//     // console.log("drawIPLine");
+//     if (painter.renderPass !== 'translucent') return;
+//
+//     const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
+//     const width = layer.paint.get('ipfill-extrusion-outline-width');
+//     if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
+//
+//
+//     const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
+//     const colorMode = painter.colorModeForRenderPass();
+//     const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
+//     const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
+//     const image = patternProperty.constantOr((1));
+//     const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
+//     const crossfade = layer.getCrossfadeParameters();
+//
+//     const context = painter.context;
+//     const gl = context.gl;
+//
+//     let firstTile = true;
+//
+//     if (gradient) {
+//         context.activeTexture.set(gl.TEXTURE0);
+//         let gradientTexture = layer.gradientTexture;
+//         if (!layer.gradient) return;
+//         if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
+//         gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+//     }
+//
+//     for (const coord of coords) {
+//         const tile = sourceCache.getTile(coord);
+//         if (image && !tile.patternsLoaded()) continue;
+//         drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
+//             depthMode: depthMode,
+//             colorMode: colorMode,
+//             dasharray: dasharray,
+//             patternProperty: patternProperty,
+//             gradient: gradient,
+//             image: image,
+//             crossfade: crossfade,
+//         });
+//         firstTile = false;
+//     }
+// }
 
 function drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, options) {
     const bucket = (tile.getBucket(layer));
@@ -316,106 +213,26 @@ function drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, opti
         layer.paint, painter.transform.zoom, programConfiguration);
 }
 
-function drawIPLine(painter, sourceCache, layer, coords) {
-    // console.log("drawIPLine");
-    if (painter.renderPass !== 'translucent') return;
-
-    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-    const width = layer.paint.get('ipfill-extrusion-outline-width');
-    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-    const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
-    const colorMode = painter.colorModeForRenderPass();
-
-    const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-    const patternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-    const image = patternProperty.constantOr((1));
-
-    const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-    const crossfade = layer.getCrossfadeParameters();
-
-    const programId =
-        dasharray ? 'lineSDF' :
-            image ? 'linePattern' :
-                gradient ? 'lineGradient' : 'ipfillExtrusionOutline';
-
-    const context = painter.context;
-    const gl = context.gl;
-
-    let firstTile = true;
-
-    if (gradient) {
-        context.activeTexture.set(gl.TEXTURE0);
-
-        let gradientTexture = layer.gradientTexture;
-        if (!layer.gradient) return;
-        if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-        gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-    }
-
-    for (const coord of coords) {
-        const tile = sourceCache.getTile(coord);
-
-        if (image && !tile.patternsLoaded()) continue;
-
-        const bucket = (tile.getBucket(layer));
-        if (!bucket) continue;
-
-        const programConfiguration = bucket.programConfigurations.get(layer.id);
-        const prevProgram = painter.context.program.get();
-        // console.log("draw_ipline.useProgram: "+programId)
-        const program = painter.useProgram(programId, programConfiguration);
-        const programChanged = firstTile || program.program !== prevProgram;
-
-        const constantPattern = patternProperty.constantOr(null);
-        if (constantPattern && tile.imageAtlas) {
-            const posTo = tile.imageAtlas.patternPositions[constantPattern.to];
-            const posFrom = tile.imageAtlas.patternPositions[constantPattern.from];
-            if (posTo && posFrom) programConfiguration.setConstantPatternPositions(posTo, posFrom);
-        }
-
-        const uniformValues = dasharray ? ipfillExtrusionOutlineSDFUniformValues(painter, tile, layer, dasharray, crossfade) :
-            image ? ipfillExtrusionOutlinePatternUniformValues(painter, tile, layer, crossfade) :
-                gradient ? ipfillExtrusionOutlineGradientUniformValues(painter, tile, layer) :
-                    ipfillExtrusionOutlineUniformValues(painter, tile, layer);
-        if (dasharray && (programChanged || painter.lineAtlas.dirty)) {
-            context.activeTexture.set(gl.TEXTURE0);
-            painter.lineAtlas.bind(context);
-        } else if (image) {
-            context.activeTexture.set(gl.TEXTURE0);
-            tile.imageAtlasTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-            programConfiguration.updatePatternPaintBuffers(crossfade);
-        }
-
-        program.draw(context, gl.TRIANGLES, depthMode,
-            painter.stencilModeForClipping(coord), colorMode, uniformValues,
-            layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
-            layer.paint, painter.transform.zoom, programConfiguration);
-
-        firstTile = false;
-    }
-}
-
 // From ipline
 
-function drawIPFillExtrusion(painter, source, layer, coords) {
-    if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
-        return;
-    }
-
-    if (painter.renderPass === 'offscreen') {
-        drawToExtrusionFramebuffer(painter, layer);
-
-        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
-            stencilMode = StencilMode.disabled,
-            colorMode = painter.colorModeForRenderPass();
-
-        drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMode, colorMode);
-
-    } else if (painter.renderPass === 'translucent') {
-        drawExtrusionTexture(painter, layer);
-    }
-}
+// function drawIPFillExtrusion(painter, source, layer, coords) {
+//     if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
+//         return;
+//     }
+//
+//     if (painter.renderPass === 'offscreen') {
+//         drawToExtrusionFramebuffer(painter, layer);
+//
+//         const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
+//             stencilMode = StencilMode.disabled,
+//             colorMode = painter.colorModeForRenderPass();
+//
+//         drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMode, colorMode);
+//
+//     } else if (painter.renderPass === 'translucent') {
+//         drawExtrusionTexture(painter, layer);
+//     }
+// }
 
 function drawToExtrusionFramebuffer(painter, layer) {
     const context = painter.context;

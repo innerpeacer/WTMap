@@ -214,7 +214,7 @@ class StyleLayer extends Evented {
         if (options && options.validate === false) {
             return false;
         }
-        console.log("style_layer._validate: emitValidationErrors");
+        // console.log("style_layer._validate: emitValidationErrors");
         return emitValidationErrors(this, validate.call(validateStyle, {
             key: key,
             layerType: this.type,

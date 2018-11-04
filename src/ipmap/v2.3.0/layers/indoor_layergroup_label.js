@@ -26,7 +26,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
                 "text-padding": 0,
             }
         };
-        // this.styleLayers[layerID] = layer;
+        this.styleLayers[layerID] = layer;
         this.labelID = layerID;
     }
 
