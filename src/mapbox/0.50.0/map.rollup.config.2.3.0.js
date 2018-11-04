@@ -7,7 +7,7 @@ const ip_version = "v2.3.0";
 
 const production = process.env.BUILD === 'production';
 // const outputFile = production ? 'dist/mapbox-gl.js' : 'dist/mapbox-gl-dev.js';
-const outputFile = production ? 'dist/ipmap-gl-' + ip_version + '.js' : 'dist/ipmap-gl-dev.js';
+const outputFile = production ? 'dist/wtmap-gl-' + ip_version + '.js' : 'dist/wtmap-gl-dev.js';
 
 const config = [{
     // input: ["src/ip_index_2.3.0.js", 'src/source/worker.js'],
@@ -29,7 +29,7 @@ const config = [{
         input: 'ip_rollup/ipmap.js',
         output: {
             // name: 'mapboxgl',
-            name: 'ipmap',
+            name: 'wtmap',
             file: outputFile,
             format: 'umd',
             sourcemap: production ? true : 'inline',

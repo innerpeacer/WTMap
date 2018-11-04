@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title>IPMap-2.3.0-Route</title>
+    <title>WTMap-2.3.0-Route</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
 
     <script src="js/config-dev-2.3.0.js"></script>
@@ -62,8 +62,8 @@
     var currentPoint;
     var locationPoint;
 
-    console.log(ipmap.IPMap);
-    var map = new ipmap.IPMap({
+    console.log(wtmap.WTMap);
+    var map = new wtmap.WTMap({
         container: 'map',
         buildingID: buildingID,
 //        use3D: false,
@@ -78,7 +78,7 @@
         console.log(evt.lngLat.lat);
 
         var lngLat = evt.lngLat;
-        var p = ipmap.CoordProjection.lngLatToMercator(lngLat.lng, lngLat.lat);
+        var p = wtmap.CoordProjection.lngLatToMercator(lngLat.lng, lngLat.lat);
         currentPoint = {x: p.x, y: p.y, lng: lngLat.lng, lat: lngLat.lat, floor: map.currentMapInfo.floorNumber};
         console.log(currentPoint);
 
@@ -187,7 +187,7 @@
         '<button onclick="simulateLocation1()" type="button">模拟定位点(第2段)</button>' +
         '<button onclick="simulateLocation2()" type="button">模拟定位点(第3段)</button>';
 
-    var popup = new ipmap.Popup({closeOnClick: false, offset: {'bottom': [0, -10]}})
+    var popup = new wtmap.Popup({closeOnClick: false, offset: {'bottom': [0, -10]}})
         .setHTML(popupHtml);
     popup.addTo(map);
 

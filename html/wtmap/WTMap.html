@@ -21,12 +21,12 @@
 </div>
 
 <script>
-    console.log(ipmap);
+    console.log(wtmap);
 
-    var map = new ipmap.IPMap({
+    var map = new wtmap.WTMap({
         container: 'map',
         buildingID: "00270005",
-        use3D: false,
+//        use3D: false,
     });
     map.showTileBoundaries = true;
     map.on("click", function (evt) {

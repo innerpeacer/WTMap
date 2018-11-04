@@ -9,7 +9,7 @@ import Map from './ui/map';
 // import IPMap from '../../../ipmap/v2.3.0/map/map'
 import {
     version,
-    IPMap,
+    WTMap,
     CoordProjection,
     Turf,
     MapInfo,
@@ -39,7 +39,7 @@ const exported = {
     setRTLTextPlugin: setRTLTextPlugin,
     Map,
 
-    IPMap,
+    WTMap,
     CoordProjection,
     Turf,
     MapInfo,
