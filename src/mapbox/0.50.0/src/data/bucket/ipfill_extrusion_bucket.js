@@ -142,7 +142,7 @@ class IPFillExtrusionBucket implements Bucket {
                 this.features.push(addPatternDependencies('ipfill-extrusion', this.layers, patternFeature, this.zoom, options));
             } else {
                 this.addFillExtrusionFeature(patternFeature, geometry, index, {});
-                // this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
+                this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
             }
 
             options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index);
@@ -153,7 +153,7 @@ class IPFillExtrusionBucket implements Bucket {
         for (const feature of this.features) {
             const {geometry} = feature;
             this.addFillExtrusionFeature(feature, geometry, feature.index, imagePositions);
-            // this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
+            this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
         }
     }
 

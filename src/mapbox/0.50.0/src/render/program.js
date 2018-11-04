@@ -8,24 +8,14 @@ import ProgramConfiguration from '../data/program_configuration';
 import VertexArrayObject from './vertex_array_object';
 import Context from '../gl/context';
 
-class Program<Us: UniformBindings> {
+class Program {
     program: WebGLProgram;
     attributes: {[string]: number};
     numAttributes: number;
     fixedUniforms: Us;
     binderUniforms: UniformBindings;
 
-    constructor(context: Context,
-                source: {fragmentSource: string, vertexSource: string},
-                configuration: ProgramConfiguration,
-                fixedUniforms: (Context, UniformLocations) => Us,
-                showOverdrawInspector: boolean) {
-        // console.log("Program.constructor");
-        // console.log(source);
-        // console.log(configuration);
-        // console.log(fixedUniforms);
-        // console.log(showOverdrawInspector);
-
+    constructor(context, source, configuration, fixedUniforms, showOverdrawInspector) {
         const gl = context.gl;
         this.program = gl.createProgram();
 
@@ -49,19 +39,7 @@ class Program<Us: UniformBindings> {
         assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader)));
         gl.attachShader(this.program, vertexShader);
 
-        // Manually bind layout attributes in the order defined by their
-        // ProgramInterface so that we don't dynamically link an unused
-        // attribute at position 0, which can cause rendering to fail for an
-        // entire layer (see #4607, #4728)
         const layoutAttributes = configuration.layoutAttributes || [];
-
-        // console.log("========================");
-        // console.log("configuration");
-        // console.log(configuration);
-        // console.log("vertexSource");
-        // console.log(vertexSource);
-        // console.log("layoutAttributes");
-        // console.log(layoutAttributes);
         for (let i = 0; i < layoutAttributes.length; i++) {
             gl.bindAttribLocation(this.program, i, layoutAttributes[i].name);
         }
@@ -80,9 +58,7 @@ class Program<Us: UniformBindings> {
                 this.attributes[attribute.name] = gl.getAttribLocation(this.program, attribute.name);
             }
         }
-        // console.log("attributes");
-        // console.log(this.attributes);
-        // console.log("Here OK");
+
         const numUniforms = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
         for (let i = 0; i < numUniforms; i++) {
             const uniform = gl.getActiveUniform(this.program, i);
@@ -93,29 +69,9 @@ class Program<Us: UniformBindings> {
 
         this.fixedUniforms = fixedUniforms(context, uniformLocations);
         this.binderUniforms = configuration.getUniforms(context, uniformLocations);
-
-        // console.log(this.attributes);
-        // console.log(uniformLocations);
-        // console.log(this.fixedUniforms);
-        // console.log(this.binderUniforms);
     }
 
-    draw(context: Context,
-         drawMode: DrawMode,
-         depthMode: $ReadOnly<DepthMode>,
-         stencilMode: $ReadOnly<StencilMode>,
-         colorMode: $ReadOnly<ColorMode>,
-         uniformValues: UniformValues<Us>,
-         layerID: string,
-         layoutVertexBuffer: VertexBuffer,
-         indexBuffer: IndexBuffer,
-         segments: SegmentVector,
-         currentProperties: any,
-         zoom: ?number,
-         configuration: ?ProgramConfiguration,
-         dynamicLayoutBuffer: ?VertexBuffer,
-         dynamicLayoutBuffer2: ?VertexBuffer) {
-
+    draw(context, drawMode, depthMode, stencilMode, colorMode, uniformValues, layerID, layoutVertexBuffer, indexBuffer, segments, currentProperties, zoom, configuration, dynamicLayoutBuffer, dynamicLayoutBuffer2) {
         const gl = context.gl;
 
         context.program.set(this.program);
@@ -139,24 +95,10 @@ class Program<Us: UniformBindings> {
 
         for (const segment of segments.get()) {
             const vaos = segment.vaos || (segment.vaos = {});
-            const vao: VertexArrayObject = vaos[layerID] || (vaos[layerID] = new VertexArrayObject());
+            const vao = vaos[layerID] || (vaos[layerID] = new VertexArrayObject());
 
-            vao.bind(
-                context,
-                this,
-                layoutVertexBuffer,
-                configuration ? configuration.getPaintVertexBuffers() : [],
-                indexBuffer,
-                segment.vertexOffset,
-                dynamicLayoutBuffer,
-                dynamicLayoutBuffer2
-            );
-
-            gl.drawElements(
-                drawMode,
-                segment.primitiveLength * primitiveSize,
-                gl.UNSIGNED_SHORT,
-                segment.primitiveOffset * primitiveSize * 2);
+            vao.bind(context, this, layoutVertexBuffer, configuration ? configuration.getPaintVertexBuffers() : [], indexBuffer, segment.vertexOffset, dynamicLayoutBuffer, dynamicLayoutBuffer2);
+            gl.drawElements(drawMode, segment.primitiveLength * primitiveSize, gl.UNSIGNED_SHORT, segment.primitiveOffset * primitiveSize * 2);
         }
     }
 }

@@ -13,7 +13,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             'id': layerID,
             'type': 'fill',
             'source': this.sourceID,
-            "source-layer": "fill1",
+            "source-layer": "fill",
             'layout': {},
             'paint': {
                 'fill-color': ["get", "fill-color"],
