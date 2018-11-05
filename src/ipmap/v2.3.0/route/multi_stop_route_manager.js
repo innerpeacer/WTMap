@@ -52,17 +52,18 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
         rearrange = false;
     }
 
-    let routeVersion = "V3";
-    if (params && params.version) {
-        routeVersion = params.version;
-    }
+    // let routeVersion = "V3";
+    // if (params && params.version) {
+    //     routeVersion = params.version;
+    // }
 
     let stopParams = null;
     if (stops != null && stops.length > 0) {
         stopParams = IPLocalPoint.toStopParams(stops);
     }
 
-    let url = `${options._apiRouteHost}/${options._apiRoute}/route/RouteService${routeVersion}?buildingID=${bID}&${start.toStartParameter2()}&${end.toEndParameter2()}&rearrangeStops=${rearrange}`;
+    // let url = `${options._apiRouteHost}/${options._apiRoute}/route/RouteService${routeVersion}?buildingID=${bID}&${start.toStartParameter2()}&${end.toEndParameter2()}&rearrangeStops=${rearrange}`;
+    let url = `${options._apiRouteHost}/${options._apiRoute}/route/routeService?buildingID=${bID}&${start.toStartParameter2()}&${end.toEndParameter2()}&rearrangeStops=${rearrange}`;
     if (stopParams != null) {
         url += `&${stopParams}`;
     }
