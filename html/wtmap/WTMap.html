@@ -41,7 +41,7 @@
     };
 
     map.on("mapready", function (evt) {
-        console.log("mapready")
+        console.log("mapready");
         map.mapInfoArray.forEach(function (mapInfo) {
             var floorButton = document.createElement('option');
             floorButton.value = mapInfo.floorName;
@@ -55,7 +55,7 @@
     });
 
     map.on("error", function (error) {
-        console.log("map-error")
+        console.log("map-error");
         console.log(error)
     })
 </script>

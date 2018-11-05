@@ -1,4 +1,4 @@
-var IP_PROJECT_NAME = "WebMap";
+var IP_PROJECT_NAME = "WTMap";
 var IP_MAP_VERSION = "v2.3.0";
 
 var ipmapJSPath = '<script src="/' + IP_PROJECT_NAME + '/src/mapbox/0.50.0/dist/wtmap-gl-' + IP_MAP_VERSION + '.js"></script>';
