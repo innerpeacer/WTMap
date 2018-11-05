@@ -15,7 +15,7 @@ import IndoorLayers from "../layers/indoor_layers"
 import CoordProjection from "../utils/coord_projection"
 
 function getBrtStylePath(options) {
-    return `${options._apiHost}/${options._resourceRootDir}/style/${version}/brt-style.json`;
+    return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 }
 
 class IPMap extends BoxMap {
@@ -26,14 +26,14 @@ class IPMap extends BoxMap {
         // console.log("Version: " + version);
 
         if (options._apiHost == null) options._apiHost = "http://localhost:8112";
-        if (options._apiPath == null) options._apiPath = "BrtMapServer";
+        if (options._apiPath == null) options._apiPath = "WTMapService";
 
         if (options._apiRouteHost == null) options._apiRouteHost = "http://localhost:8112";
-        if (options._apiRoute == null) options._apiRoute = "TYRouteService";
+        if (options._apiRoute == null) options._apiRoute = "WTRouteService";
 
-        if (options._cbmPath == null) options._cbmPath = "http://localhost:8112/BrtMapServer/web/GetCBM";
+        if (options._cbmPath == null) options._cbmPath = "http://localhost:8112/" + options._apiPath + "/web/GetCBM";
 
-        if (options._resourceRootDir == null) options._resourceRootDir = "BrtMapResource";
+        if (options._resourceRootDir == null) options._resourceRootDir = "WTMapResource";
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + "/mapdata";
 
         options.style = getBrtStylePath(options);
@@ -290,7 +290,7 @@ class IPMap extends BoxMap {
         this._layerGroup.setFont(fontName);
     }
 
-    getFloorInfoArray(){
+    getFloorInfoArray() {
         return this.mapInfoArray;
     }
 }
