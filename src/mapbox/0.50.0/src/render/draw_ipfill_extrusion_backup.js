@@ -16,174 +16,8 @@ import {
 } from './program/ipfill_extrusion_program';
 
 // export default drawIPFillExtrusion;
+export default drawIPLine2;
 // export default finalDraw2;
-export default finalDraw3;
-// export default finalDraw4;
-// export default debugDraw;
-
-// export default drawIPLine2;
-
-function debugDraw(painter, sourceCache, layer, coords) {
-    // if (painter.renderPass === 'translucent') {
-    // } else if (painter.renderPass === 'offscreen') {
-    //     drawToExtrusionFramebuffer(painter, layer);
-
-    if (painter.renderPass === 'translucent') {
-    } else {
-        if (painter.renderPass === 'offscreen') {
-            drawToExtrusionFramebuffer(painter, layer);
-        } else {
-
-        }
-        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]);
-        // const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
-
-        const stencilMode = StencilMode.disabled;
-        const colorMode = painter.colorModeForRenderPass();
-
-        const context = painter.context;
-        const gl = context.gl;
-        const patternProperty = layer.paint.get('ipfill-extrusion-pattern');
-        const image = patternProperty.constantOr((1));
-        const crossfade = layer.getCrossfadeParameters();
-
-        // For ipline
-        const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-        const width = layer.paint.get('ipfill-extrusion-outline-width');
-        if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-        // const outlineDepthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadOnly, [0, 1]);
-        const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-        const outlinePatternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-        const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-
-        let firstTile = true;
-
-        if (gradient) {
-            context.activeTexture.set(gl.TEXTURE0);
-            let gradientTexture = layer.gradientTexture;
-            if (!layer.gradient) return;
-            if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-            gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-        }
-
-        // For ipline
-        for (const coord of coords) {
-            const tile = sourceCache.getTile(coord);
-            if (image && !tile.patternsLoaded()) continue;
-            drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
-                // depthMode: outlineDepthMode,
-                depthMode: depthMode,
-                colorMode: colorMode,
-                dasharray: dasharray,
-                patternProperty: outlinePatternProperty,
-                gradient: gradient,
-                image: image,
-                crossfade: crossfade,
-            });
-            firstTile = false;
-        }
-    }
-}
-
-function finalDraw3(painter, sourceCache, layer, coords) {
-    if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
-        return;
-    }
-
-    // if (painter.renderPass === 'translucent') {
-    //     drawExtrusionTexture(painter, layer);
-    // } else  {
-    //     if (painter.renderPass === 'offscreen'){
-    //         drawToExtrusionFramebuffer(painter, layer);
-    //     }
-
-    if (painter.renderPass === 'translucent') {
-        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]);
-        const stencilMode = StencilMode.disabled;
-        const colorMode = painter.colorModeForRenderPass();
-
-        const context = painter.context;
-        const gl = context.gl;
-        const patternProperty = layer.paint.get('ipfill-extrusion-pattern');
-        const image = patternProperty.constantOr((1));
-        const crossfade = layer.getCrossfadeParameters();
-
-        // For ipline
-        const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-        const width = layer.paint.get('ipfill-extrusion-outline-width');
-        if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-        // const outlineDepthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadOnly, [0, 1]);
-        const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
-        const outlinePatternProperty = layer.paint.get('ipfill-extrusion-outline-pattern');
-        const gradient = layer.paint.get('ipfill-extrusion-outline-gradient');
-
-        let firstTile = true;
-
-        if (gradient) {
-            context.activeTexture.set(gl.TEXTURE0);
-            let gradientTexture = layer.gradientTexture;
-            if (!layer.gradient) return;
-            if (!gradientTexture) gradientTexture = layer.gradientTexture = new Texture(context, layer.gradient, gl.RGBA);
-            gradientTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-        }
-
-        // For ipline
-
-        for (const coord of coords) {
-            const tile = sourceCache.getTile(coord);
-            const bucket = (tile.getBucket(layer));
-            if (!bucket) continue;
-
-            const programConfiguration = bucket.programConfigurations.get(layer.id);
-            const program = painter.useProgram(image ? 'ipfillExtrusionPattern' : 'ipfillExtrusion', programConfiguration);
-
-            if (image) {
-                painter.context.activeTexture.set(gl.TEXTURE0);
-                tile.imageAtlasTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-                programConfiguration.updatePatternPaintBuffers(crossfade);
-            }
-
-            const constantPattern = patternProperty.constantOr(null);
-            if (constantPattern && tile.imageAtlas) {
-                const posTo = tile.imageAtlas.patternPositions[constantPattern.to];
-                const posFrom = tile.imageAtlas.patternPositions[constantPattern.from];
-                if (posTo && posFrom) programConfiguration.setConstantPatternPositions(posTo, posFrom);
-            }
-
-            const matrix = painter.translatePosMatrix(
-                coord.posMatrix,
-                tile,
-                layer.paint.get('ipfill-extrusion-translate'),
-                layer.paint.get('ipfill-extrusion-translate-anchor'));
-
-            const uniformValues = image ?
-                ipfillExtrusionPatternUniformValues(matrix, painter, coord, crossfade, tile) :
-                ipfillExtrusionUniformValues(matrix, painter);
-
-
-            program.draw(context, context.gl.TRIANGLES, depthMode, stencilMode, colorMode,
-                uniformValues, layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer,
-                bucket.segments, layer.paint, painter.transform.zoom,
-                programConfiguration);
-
-            if (image && !tile.patternsLoaded()) continue;
-            drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {
-                // depthMode: outlineDepthMode,
-                depthMode: depthMode,
-                colorMode: colorMode,
-                dasharray: dasharray,
-                patternProperty: outlinePatternProperty,
-                gradient: gradient,
-                image: image,
-                crossfade: crossfade,
-            });
-            firstTile = false;
-        }
-    }
-}
-
 
 function finalDraw2(painter, sourceCache, layer, coords) {
     if (layer.paint.get('ipfill-extrusion-opacity') === 0) {
@@ -196,9 +30,9 @@ function finalDraw2(painter, sourceCache, layer, coords) {
     } else if (painter.renderPass === 'offscreen') {
         drawToExtrusionFramebuffer(painter, layer);
 
-        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]);
-        const stencilMode = StencilMode.disabled;
-        const colorMode = painter.colorModeForRenderPass();
+        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
+            stencilMode = StencilMode.disabled,
+            colorMode = painter.colorModeForRenderPass();
 
         const context = painter.context;
         const gl = context.gl;
@@ -260,10 +94,10 @@ function finalDraw2(painter, sourceCache, layer, coords) {
                 ipfillExtrusionUniformValues(matrix, painter);
 
 
-            program.draw(context, context.gl.TRIANGLES, depthMode, stencilMode, colorMode,
-                uniformValues, layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer,
-                bucket.segments, layer.paint, painter.transform.zoom,
-                programConfiguration);
+            // program.draw(context, context.gl.TRIANGLES, depthMode, stencilMode, colorMode,
+            //     uniformValues, layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer,
+            //     bucket.segments, layer.paint, painter.transform.zoom,
+            //     programConfiguration);
 
             if (image && !tile.patternsLoaded()) continue;
             drawIPExtrusionOutlineTile(painter, layer, coord, firstTile, tile, {

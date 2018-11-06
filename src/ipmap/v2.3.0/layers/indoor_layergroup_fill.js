@@ -32,7 +32,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 "line-cap": "round",
             },
             'source': this.sourceID,
-            "source-layer": "fill1",
+            "source-layer": "fill",
             "paint": {
                 "line-color": ["get", "outline-color"],
                 'line-opacity': 1,
