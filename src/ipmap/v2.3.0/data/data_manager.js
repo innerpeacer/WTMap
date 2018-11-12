@@ -3,12 +3,7 @@ import IPHttpRequest from "../utils/http_request"
 
 let getCBMJson = function (bID, options) {
     if (options._useFile) {
-        // return `${options._apiHost}/${options._resourceRootDir}/mapdata/cbm/${bID}.json`;
-        // return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json`;
-        if (options.__ignoreToken) {
-            return `${options._apiHost}/${options._resourceRootDir}/mapdata/cbm/${bID}.json`;
-        }
-        return `${options._cbmPath}?buildingID=${bID}&token=${options.token}`;
+        return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json`;
     } else {
         return `${options._apiHost}/${options._apiPath}/web/GetCBM?buildingID=${bID}`;
     }
