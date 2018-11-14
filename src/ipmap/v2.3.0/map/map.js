@@ -13,6 +13,7 @@ import IPEntityUtils from "../entity/entity_utils"
 
 import IndoorLayers from "../layers/indoor_layers"
 import CoordProjection from "../utils/coord_projection"
+import CalculateZoomForMaxBounds from "../utils/ip_zoom_calc"
 
 function getBrtStylePath(options) {
     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
@@ -171,10 +172,11 @@ class IPMap extends BoxMap {
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
 
         let initInfo = map.mapInfoArray[0];
-        let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0);
         // console.log("initBounds");
         // console.log(initBounds);
 
+        let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0.2);
+        this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map.addSource("innerpeacer", {
             "tiles": map._dataManager.getTilePath(),
             "type": "vector",
@@ -271,9 +273,8 @@ class IPMap extends BoxMap {
             map.setZoom(10);
 
             if (map._firstLoad) {
-                map._baseZoom = map.getZoom();
-                // map._layerGroup._updateFontIconSize(map.getZoom());
-                map.setMaxZoom(Math.min(map.getZoom() + 3, 22));
+                // map._layerGroup._updateFontIconSize(map.getBaseZoom());
+                map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
                 map._firstLoad = false;
             }
 

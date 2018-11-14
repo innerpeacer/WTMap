@@ -12,7 +12,6 @@
 <script>
     var map = new wtmap.WTMap({
         container: 'map',
-//        buildingID: "00270005",
         buildingID: "05910001",
         use3D: true,
         showTileBoundaries: true,
@@ -21,12 +20,12 @@
 
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
-//        console.log("Bounds: "+  map.getBounds());
-        console.log(evt.lngLat.lat);
+        console.log(evt.lngLat);
     });
 
     map.on("mapready", function (evt) {
-        console.log("mapready")
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
     });
 
     map.on("wheel", function () {
