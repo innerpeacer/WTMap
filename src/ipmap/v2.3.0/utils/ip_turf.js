@@ -8,6 +8,10 @@ import lineSliceAlong from "@turf/line-slice-along";
 import lineChunk from "@turf/line-chunk";
 import pointOnLine from "@turf/point-on-line";
 
+import pointToLineDistance from "@turf/point-to-line-distance"
+import nearestPointOnLine from "@turf/nearest-point-on-line"
+import distance from "@turf/distance"
+
 let IPTurf = {
     point: point,
     featureCollection: featureCollection,
@@ -21,7 +25,11 @@ let IPTurf = {
     lineSlice: lineSlice,
     lineSliceAlong: lineSliceAlong,
     lineChunk: lineChunk,
-    pointOnLine: pointOnLine
+    pointOnLine: pointOnLine,
+
+    pointToLineDistance: pointToLineDistance,
+    nearestPointOnLine: nearestPointOnLine,
+    distance: distance
 };
 
 export default IPTurf;
