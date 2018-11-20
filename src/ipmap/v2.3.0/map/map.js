@@ -1,4 +1,4 @@
-import {BoxMap} from "../config/inherit"
+import {BoxMap, CacheVersion, TileCacheDB} from "../config/inherit"
 
 import {version} from "../config/config"
 import IPCity from "../entity/city"
@@ -44,6 +44,9 @@ class IPMap extends BoxMap {
         if (options._useFile == null) options._useFile = true;
         if (options.use3D == null) options.use3D = true;
 
+        let dataVersion = null;
+        if (options._dataVersion != null) dataVersion = options._dataVersion;
+
         super(options);
         this._options = options;
 
@@ -88,6 +91,12 @@ class IPMap extends BoxMap {
             // console.log("cbm-error");
             map.fire("error", error);
         });
+
+        if (dataVersion) {
+            CacheVersion.useVersion(dataVersion);
+        }
+        TileCacheDB.init();
+        console.log("CacheVersion: " + CacheVersion.getVersionName());
 
         this.on("load", function () {
             // console.log("on load");

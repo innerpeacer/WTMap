@@ -8,41 +8,10 @@ import WorkerTile from './worker_tile';
 import { extend } from '../util/util';
 import performance from '../util/performance';
 
-import type {
-    WorkerSource,
-    WorkerTileParameters,
-    WorkerTileCallback,
-    TileParameters
-} from '../source/worker_source';
-
-import type {PerformanceResourceTiming} from '../types/performance_resource_timing';
-import type Actor from '../util/actor';
-import type StyleLayerIndex from '../style/style_layer_index';
-import type {Callback} from '../types/callback';
-
-export type LoadVectorTileResult = {
-    vectorTile: VectorTile;
-    rawData: ArrayBuffer;
-    expires?: any;
-    cacheControl?: any;
-    resourceTiming?: Array<PerformanceResourceTiming>;
-};
-
-/**
- * @callback LoadVectorDataCallback
- * @param error
- * @param vectorTile
- * @private
- */
-export type LoadVectorDataCallback = Callback<?LoadVectorTileResult>;
-
-export type AbortVectorData = () => void;
-export type LoadVectorData = (params: WorkerTileParameters, callback: LoadVectorDataCallback) => ?AbortVectorData;
-
 /**
  * @private
  */
-function loadVectorTile(params: WorkerTileParameters, callback: LoadVectorDataCallback) {
+function loadVectorTile(params, callback) {
     const request = getArrayBuffer(params.request, (err, response) => {
         if (err) {
             callback(err);
@@ -138,6 +107,27 @@ class VectorTileWorkerSource implements WorkerSource {
             this.loaded = this.loaded || {};
             this.loaded[uid] = workerTile;
         });
+    }
+
+    loadTileFromCache(params, callback) {
+        const uid = params.uid;
+
+        if (!this.loading) this.loading = {};
+
+        const workerTile = this.loading[uid] = new WorkerTile(params);
+        delete this.loading[uid];
+
+        const rawTileData = params.rawData;
+        const vectorTile = new vt.VectorTile(new Protobuf(params.rawData));
+        const cacheControl = {};
+        const resourceTiming = {};
+        workerTile.vectorTile = vectorTile;
+        workerTile.parse(vectorTile, this.layerIndex, this.actor, (err, result) => {
+            if (err || !result) return callback(err);
+            callback(null, extend({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+        });
+        this.loaded = this.loaded || {};
+        this.loaded[uid] = workerTile;
     }
 
     /**
