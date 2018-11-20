@@ -152,6 +152,8 @@ class VectorTileSource extends Evented implements Source {
 
     loadTile(tile: Tile, callback: Callback<void>) {
         // console.log("in vector_tile_source.loadTile");
+        // console.log(tile);
+        if (tile.tileID.canonical.z == 0) return;
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url);
         const params = {
             request: this.map._transformRequest(url, ResourceType.Tile),
