@@ -53,6 +53,9 @@ class route_result {
         for (let i = 0; i < this._allRoutePartArray.length; ++i) {
             let rp = this._allRoutePartArray[i];
             let floor = rp.mapInfo.floorNumber;
+            if (rp._isSinglePointLine) {
+                continue;
+            }
             let line = rp.getGeometry();
 
             let lineLength = ipTurf.lineDistance(line, 'meters');

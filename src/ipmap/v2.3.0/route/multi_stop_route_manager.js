@@ -254,7 +254,7 @@ class multi_stop_route_manager extends Evented {
     }
 
     getRouteData(startLngLat, endLngLat, stopsLngLat, callback, errorCallback, params) {
-        console.log("getRouteData");
+        // console.log("getRouteData");
         let start = EntityUtils.lngLatPoint2LocalPoint(startLngLat);
         let end = EntityUtils.lngLatPoint2LocalPoint(endLngLat);
         let stops = [];

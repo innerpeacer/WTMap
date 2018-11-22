@@ -129,7 +129,7 @@ class IPMap extends BoxMap {
     }
 
     showRoute(location, segment) {
-        console.log("showRoute");
+        // console.log("showRoute");
         let map = this;
         map._layerGroup.showRoute(map._routeResult, location, segment);
     }
@@ -146,15 +146,15 @@ class IPMap extends BoxMap {
     }
 
     __requestRoute(start, end, stops, callback, errorCallback, params) {
-        console.log("__requestRoute");
-        console.log(stops);
+        // console.log("__requestRoute");
+        // console.log(stops);
         this._outerRouteCallback = callback;
         this._outerRouteErrorCallback = errorCallback;
         this._msRouteManager.getRouteData(start, end, stops, callback, errorCallback, params);
     }
 
     requestRoute(start, end, arg3, arg4, arg5, arg6) {
-        console.log("requestRoute");
+        // console.log("requestRoute");
         // console.log(stops);
         if (arg3.constructor == Array) {
             this.__requestRoute(start, end, arg3, arg4, arg5, arg6);

@@ -23,42 +23,28 @@
 
 <script>
     var buildingID = getParameter("buildingID");
-//    if (buildingID == null) buildingID = "00270005";
-//
-//    var startPoint, endPoint, stopPoints = [];
-//    startPoint = {
-//        x: 12719504.085452927,
-//        y: 3584281.715507033,
-//        lng: 114.26124926383198,
-//        lat: 30.62606903794945,
-//        floor: 2
-//    };
-//    endPoint = {
-//        x: 12719546.581111344,
-//        y: 3584260.916575968,
-//        lng: 114.26163100882661,
-//        lat: 30.62590826008615,
-//        floor: 2
-//    };
-
-//    if (buildingID == null) buildingID = "05910001";
-    if (buildingID == null) buildingID = "00270001";
+    if (buildingID == null) buildingID = "08710003";
 
     var startPoint, endPoint, stopPoints = [];
     startPoint = {
-        x: 12719504.085452927,
-        y: 3584281.715507033,
-        lng: 114.26124926383198,
-        lat: 30.62606903794945,
-        floor: 2
+        x: 11451235.653693886,
+        y: 2860317.826426284,
+//        lng: 114.26124926383198,
+//        lat: 30.62606903794945,
+        floor: 1
     };
+    startPoint.lng = wtmap.CoordProjection.mercatorToLngLat(startPoint.x, startPoint.y).lng;
+    startPoint.lat = wtmap.CoordProjection.mercatorToLngLat(startPoint.x, startPoint.y).lat;
+
     endPoint = {
-        x: 12719546.581111344,
-        y: 3584260.916575968,
-        lng: 114.26163100882661,
-        lat: 30.62590826008615,
-        floor: 2
+        x: 11451290.516593894,
+        y: 2860356.2996263006,
+//        lng: 114.26163100882661,
+//        lat: 30.62590826008615,
+        floor: 1
     };
+    endPoint.lng = wtmap.CoordProjection.mercatorToLngLat(endPoint.x, endPoint.y).lng;
+    endPoint.lat = wtmap.CoordProjection.mercatorToLngLat(endPoint.x, endPoint.y).lat;
 
     var currentPoint;
     var locationPoint;
@@ -68,7 +54,7 @@
         container: 'map',
         buildingID: buildingID,
 //        use3D: false,
-//        floorID: "00270005F02"
+        floorID: "08710003F01"
     });
     console.log(map);
 
@@ -146,10 +132,11 @@
             console.log(error);
         }, {
 //            rearrangeStops: false,
-            version: "V2",
+//            version: "V2",
 //            vehicle: true,        // 车行路线
 //            ignore: ["150014"] // 忽略扶梯
-            ignore: ["150013"]  // 忽略直梯
+//            ignore: ["150013"]  // 忽略直梯
+            sameFloorFirst: false
         });
     }
 
