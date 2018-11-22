@@ -12,6 +12,8 @@ import pointToLineDistance from "@turf/point-to-line-distance"
 import nearestPointOnLine from "@turf/nearest-point-on-line"
 import distance from "@turf/distance"
 
+import length from "@turf/length"
+
 let IPTurf = {
     point: point,
     featureCollection: featureCollection,
@@ -29,7 +31,8 @@ let IPTurf = {
 
     pointToLineDistance: pointToLineDistance,
     nearestPointOnLine: nearestPointOnLine,
-    distance: distance
+    distance: distance,
+    length: length
 };
 
 export default IPTurf;
