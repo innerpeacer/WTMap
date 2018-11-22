@@ -80,7 +80,7 @@ class tile_cache_db {
 
         request.onsuccess = function (e) {
             let result = e.target.result;
-            if (result) {
+            if (result && result.data) {
                 if (callback) callback(result);
             } else {
                 if (errorCallback) errorCallback(e.target.error);
