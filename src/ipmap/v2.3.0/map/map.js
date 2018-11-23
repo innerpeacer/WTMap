@@ -1,4 +1,4 @@
-import {BoxMap, CacheVersion, TileCacheDB} from "../config/inherit"
+import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from "../config/inherit"
 
 import {version} from "../config/config"
 import IPCity from "../entity/city"
@@ -96,6 +96,7 @@ class IPMap extends BoxMap {
             CacheVersion.useVersion(dataVersion);
         }
         TileCacheDB.init();
+        GlyphCacheDB.init();
         console.log("CacheVersion: " + CacheVersion.getVersionName());
 
         this.on("load", function () {

@@ -1,19 +1,17 @@
 // @flow
 
-import { normalizeGlyphsURL } from '../util/mapbox';
+import {normalizeGlyphsURL} from '../util/mapbox';
 
-import { getArrayBuffer, ResourceType } from '../util/ajax';
+import {getArrayBuffer, ResourceType} from '../util/ajax';
 import parseGlyphPBF from './parse_glyph_pbf';
 
-import type {StyleGlyph} from './style_glyph';
-import type {RequestTransformFunction} from '../ui/map';
-import type {Callback} from '../types/callback';
+import GlyphCacheDB from '../cache/glyph_cache_db';
 
-export default function (fontstack: string,
-                           range: number,
-                           urlTemplate: string,
-                           requestTransform: RequestTransformFunction,
-                           callback: Callback<{[number]: StyleGlyph | null}>) {
+export default function (fontstack,
+                         range,
+                         urlTemplate,
+                         requestTransform,
+                         callback) {
     const begin = range * 256;
     const end = begin + 255;
 
@@ -23,17 +21,44 @@ export default function (fontstack: string,
             .replace('{range}', `${begin}-${end}`),
         ResourceType.Glyphs);
 
-    getArrayBuffer(request, (err, response) => {
-        if (err) {
-            callback(err);
-        } else if (response) {
-            const glyphs = {};
+    // console.log(request);
 
-            for (const glyph of parseGlyphPBF(response.data)) {
-                glyphs[glyph.id] = glyph;
-            }
-
-            callback(null, glyphs);
+    GlyphCacheDB.get(request.url, function (data) {
+        const glyphs = {};
+        for (const glyph of parseGlyphPBF(data.data)) {
+            glyphs[glyph.id] = glyph;
         }
+        callback(null, glyphs);
+    }, function (error) {
+        getArrayBuffer(request, (err, response) => {
+            if (err) {
+                callback(err);
+            } else if (response) {
+                const glyphs = {};
+
+                GlyphCacheDB.put(request.url, response.data);
+
+                for (const glyph of parseGlyphPBF(response.data)) {
+                    glyphs[glyph.id] = glyph;
+                }
+
+                callback(null, glyphs);
+            }
+        });
     });
+
+
+    // getArrayBuffer(request, (err, response) => {
+    //     if (err) {
+    //         callback(err);
+    //     } else if (response) {
+    //         const glyphs = {};
+    //
+    //         for (const glyph of parseGlyphPBF(response.data)) {
+    //             glyphs[glyph.id] = glyph;
+    //         }
+    //
+    //         callback(null, glyphs);
+    //     }
+    // });
 }
