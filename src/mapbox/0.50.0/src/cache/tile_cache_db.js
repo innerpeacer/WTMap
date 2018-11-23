@@ -6,10 +6,16 @@ import CacheVersion from "./cache_version";
 class tile_cache_db {
     constructor() {
         // console.log("tile_cache_db.constructor");
+        this.__disabled = false;
+    }
+
+    disable() {
+        this.__disabled = true;
     }
 
     init() {
         // console.log("tile_cache_db.init");
+        if (this.__disabled) return;
         let that = this;
 
         let versionName = CacheVersion.getVersionName();
@@ -53,6 +59,7 @@ class tile_cache_db {
 
     put(key, arrayBuffer) {
         // console.log("tile_cache_db.put");
+        if (this.__disabled) return;
         if (!this.__isSupported) return;
 
         if (!this._db.objectStoreNames.contains(this._store_name)) {
@@ -78,6 +85,10 @@ class tile_cache_db {
     get(key, callback, errorCallback) {
         // console.log("tile_cache_db.get");
         // console.log(key)
+        if (this.__disabled) {
+            if (errorCallback) errorCallback();
+            return;
+        }
         if (!this.__isSupported) {
             if (errorCallback) errorCallback();
             return;

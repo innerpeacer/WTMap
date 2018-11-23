@@ -45,7 +45,9 @@ class IPMap extends BoxMap {
         if (options.use3D == null) options.use3D = true;
 
         let dataVersion = null;
+        let disableCache = false;
         if (options._dataVersion != null) dataVersion = options._dataVersion;
+        if (options._disableCache != null) disableCache = options._disableCache;
 
         super(options);
         this._options = options;
@@ -97,6 +99,10 @@ class IPMap extends BoxMap {
         }
         TileCacheDB.init();
         GlyphCacheDB.init();
+        if (disableCache) {
+            TileCacheDB.disable();
+            GlyphCacheDB.disable();
+        }
         console.log("CacheVersion: " + CacheVersion.getVersionName());
 
         this.on("load", function () {

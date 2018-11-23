@@ -5,11 +5,17 @@ import CacheVersion from "./cache_version";
 
 class glyph_cache_db {
     constructor() {
+        this.__disabled = false;
+    }
 
+    disable() {
+        this.__disabled = true;
     }
 
     init() {
         // console.log("glyph_cache_db.init");
+        if (this.__disabled) return;
+
         let that = this;
 
         let versionName = CacheVersion.getVersionName();
@@ -54,6 +60,7 @@ class glyph_cache_db {
 
     put(key, arrayBuffer) {
         // console.log("glyph_cache_db.put");
+        if (this.__disabled) return;
         if (!this.__isSupported) return;
 
         if (!this._db.objectStoreNames.contains(this._store_name)) {
@@ -78,6 +85,10 @@ class glyph_cache_db {
     get(key, callback, errorCallback) {
         // console.log("glyph_cache_db.get");
         // console.log(key)
+        if (this.__disabled) {
+            if (errorCallback) errorCallback();
+            return;
+        }
         if (!this.__isSupported) {
             if (errorCallback) errorCallback();
             return;
@@ -114,4 +125,5 @@ class glyph_cache_db {
         return glyph_cache_db.__instance;
     }
 }
+
 export default glyph_cache_db.getInstance();
