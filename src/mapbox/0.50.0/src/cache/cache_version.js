@@ -21,7 +21,7 @@ class cache_version {
 
         if (!currentVersion) {
             currentVersion = versionName;
-            currentNumber = 1;
+            currentNumber = 2;
         } else {
             if (currentVersion === versionName) {
 
@@ -52,7 +52,7 @@ class cache_version {
         // if (!cache_version._usedVersionNumber) return 1;
         // return cache_version._usedVersionNumber;
         let currentNumber = parseInt(localStorage.getItem(_version_number_key));
-        if (!currentNumber) currentNumber = 1;
+        if (!currentNumber) currentNumber = null;
         return currentNumber;
     }
 }
