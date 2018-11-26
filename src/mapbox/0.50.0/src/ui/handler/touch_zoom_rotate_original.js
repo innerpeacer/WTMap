@@ -1,18 +1,22 @@
 // @flow
 
 import DOM from '../../util/dom';
-import {bezier, bindAll} from '../../util/util';
+import { bezier, bindAll } from '../../util/util';
 import window from '../../util/window';
 import browser from '../../util/browser';
-import {Event} from '../../util/evented';
+import { Event } from '../../util/evented';
+
+import type Map from '../map';
+import type Point from '@mapbox/point-geometry';
+import type LngLat from '../../geo/lng_lat';
+import type {TaskID} from '../../util/task_queue';
 
 const inertiaLinearity = 0.15,
     inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
     inertiaDeceleration = 12, // scale / s^2
     inertiaMaxSpeed = 2.5, // scale / s
     significantScaleThreshold = 0.15,
-    significantRotateThreshold = 4,
-    significantPitchThreshold = 10;
+    significantRotateThreshold = 10;
 
 /**
  * The `TouchZoomRotateHandler` allows the user to zoom and rotate the map by
@@ -121,10 +125,6 @@ class TouchZoomRotateHandler {
         this._gestureIntent = undefined;
         this._inertia = [];
 
-        this._startPitch = this._map.transform.pitch;
-        this._startCenter = p0.add(p1).div(2);
-        this._pitchWithRotate = this._map._options.pitchWithRotate === undefined ? true : this._map._options.pitchWithRotate;
-
         DOM.addEventListener(window.document, 'touchmove', this._onMove, {passive: false});
         DOM.addEventListener(window.document, 'touchend', this._onEnd);
     }
@@ -138,33 +138,30 @@ class TouchZoomRotateHandler {
             vec,
             center: p0.add(p1).div(2),
             scale: vec.mag() / this._startVec.mag(),
-            bearing: this._rotationDisabled ? 0 : vec.angleWith(this._startVec) * 180 / Math.PI,
+            bearing: this._rotationDisabled ? 0 : vec.angleWith(this._startVec) * 180 / Math.PI
         };
     }
 
     _onMove(e: TouchEvent) {
         if (e.touches.length !== 2) return;
 
-        const {vec, center, scale, bearing} = this._getTouchEventData(e);
+        const {vec, scale, bearing} = this._getTouchEventData(e);
 
         // Determine 'intent' by whichever threshold is surpassed first,
         // then keep that state for the duration of this gesture.
         if (!this._gestureIntent) {
             const scalingSignificantly = (Math.abs(1 - scale) > significantScaleThreshold),
-                rotatingSignificantly = (Math.abs(bearing) > significantRotateThreshold),
-                pitchingSignificantly = Math.abs(center.y - this._startCenter.y) > significantPitchThreshold;
+                rotatingSignificantly = (Math.abs(bearing) > significantRotateThreshold);
 
-            if (pitchingSignificantly && this._pitchWithRotate) {
-                this._gestureIntent = 'pitch';
-            } else if (rotatingSignificantly) {
+            if (rotatingSignificantly) {
                 this._gestureIntent = 'rotate';
             } else if (scalingSignificantly) {
                 this._gestureIntent = 'zoom';
             }
 
             if (this._gestureIntent) {
-                this._map.fire(new Event(`${this._gestureIntent}start`, {originalEvent: e}));
-                this._map.fire(new Event('movestart', {originalEvent: e}));
+                this._map.fire(new Event(`${this._gestureIntent}start`, { originalEvent: e }));
+                this._map.fire(new Event('movestart', { originalEvent: e }));
                 this._startVec = vec;
             }
         }
@@ -194,18 +191,13 @@ class TouchZoomRotateHandler {
         const around = tr.pointLocation(center);
         const aroundPoint = tr.locationPoint(around);
 
-        if (gestureIntent === 'pitch') {
-            tr.pitch = this._startPitch - (center.y - this._startCenter.y - 10) * 0.5;
-        }
-
-        if (gestureIntent === 'rotate' || gestureIntent === 'pitch') {
+        if (gestureIntent === 'rotate') {
             tr.bearing = this._startBearing + bearing;
         }
 
         tr.zoom = tr.scaleZoom(this._startScale * scale);
-        if (gestureIntent !== 'pitch') {
-            tr.setLocationAtPoint(this._startAround, aroundPoint);
-        }
+
+        tr.setLocationAtPoint(this._startAround, aroundPoint);
 
         this._map.fire(new Event(gestureIntent, {originalEvent: this._lastTouchEvent}));
         this._map.fire(new Event('move', {originalEvent: this._lastTouchEvent}));
@@ -232,7 +224,7 @@ class TouchZoomRotateHandler {
 
         if (!gestureIntent) return;
 
-        this._map.fire(new Event(`${gestureIntent}end`, {originalEvent: e}));
+        this._map.fire(new Event(`${gestureIntent}end`, { originalEvent: e }));
 
         this._drainInertiaBuffer();
 
@@ -240,7 +232,7 @@ class TouchZoomRotateHandler {
             map = this._map;
 
         if (inertia.length < 2) {
-            map.snapToNorth({}, {originalEvent: e});
+            map.snapToNorth({}, { originalEvent: e });
             return;
         }
 
@@ -253,7 +245,7 @@ class TouchZoomRotateHandler {
             p = last[2];
 
         if (scaleDuration === 0 || lastScale === firstScale) {
-            map.snapToNorth({}, {originalEvent: e});
+            map.snapToNorth({}, { originalEvent: e });
             return;
         }
 
@@ -275,25 +267,13 @@ class TouchZoomRotateHandler {
             targetScale = 0;
         }
 
-        var j = {
+        map.easeTo({
+            zoom: targetScale,
             duration: duration,
             easing: inertiaEasing,
             around: this._aroundCenter ? map.getCenter() : map.unproject(p),
             noMoveStart: true
-        };
-
-        j.zoom = targetScale;
-        if (this._gestureIntent !== "pitch") {
-            j.around = this._aroundCenter ? map.getCenter() : map.unproject(p);
-        }
-        map.easeTo(j, {originalEvent: e});
-        // map.easeTo({
-        //     zoom: targetScale,
-        //     duration: duration,
-        //     easing: inertiaEasing,
-        //     around: this._aroundCenter ? map.getCenter() : map.unproject(p),
-        //     noMoveStart: true
-        // }, {originalEvent: e});
+        }, { originalEvent: e });
     }
 
     _drainInertiaBuffer() {
