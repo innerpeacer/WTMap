@@ -15,6 +15,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             'paint': {
                 "text-color": "#666666",
                 "text-halo-color": "#ffffff",
+                "text-height": ["/", ["get", 'extrusion-height'], 10],
                 "text-halo-width": 1
             },
             'layout': {
