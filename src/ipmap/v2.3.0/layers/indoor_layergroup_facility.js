@@ -12,6 +12,9 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
             'type': 'symbol',
             'source': this.sourceID,
             "source-layer": subLayerName,
+            'paint': {
+                "icon-height": ["/", ["get", 'extrusion-height'], 10],
+            },
             'layout': {
                 "icon-image": ["get", "image-normal"],
                 "icon-size": {
