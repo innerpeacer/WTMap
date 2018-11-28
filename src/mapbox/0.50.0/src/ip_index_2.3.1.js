@@ -15,7 +15,7 @@ import {
     MapInfo,
     LocalPoint,
     LngLatPoint
-} from '../../../ipmap/v2.3.0/config/output'
+} from '../../../ipmap/v2.3.1/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
 import GeolocateControl from './ui/control/geolocate_control';
