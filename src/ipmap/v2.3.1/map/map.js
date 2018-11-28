@@ -199,6 +199,7 @@ class IPMap extends BoxMap {
             "bounds": initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
+        map._layerGroup._updateFontIconSize(map._baseZoom);
         map.setFont("simhei-" + map.building.buildingID);
         map.fire("mapready");
 

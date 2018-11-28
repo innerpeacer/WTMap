@@ -44,7 +44,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
     }
 
     _updateIconSize(minZoom) {
-        this.map.setLayoutProperty(this.iconLayerID, "icon-size", {stops: [[minZoom - 1, 0.25], [minZoom, 0.25], [minZoom + 1, 0.5], [minZoom + 2, 1], [minZoom + 3, 1]]});
+        this.map.setLayoutProperty(this.iconLayerID, "icon-size", {stops: [[minZoom - 1, 0.5], [minZoom, 0.5], [minZoom + 1, 1.0], [minZoom + 2, 1], [minZoom + 3, 1]]});
     }
 
     loadSubGroupLayerData(data) {
