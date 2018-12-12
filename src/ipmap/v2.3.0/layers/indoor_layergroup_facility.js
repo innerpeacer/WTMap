@@ -7,13 +7,15 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = `${subLayerName}-icon`;
+        let iconHeight = 0;
+        if (map._options.use3D) iconHeight = ["/", ["get", 'extrusion-height'], 10];
         let layer = {
             'id': layerID,
             'type': 'symbol',
             'source': this.sourceID,
             "source-layer": subLayerName,
             'paint': {
-                "icon-height": ["/", ["get", 'extrusion-height'], 10],
+                "icon-height": iconHeight,
             },
             'layout': {
                 "icon-image": ["get", "image-normal"],
