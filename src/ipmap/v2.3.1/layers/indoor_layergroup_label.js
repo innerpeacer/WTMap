@@ -7,6 +7,8 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = subLayerName;
+        let textHeight = 0;
+        if (map._options.use3D) textHeight = ["/", ["get", 'extrusion-height'], 10];
         let layer = {
             'id': layerID,
             'type': 'symbol',
@@ -15,7 +17,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             'paint': {
                 "text-color": "#666666",
                 "text-halo-color": "#ffffff",
-                "text-height": ["/", ["get", 'extrusion-height'], 10],
+                "text-height": textHeight,
                 "text-halo-width": 1
             },
             'layout': {
