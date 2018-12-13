@@ -7,8 +7,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = `${subLayerName}-icon`;
-        let iconHeight = 0;
-        if (map._options.use3D) iconHeight = ["/", ["get", 'extrusion-height'], 10];
+        let iconHeight = this._getIconHeight(map._options.use3D);
         let layer = {
             'id': layerID,
             'type': 'symbol',
@@ -31,6 +30,14 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         };
         this.styleLayers[layerID] = layer;
         this.iconLayerID = layerID;
+    }
+
+    _getIconHeight(use3D) {
+        return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
+    }
+
+    _switch3D(use3D) {
+        this.map.setPaintProperty(this.iconLayerID, "icon-height", this._getIconHeight(use3D));
     }
 
     _setIconVisibleRange(minZoom, maxZoom) {

@@ -7,8 +7,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = subLayerName;
-        let textHeight = 0;
-        if (map._options.use3D) textHeight = ["/", ["get", 'extrusion-height'], 10];
+        let textHeight = this._getTextHeight(map._options.use3D);
         let layer = {
             'id': layerID,
             'type': 'symbol',
@@ -31,6 +30,14 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         };
         this.styleLayers[layerID] = layer;
         this.labelID = layerID;
+    }
+
+    _getTextHeight(use3D) {
+        return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
+    }
+
+    _switch3D(use3D) {
+        this.map.setPaintProperty(this.labelID, "text-height", this._getTextHeight(use3D));
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {

@@ -115,6 +115,10 @@ class IPMap extends BoxMap {
         });
     }
 
+    switch3D(use3D) {
+        this._layerGroup._switch3D(use3D);
+    }
+
     __routeError(error) {
         if (this._outerRouteErrorCallback != null) {
             this._outerRouteErrorCallback(error);

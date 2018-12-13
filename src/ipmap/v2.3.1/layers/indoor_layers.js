@@ -16,14 +16,25 @@ class indoor_layers {
         this._assetLayer = new FillLayer(map, 'asset', 3).addToMap();
 
         this._routeLayer = new MultiStopRouteLayer(map).addToMap();
-
-        this._extrusionLayer = new ExtrusionLayer(map, "indoor", this._use3D).addToMap();
+        this._extrusionLayer = new ExtrusionLayer(map, "indoor").addToMap();
 
         this._facilityLayer = new FacilityLayer(map).addToMap();
         this._labelLayer = new LabelLayer(map).addToMap();
 
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
+
+        this._switch3D(this._use3D);
+    }
+
+    _switch3D(use3D) {
+        if (use3D) {
+            this._extrusionLayer.show();
+        } else {
+            this._extrusionLayer.hide();
+        }
+        this._facilityLayer._switch3D(use3D);
+        this._labelLayer._switch3D(use3D);
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {

@@ -677,6 +677,8 @@ export default class ProgramConfiguration {
         for (const property in this.binders) {
             const binder = this.binders[property];
             for (const uniformName of binder.uniformNames) {
+                // TODO: text-height icon-height will cause undefined error
+                if(!uniformBindings[uniformName]) continue;
                 binder.setUniforms(context, uniformBindings[uniformName], globals, properties.get(property), uniformName);
             }
         }

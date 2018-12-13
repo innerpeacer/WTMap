@@ -1,14 +1,11 @@
 import IndoorGroupLayer from "./indoor_layer_base"
 
 class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
-    constructor(map, layerName, use3D) {
+    constructor(map, layerName) {
         super(map);
         let subLayerName = `${layerName}-extrusion`;
         this.styleLayers = {};
-
-        this._use3D = use3D;
         this.sourceLayer = "fill";
-        if (!this._use3D) this.sourceLayer = "empty";
 
         let extrusionLayerID = `${subLayerName}`;
         let extrusionLayer = {
@@ -44,13 +41,11 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                     'ipfill-extrusion-color': ["get", 'fill-color'],
                     'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
                     'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
-                    // 'ipfill-extrusion-height': 20,
                     'ipfill-extrusion-opacity': 0.90,
 
                     "ipfill-extrusion-outline-color": ["get", "outline-color"],
                     'ipfill-extrusion-outline-opacity': 1,
                     "ipfill-extrusion-outline-width": ["get", "outline-width"],
-                    // "ipfill-extrusion-outline-width": 2,
                     "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
                 },
                 "filter": ["all",
