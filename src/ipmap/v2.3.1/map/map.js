@@ -279,7 +279,7 @@ class IPMap extends BoxMap {
         // map._layerGroup.hideLayers();
         map.currentMapInfo = result.mapInfo;
 
-        map._layerGroup._updateFloorIndex(result.mapInfo.floorNumber);
+        map._layerGroup._updateMapInfo(result.mapInfo);
 
         requestAnimationFrame(function () {
             let c = map.currentMapInfo.getCenter();

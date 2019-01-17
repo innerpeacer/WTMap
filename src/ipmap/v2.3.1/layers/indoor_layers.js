@@ -103,15 +103,16 @@ class indoor_layers {
         this._routeLayer._setRouteColor(color1, color2, color3);
     }
 
-    _updateFloorIndex(index) {
-        this._floorLayer._setFloor(index);
-        this._roomLayer._setFloor(index);
-        this._assetLayer._setFloor(index);
-        this._extrusionLayer._setFloor(index);
-        this._facilityLayer._setFloor(index);
-        this._labelLayer._setFloor(index);
+    _updateMapInfo(mapInfo) {
+        let floor = mapInfo.floorNumber;
+        this._floorLayer._setMapInfo(mapInfo);
+        this._roomLayer._setMapInfo(mapInfo);
+        this._assetLayer._setMapInfo(mapInfo);
+        this._extrusionLayer._setMapInfo(mapInfo);
+        this._facilityLayer._setMapInfo(mapInfo);
+        this._labelLayer._setMapInfo(mapInfo);
 
-        this._routeLayer._updateFloorIndex(index);
+        this._routeLayer._updateMapInfo(mapInfo);
     }
 }
 

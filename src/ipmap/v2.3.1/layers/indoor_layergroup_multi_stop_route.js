@@ -170,9 +170,8 @@ class indoor_layergroup_multi_stop_route {
         }
     }
 
-
-    _updateFloorIndex(index) {
-        this._floorIndex = index;
+    _updateMapInfo(mapInfo) {
+        this._floorIndex = mapInfo.floorNumber;
         let map = this.map;
         let filter = ["==", "floor", this._floorIndex];
         this._layerObjects.forEach(function (obj) {

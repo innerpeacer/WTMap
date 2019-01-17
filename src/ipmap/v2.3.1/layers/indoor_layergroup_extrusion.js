@@ -55,13 +55,13 @@ class indoor_layergroup_extrusion extends IndoorGroupLayer {
 
     }
 
-    _setFloor(floor) {
+    _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
             this.map.setFilter(layerID, ["all",
                 ["has", "extrusion"],
                 ["==", "extrusion", true],
-                ["==", "floor", floor],
+                ["==", "floor", mapInfo.floorNumber],
             ]);
         }
     }

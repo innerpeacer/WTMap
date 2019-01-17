@@ -42,11 +42,11 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
         this.styleLayers[outlineLayerID] = outlineLayer;
     }
 
-    _setFloor(floor) {
+    _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
             this.map.setFilter(layerID, ["all",
-                ["==", "floor", floor],
+                ["==", "floor", mapInfo.floorNumber],
                 ["==", "layer", this._layerNumber],
             ]);
         }

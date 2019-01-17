@@ -27,7 +27,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
 
         var useIpExtrusion = false;
         useIpExtrusion = true;
-        if (useIpExtrusion){
+        if (useIpExtrusion) {
             extrusionLayer = {
                 'id': extrusionLayerID,
                 'type': 'ipfill-extrusion',
@@ -81,13 +81,13 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
 
     }
 
-    _setFloor(floor) {
+    _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
             this.map.setFilter(layerID, ["all",
                 ["has", "extrusion"],
                 ["==", "extrusion", true],
-                ["==", "floor", floor],
+                ["==", "floor", mapInfo.floorNumber],
             ]);
         }
     }

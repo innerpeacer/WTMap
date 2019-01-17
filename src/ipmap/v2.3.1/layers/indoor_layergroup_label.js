@@ -67,11 +67,11 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         this.map.getSource(this.sourceID).setData(data);
     }
 
-    _setFloor(floor) {
+    _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
             this.map.setFilter(layerID, ["all",
-                ["==", "floor", floor]
+                ["==", "floor", mapInfo.floorNumber]
             ]);
         }
     }
