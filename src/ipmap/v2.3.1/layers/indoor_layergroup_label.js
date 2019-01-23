@@ -7,7 +7,8 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = subLayerName;
-        let textHeight = this._getTextHeight(map._options.use3D);
+        // let textHeight = this._getTextHeight(map._options.use3D);
+        let height = this._getHeight(map._options.use3D);
         let layer = {
             'id': layerID,
             'type': 'symbol',
@@ -16,7 +17,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             'paint': {
                 "text-color": "#666666",
                 "text-halo-color": "#ffffff",
-                "text-height": textHeight,
+                "text-height": height,
                 "text-halo-width": 1
             },
             'layout': {
@@ -25,19 +26,23 @@ class indoor_layergroup_label extends IndoorGroupLayer {
                 "text-font": ["simhei"],
                 "text-size": 15,
                 "text-anchor": "center",
-                "text-padding": 0,
+                "text-padding": 2,
             }
         };
         this.styleLayers[layerID] = layer;
         this.labelID = layerID;
     }
 
-    _getTextHeight(use3D) {
+    _getHeight(use3D) {
         return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
     }
 
+    // _getTextHeight(use3D) {
+    //     return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
+    // }
+
     _switch3D(use3D) {
-        this.map.setPaintProperty(this.labelID, "text-height", this._getTextHeight(use3D));
+        this.map.setPaintProperty(this.labelID, "text-height", this._getHeight(use3D));
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {

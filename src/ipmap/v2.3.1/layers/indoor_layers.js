@@ -63,11 +63,13 @@ class indoor_layers {
 
     setFont(fontName) {
         this._labelLayer.setFont(fontName);
+        this._facilityLayer.setFont(fontName);
     }
 
     _updateFontIconSize(minZoom) {
         this._labelLayer._updateFontSize(minZoom);
         this._facilityLayer._updateIconSize(minZoom);
+        this._facilityLayer._updateFontSize(minZoom);
     }
 
     hideLayers() {
