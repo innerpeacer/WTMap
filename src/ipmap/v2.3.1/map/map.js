@@ -15,6 +15,8 @@ import IndoorLayers from "../layers/indoor_layers"
 import CoordProjection from "../utils/coord_projection"
 import CalculateZoomForMaxBounds from "../utils/ip_zoom_calc"
 
+import IndoorLocator from "../locator/locator"
+
 function getBrtStylePath(options) {
     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 }
@@ -49,6 +51,12 @@ class IPMap extends BoxMap {
         if (options._dataVersion != null) dataVersion = options._dataVersion;
         if (options._disableCache != null) disableCache = options._disableCache;
 
+        this.buildingID = options.buildingID;
+        if (this.buildingID == null) {
+            this.fire("error", {"description": "buildingID is null"});
+            return;
+        }
+
         super(options);
         this._options = options;
 
@@ -64,12 +72,21 @@ class IPMap extends BoxMap {
         this.mapInfoArray = null;
         this.currentMapInfo = null;
 
-        this.buildingID = options.buildingID;
         this._resourceBuildingID = null;
 
         this.__abort = false;
 
         let map = this;
+
+        this._locator = new IndoorLocator(this.buildingID);
+        this._locator.on("inner-locator-ready", function () {
+            // console.log("inner-locator-ready");
+            map.fire("locator-ready");
+        });
+        this._locator.on("inner-locator-failed", function (error) {
+            // console.log("inner-locator-failed");
+            map.fire("locator-failed", error);
+        });
 
         this.resourceBuildingID = this.buildingID;
         options._dataRootDir = options._mDataRoot;
@@ -113,6 +130,14 @@ class IPMap extends BoxMap {
             }
             map._requestCBM();
         });
+    }
+
+    didRangeBeacons(beacons, options) {
+        return this._locator._didRangeBeacons(beacons, options);
+    }
+
+    getLocation() {
+        return this._locator.getLocation();
     }
 
     switch3D(use3D) {
