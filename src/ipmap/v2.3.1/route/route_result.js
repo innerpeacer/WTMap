@@ -60,8 +60,8 @@ class route_result {
 
             let lineLength = ipTurf.lineDistance(line, 'meters');
             line = ipTurf.lineSliceAlong(line, offset, lineLength, 'meters');
+            if (line.geometry.coordinates.length == 2) continue;
 
-            // let chunks = ipTurf.lineChunk(line, 6, 'meters');
             let chunks = ipTurf.lineChunk(line, sliceLength2(zoom), 'meters');
             chunks.features.forEach(function (segment) {
                 let bearing = Bearing(segment.geometry.coordinates[0], segment.geometry.coordinates[1]);
