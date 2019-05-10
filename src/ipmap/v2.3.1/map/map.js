@@ -195,7 +195,17 @@ class IPMap extends BoxMap {
         // console.log("initBounds");
         // console.log(initBounds);
 
-        let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0.2);
+        // let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0.2);
+        let maxInfo = new IPMapInfo(data["MapInfo"][0]);
+        for (let i = 0; i < map.mapInfoArray.length; ++i) {
+            let info = map.mapInfoArray[i];
+            maxInfo.mapExtent.xmin = Math.min(info.mapExtent.xmin, maxInfo.mapExtent.xmin);
+            maxInfo.mapExtent.ymin = Math.min(info.mapExtent.ymin, maxInfo.mapExtent.ymin);
+            maxInfo.mapExtent.xmax = Math.max(info.mapExtent.xmax, maxInfo.mapExtent.xmax);
+            maxInfo.mapExtent.ymax = Math.max(info.mapExtent.ymax, maxInfo.mapExtent.ymax);
+        }
+
+        let initBounds = IPEntityUtils.extendedBounds2(maxInfo, 0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map.addSource("innerpeacer", {
             "tiles": map._dataManager.getTilePath(),
