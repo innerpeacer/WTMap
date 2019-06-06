@@ -2,10 +2,10 @@
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-2.4.0</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
 
     <script src="js/config-dev-2.4.0.js"></script>
-    <link rel="stylesheet" type="text/css" href="./css/floor-switch.css">
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -22,6 +22,9 @@
 
 <script>
     console.log(wtmap.version);
+
+    var style = {};
+
     var map = new wtmap.WTMap({
         container: 'map',
 //        buildingID: "05910001",
@@ -31,7 +34,11 @@
         use3D: true,
         showTileBoundaries: true,
         _disableCache: true,
-        _dataVersion: "v5"
+        _dataVersion: "v5",
+        // brtStyle: "http://47.97.173.242:8080/WTMapResource/style/2.3.0/wt-style.json"
+        // brtStyle: style,
+        sprite: "http://47.97.173.242:8080/WTMapResource/sprites/WTMapSprite",
+        glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
     map.showTileBoundaries = true;
 

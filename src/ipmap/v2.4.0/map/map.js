@@ -17,9 +17,11 @@ import CalculateZoomForMaxBounds from "../utils/ip_zoom_calc"
 
 import IndoorLocator from "../locator/locator"
 
-function getBrtStylePath(options) {
-    return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
-}
+import defaultStyle from "../config/default_style"
+
+// function getBrtStylePath(options) {
+//     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
+// }
 
 class IPMap extends BoxMap {
     constructor(options) {
@@ -39,7 +41,11 @@ class IPMap extends BoxMap {
         if (options._resourceRootDir == null) options._resourceRootDir = "WTMapResource";
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + "/mapdata";
 
-        options.style = getBrtStylePath(options);
+        // options.style = getBrtStylePath(options);
+        options.style = defaultStyle;
+        if (options.sprite != null) options.style.sprite = options.sprite;
+        if (options.glyphs != null) options.style.glyphs = options.glyphs;
+
         if (options.brtStyle != null) options.style = options.brtStyle;
 
         if (options.maxZoom == null) options.maxZoom = 22;
