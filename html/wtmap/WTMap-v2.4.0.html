@@ -1,0 +1,72 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>WTMap-2.4.0</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+
+    <script src="js/config-dev-2.4.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/floor-switch.css">
+
+</head>
+<body>
+
+<div id='map'></div>
+<div class='floor-switch-overlay top'>
+    <div class='floor-switch-overlay-inner'>
+        <fieldset>
+            <label>Select Floor</label>
+            <select id='floorSwitch' name='floorSwitch'></select>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    console.log(wtmap.version);
+    var map = new wtmap.WTMap({
+        container: 'map',
+//        buildingID: "05910001",
+//         buildingID: "08710002",
+        buildingID: "00270007",
+        // floorID: "00270007F03",
+        use3D: true,
+        showTileBoundaries: true,
+        _disableCache: true,
+        _dataVersion: "v5"
+    });
+    map.showTileBoundaries = true;
+
+    map.on("click", function (evt) {
+        console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
+    });
+
+    var floorSwitch = document.getElementById('floorSwitch');
+    floorSwitch.onchange = function () {
+        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
+    };
+
+    map.on("mapready", function (evt) {
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
+
+        map.mapInfoArray.forEach(function (mapInfo) {
+            var floorButton = document.createElement('option');
+            floorButton.value = mapInfo.floorName;
+            floorButton.text = mapInfo.floorName;
+            floorSwitch.appendChild(floorButton);
+        });
+
+    });
+
+    map.on("wheel", function () {
+//        console.log("wheel");
+    });
+
+    map.on("error", function (error) {
+        console.log("map-error");
+        console.log(error)
+    })
+</script>
+
+</body>
+</html>
