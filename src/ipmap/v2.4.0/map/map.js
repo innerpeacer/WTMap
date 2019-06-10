@@ -351,6 +351,18 @@ class IPMap extends BoxMap {
         });
     }
 
+    switchLanguage(options) {
+        if (options && options.lang) {
+            if (options.lang === "cn") {
+                this.setLabelLayout("text-field", ["get", "NAME"]);
+                this.setFacilityLayout("text-field", ["get", "NAME"]);
+            } else if (options.lang === "en") {
+                this.setLabelLayout("text-field", ["get", "NAME_EN"]);
+                this.setFacilityLayout("text-field", ["get", "NAME_EN"]);
+            }
+        }
+    }
+
     setFont(fontName) {
         this._layerGroup.setFont(fontName);
     }
