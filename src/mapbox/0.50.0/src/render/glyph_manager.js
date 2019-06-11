@@ -149,6 +149,7 @@ class GlyphManager {
                 height: 24,
                 left: 0,
                 top: -8,
+                // top: 0,
                 advance: 24
             }
         };
