@@ -11,6 +11,7 @@ class building {
         this.offsetY = obj.offsetY;
         this.routeURL = obj.routeURL;
         this.status = obj.status;
+        this.initFloorIndex = obj.initFloorIndex || 0;
     }
 
     toString() {

@@ -251,7 +251,8 @@ class IPMap extends BoxMap {
         if (this._targetFloorID != null) {
             map.setFloor(this._targetFloorID);
         } else {
-            map.setFloor(map.mapInfoArray[0].mapID);
+            let initFloorIndex = map.building.initFloorIndex;
+            map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
         }
     }
 
