@@ -10,6 +10,7 @@ class indoor_layers {
     constructor(map, use3D) {
         this._map = map;
         this._baseLayerArray = [];
+        this._3dLayerArray = [];
 
         this._use3D = use3D;
         this._floorLayer = new FillLayer(map, "floor", 1).addToMap();
@@ -25,12 +26,15 @@ class indoor_layers {
 
         this._extrusionLayer = new ExtrusionLayer(map, "indoor").addToMap();
         this._baseLayerArray.push(this._extrusionLayer);
+        this._3dLayerArray.push(this._extrusionLayer);
 
         this._facilityLayer = new FacilityLayer(map).addToMap();
         this._baseLayerArray.push(this._facilityLayer);
+        this._3dLayerArray.push(this._facilityLayer);
 
         this._labelLayer = new LabelLayer(map).addToMap();
         this._baseLayerArray.push(this._labelLayer);
+        this._3dLayerArray.push(this._facilityLayer);
 
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
@@ -39,13 +43,9 @@ class indoor_layers {
     }
 
     _switch3D(use3D) {
-        if (use3D) {
-            this._extrusionLayer.show();
-        } else {
-            this._extrusionLayer.hide();
-        }
-        this._facilityLayer._switch3D(use3D);
-        this._labelLayer._switch3D(use3D);
+        this._3dLayerArray.forEach(function (layer, index) {
+            layer._switch3D(use3D);
+        });
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {

@@ -92,6 +92,13 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
         }
     }
 
+    _switch3D(use3D) {
+        if (use3D) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    }
 }
 
 export default indoor_layergroup_ipextrusion
