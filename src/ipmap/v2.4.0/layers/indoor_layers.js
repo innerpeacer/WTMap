@@ -9,17 +9,28 @@ import MultiStopRouteLayer from "./indoor_layergroup_multi_stop_route"
 class indoor_layers {
     constructor(map, use3D) {
         this._map = map;
+        this._baseLayerArray = [];
 
         this._use3D = use3D;
         this._floorLayer = new FillLayer(map, "floor", 1).addToMap();
+        this._baseLayerArray.push(this._floorLayer);
+
         this._roomLayer = new FillLayer(map, "room", 2).addToMap();
+        this._baseLayerArray.push(this._roomLayer);
+
         this._assetLayer = new FillLayer(map, 'asset', 3).addToMap();
+        this._baseLayerArray.push(this._assetLayer);
 
         this._routeLayer = new MultiStopRouteLayer(map).addToMap();
+
         this._extrusionLayer = new ExtrusionLayer(map, "indoor").addToMap();
+        this._baseLayerArray.push(this._extrusionLayer);
 
         this._facilityLayer = new FacilityLayer(map).addToMap();
+        this._baseLayerArray.push(this._facilityLayer);
+
         this._labelLayer = new LabelLayer(map).addToMap();
+        this._baseLayerArray.push(this._labelLayer);
 
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
@@ -73,23 +84,17 @@ class indoor_layers {
     }
 
     hideLayers() {
-        this._floorLayer.hide();
-        this._roomLayer.hide();
-        this._assetLayer.hide();
+        this._baseLayerArray.forEach(function (layer, index) {
+            layer.hide();
+        });
         this._routeLayer.hide();
-        this._extrusionLayer.hide();
-        this._facilityLayer.hide();
-        this._labelLayer.hide();
     }
 
     showLayers() {
-        this._floorLayer.show();
-        this._roomLayer.show();
-        this._assetLayer.show();
+        this._baseLayerArray.forEach(function (layer, index) {
+            layer.show();
+        });
         this._routeLayer.show();
-        this._extrusionLayer.show();
-        this._facilityLayer.show();
-        this._labelLayer.show();
     }
 
 
@@ -107,13 +112,9 @@ class indoor_layers {
 
     _updateMapInfo(mapInfo) {
         let floor = mapInfo.floorNumber;
-        this._floorLayer._setMapInfo(mapInfo);
-        this._roomLayer._setMapInfo(mapInfo);
-        this._assetLayer._setMapInfo(mapInfo);
-        this._extrusionLayer._setMapInfo(mapInfo);
-        this._facilityLayer._setMapInfo(mapInfo);
-        this._labelLayer._setMapInfo(mapInfo);
-
+        this._baseLayerArray.forEach(function (layer, index) {
+            layer._setMapInfo(mapInfo);
+        });
         this._routeLayer._updateMapInfo(mapInfo);
     }
 }
