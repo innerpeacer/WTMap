@@ -24,6 +24,7 @@ class indoor_layers {
         this._baseLayerArray.push(this._assetLayer);
 
         this._routeLayer = new MultiStopRouteLayer(map).addToMap();
+        this._baseLayerArray.push(this._routeLayer);
 
         this._extrusionLayer = new ExtrusionLayer(map, "indoor").addToMap();
         this._baseLayerArray.push(this._extrusionLayer);
@@ -109,16 +110,13 @@ class indoor_layers {
         this._baseLayerArray.forEach(function (layer, index) {
             layer.hide();
         });
-        this._routeLayer.hide();
     }
 
     showLayers() {
         this._baseLayerArray.forEach(function (layer, index) {
             layer.show();
         });
-        this._routeLayer.show();
     }
-
 
     hideRoute() {
         this._routeLayer.hideRoute();
@@ -137,7 +135,6 @@ class indoor_layers {
         this._baseLayerArray.forEach(function (layer, index) {
             layer._setMapInfo(mapInfo);
         });
-        this._routeLayer._updateMapInfo(mapInfo);
     }
 }
 

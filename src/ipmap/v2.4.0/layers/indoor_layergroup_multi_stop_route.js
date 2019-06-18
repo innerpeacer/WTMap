@@ -170,7 +170,7 @@ class indoor_layergroup_multi_stop_route {
         }
     }
 
-    _updateMapInfo(mapInfo) {
+    _setMapInfo(mapInfo){
         this._floorIndex = mapInfo.floorNumber;
         let map = this.map;
         let filter = ["==", "floor", this._floorIndex];
@@ -178,6 +178,15 @@ class indoor_layergroup_multi_stop_route {
             obj.setFilter(map, filter);
         });
     }
+
+    // _updateMapInfo(mapInfo) {
+    //     this._floorIndex = mapInfo.floorNumber;
+    //     let map = this.map;
+    //     let filter = ["==", "floor", this._floorIndex];
+    //     this._layerObjects.forEach(function (obj) {
+    //         obj.setFilter(map, filter);
+    //     });
+    // }
 
     addToMap() {
         let map = this.map;
