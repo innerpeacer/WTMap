@@ -8,8 +8,6 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
 
         let layerID = `${subLayerName}-icon`;
         let height = this._getHeight(map._options.use3D);
-        // let iconHeight = this._getIconHeight(map._options.use3D);
-        // let textHeight = this._getTextHeight(map._options.use3D);
 
         let layer = {
             'id': layerID,
@@ -46,17 +44,9 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         this.iconLayerID = layerID;
     }
 
-    _getHeight(use3D){
+    _getHeight(use3D) {
         return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
     }
-
-    // _getIconHeight(use3D) {
-    //     return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
-    // }
-    //
-    // _getTextHeight(use3D) {
-    //     return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
-    // }
 
     setFont(fontName) {
         let layers = this.styleLayers;
@@ -70,6 +60,10 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         this.map.setPaintProperty(this.iconLayerID, "text-height", this._getHeight(use3D));
     }
 
+    _setLabelIconVisibleRange(minZoom, maxZoom) {
+        this._setIconVisibleRange(minZoom, maxZoom);
+    }
+
     _setIconVisibleRange(minZoom, maxZoom) {
         this.map.setLayerZoomRange(this.iconLayerID, minZoom, maxZoom);
     }
@@ -80,6 +74,11 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
 
     updatePaintProperty(property, value) {
         this.map.setPaintProperty(this.iconLayerID, property, value);
+    }
+
+    _updateFontIconSize(minZoom) {
+        this._updateIconSize(minZoom);
+        this._updateFontSize(minZoom);
     }
 
     _updateIconSize(minZoom) {
@@ -101,30 +100,20 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
                 [minZoom + 3, 26]
             ]
         });
-        // this.map.setLayoutProperty(this.iconLayerID, "text-offset", {
-        //     stops: [
-        //         [minZoom, [0.5, 0.1]],
-        //         [minZoom + 1, [0.5, 0.1]],
-        //         [minZoom + 2, [1, 0.1]],
-        //         [minZoom + 3, [1, 0.1]]
-        //     ]
-        // });
-}
-
-loadSubGroupLayerData(data)
-{
-    this.map.getSource(this.sourceID).setData(data);
-}
-
-_setMapInfo(mapInfo)
-{
-    let layers = this.styleLayers;
-    for (let layerID in layers) {
-        this.map.setFilter(layerID, ["all",
-            ["==", "floor", mapInfo.floorNumber]
-        ]);
     }
-}
+
+    loadSubGroupLayerData(data) {
+        this.map.getSource(this.sourceID).setData(data);
+    }
+
+    _setMapInfo(mapInfo) {
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setFilter(layerID, ["all",
+                ["==", "floor", mapInfo.floorNumber]
+            ]);
+        }
+    }
 }
 
 export default indoor_layergroup_facility

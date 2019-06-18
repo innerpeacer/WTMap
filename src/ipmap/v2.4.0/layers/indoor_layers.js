@@ -11,6 +11,7 @@ class indoor_layers {
         this._map = map;
         this._baseLayerArray = [];
         this._3dLayerArray = [];
+        this._labelIconLayerArray = [];
 
         this._use3D = use3D;
         this._floorLayer = new FillLayer(map, "floor", 1).addToMap();
@@ -31,10 +32,12 @@ class indoor_layers {
         this._facilityLayer = new FacilityLayer(map).addToMap();
         this._baseLayerArray.push(this._facilityLayer);
         this._3dLayerArray.push(this._facilityLayer);
+        this._labelIconLayerArray.push(this._facilityLayer);
 
         this._labelLayer = new LabelLayer(map).addToMap();
         this._baseLayerArray.push(this._labelLayer);
-        this._3dLayerArray.push(this._facilityLayer);
+        this._3dLayerArray.push(this._labelLayer);
+        this._labelIconLayerArray.push(this._labelLayer);
 
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
@@ -48,39 +51,58 @@ class indoor_layers {
         });
     }
 
+    _setLabelIconVisibleRange(minZoom, maxZoom) {
+        this._labelIconLayerArray.forEach(function (layer, index) {
+            layer._setLabelIconVisibleRange(minZoom, maxZoom);
+        });
+    }
+
     _setLabelVisibleRange(minZoom, maxZoom) {
-        this._labelLayer._setLabelVisibleRange(minZoom, maxZoom);
+        if (this._labelLayer) {
+            this._labelLayer._setLabelVisibleRange(minZoom, maxZoom);
+        }
     }
 
     _setIconVisibleRange(minZoom, maxZoom) {
-        this._facilityLayer._setIconVisibleRange(minZoom, maxZoom);
+        if (this._facilityLayer) {
+            this._facilityLayer._setIconVisibleRange(minZoom, maxZoom);
+        }
     }
 
     setLabelLayout(property, value) {
-        this._labelLayer.updateLayoutProperty(property, value);
+        if (this._labelLayer) {
+            this._labelLayer.updateLayoutProperty(property, value);
+        }
     }
 
     setLabelPaint(property, value) {
-        this._labelLayer.updatePaintProperty(property, value);
+        if (this._labelLayer) {
+            this._labelLayer.updatePaintProperty(property, value);
+        }
     }
 
     setFacilityLayout(propetry, value) {
-        this._facilityLayer.updateLayoutProperty(propetry, value);
+        if (this._facilityLayer) {
+            this._facilityLayer.updateLayoutProperty(propetry, value);
+        }
     }
 
     setFacilityPaint(property, value) {
-        this._facilityLayer.updatePaintProperty(property, value);
+        if (this._facilityLayer) {
+            this._facilityLayer.updatePaintProperty(property, value);
+        }
     }
 
     setFont(fontName) {
-        this._labelLayer.setFont(fontName);
-        this._facilityLayer.setFont(fontName);
+        this._labelIconLayerArray.forEach(function (layer, index) {
+            layer.setFont(fontName);
+        });
     }
 
     _updateFontIconSize(minZoom) {
-        this._labelLayer._updateFontSize(minZoom);
-        this._facilityLayer._updateIconSize(minZoom);
-        this._facilityLayer._updateFontSize(minZoom);
+        this._labelIconLayerArray.forEach(function (layer, index) {
+            layer._updateFontIconSize(minZoom);
+        });
     }
 
     hideLayers() {

@@ -352,8 +352,7 @@ class IPMap extends BoxMap {
 
             if (map._firstLoad) {
                 map._layerGroup._updateFontIconSize(map.getBaseZoom());
-                map._layerGroup._setLabelVisibleRange(map.getBaseZoom() + 0.6, null);
-                map._layerGroup._setIconVisibleRange(map.getBaseZoom() + 0.6, null);
+                map._layerGroup._setLabelIconVisibleRange(map.getBaseZoom() + 0.6, null);
                 map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
                 map._firstLoad = false;
             }

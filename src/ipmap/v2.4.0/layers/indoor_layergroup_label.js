@@ -7,7 +7,6 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = subLayerName;
-        // let textHeight = this._getTextHeight(map._options.use3D);
         let height = this._getHeight(map._options.use3D);
         let layer = {
             'id': layerID,
@@ -21,7 +20,6 @@ class indoor_layergroup_label extends IndoorGroupLayer {
                 "text-halo-width": 1
             },
             'layout': {
-                // "text-field": "{NAME}",
                 "text-field": ["get", "NAME"],
                 "text-font": ["simhei"],
                 "text-size": 15,
@@ -37,16 +35,21 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
     }
 
-    // _getTextHeight(use3D) {
-    //     return use3D ? ["/", ["get", 'extrusion-height'], 10] : 0;
-    // }
-
     _switch3D(use3D) {
         this.map.setPaintProperty(this.labelID, "text-height", this._getHeight(use3D));
     }
 
+    _setLabelIconVisibleRange(minZoom, maxZoom) {
+        this._setLabelVisibleRange(minZoom, maxZoom);
+    }
+
     _setLabelVisibleRange(minZoom, maxZoom) {
         this.map.setLayerZoomRange(this.labelID, minZoom, maxZoom);
+    }
+
+    _updateFontIconSize(minZoom) {
+        // No Icon!
+        this._updateFontSize(minZoom);
     }
 
     _updateFontSize(minZoom) {
