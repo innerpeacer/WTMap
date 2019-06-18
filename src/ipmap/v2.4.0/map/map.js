@@ -4,6 +4,8 @@ import {version} from "../config/config"
 import IPCity from "../entity/city"
 import IPBuilding from "../entity/building"
 import IPMapInfo from "../entity/mapinfo"
+import IPIconSymbol from "../entity/icon_symbol"
+import IPFillSymbol from "../entity/fill_symbol"
 
 import IPDataManager from "../data/data_manager"
 
@@ -77,6 +79,10 @@ class IPMap extends BoxMap {
         this.building = null;
         this.mapInfoArray = null;
         this.currentMapInfo = null;
+        this._fillSymbolArray = [];
+        this._fillSymbolMap = {};
+        this._iconSymbolArray = [];
+        this._iconSymbolMap = {};
 
         this._resourceBuildingID = null;
 
@@ -220,6 +226,15 @@ class IPMap extends BoxMap {
         map.city = new IPCity(data["Cities"][0]);
         map.building = new IPBuilding(data["Buildings"][0]);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data["MapInfo"]);
+        map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data["FillSymbols"]);
+        map._fillSymbolArray.forEach(function (fill, index) {
+            map._fillSymbolMap[fill.symbolID] = fill;
+        });
+        map._iconSymbolArray = IPIconSymbol.getIconSymbolArray(data["IconSymbols"]);
+        map._iconSymbolArray.forEach(function (icon, index) {
+            map._iconSymbolMap[icon.symbolID] = icon;
+        });
+        map._layerSymbolMap = data["Symbols"];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
 
         let initInfo = map.mapInfoArray[0];
