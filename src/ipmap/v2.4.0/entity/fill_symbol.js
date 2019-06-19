@@ -10,6 +10,9 @@ class fill_symbol {
         this.outlineColor = IPColorUtils.parseColor(obj.outlineColor);
         this.outlineOpacity = IPColorUtils.parseOpacity(obj.outlineColor);
         this.outlineWidth = obj.outlineWidth;
+
+        this.levelMin = obj.levelMin;
+        this.levelMax = obj.levelMax;
     }
 
     toString() {
