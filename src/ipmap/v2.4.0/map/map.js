@@ -83,7 +83,7 @@ class IPMap extends BoxMap {
         this._fillSymbolMap = {};
         this._iconSymbolArray = [];
         this._iconSymbolMap = {};
-
+        this._layerSymbolMap ={};
         this._resourceBuildingID = null;
 
         this.__abort = false;

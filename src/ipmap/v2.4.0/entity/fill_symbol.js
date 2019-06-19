@@ -1,8 +1,14 @@
+import IPColorUtils from "../utils/ip_color_utils"
+
 class fill_symbol {
     constructor(obj) {
         this.symbolID = obj.symbolID;
-        this.fillColor = obj.fillColor;
-        this.outlineColor = obj.outlineColor;
+
+        this.fillColor = IPColorUtils.parseColor(obj.fillColor);
+        this.fillOpacity = IPColorUtils.parseOpacity(obj.fillColor);
+
+        this.outlineColor = IPColorUtils.parseColor(obj.outlineColor);
+        this.outlineOpacity = IPColorUtils.parseOpacity(obj.outlineColor);
         this.outlineWidth = obj.outlineWidth;
     }
 
