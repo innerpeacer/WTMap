@@ -15,7 +15,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
             let symbol = map._iconTextSymbolMap[symbolUID];
             if (!symbol) continue;
 
-            let layerID = `${subLayerName}-icon-${symbolUID}`;
+            let layerID = `${subLayerName}-${symbolUID}`;
             let layer = {
                 'id': layerID,
                 'symbolID': symbol.symbolID,
@@ -64,7 +64,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
             }
             this.styleLayers[layerID] = layer;
         }
-        // console.log(subLayerName + " Layer: " + symbolIDArray.length);
+        // console.log(subLayerName + " Layer: " + symbolUIDArray.length);
     }
 
     _getHeight(use3D) {

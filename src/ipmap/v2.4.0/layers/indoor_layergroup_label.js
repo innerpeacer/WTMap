@@ -5,30 +5,66 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         super(map);
         let subLayerName = "label";
         this.styleLayers = {};
+        let buildingID = map.building.buildingID;
+        let baseZoom = map.getBaseZoom();
 
-        let layerID = subLayerName;
         let height = this._getHeight(map._options.use3D);
-        let layer = {
-            'id': layerID,
-            'type': 'symbol',
-            'source': this.sourceID,
-            "source-layer": subLayerName,
-            'paint': {
-                "text-color": "#666666",
-                "text-halo-color": "#ffffff",
-                "text-height": height,
-                "text-halo-width": 1
-            },
-            'layout': {
-                "text-field": ["get", "NAME"],
-                "text-font": ["simhei"],
-                "text-size": 15,
-                "text-anchor": "center",
-                "text-padding": 2,
+        let symbolUIDArray = map._layerSymbolMap[subLayerName];
+        for (let i = 0; i < symbolUIDArray.length; ++i) {
+            let symbolUID = symbolUIDArray[i];
+            let symbol = map._iconTextSymbolMap[symbolUID];
+            if (!symbol) continue;
+
+            let layerID = `${subLayerName}-${symbolUID}`;
+            let layer = {
+                'id': layerID,
+                'symbolID': symbol.symbolID,
+                'type': 'symbol',
+                'source': this.sourceID,
+                "source-layer": subLayerName,
+                'paint': {
+                    "icon-height": height,
+                    "text-halo-color": "#ffffff",
+                    "text-height": height,
+                    "text-halo-width": 1
+                },
+                'layout': {
+                    "text-anchor": "center",
+                    "text-offset": [0.6, 0.1],
+                    "text-padding": 2,
+                },
+            };
+
+            if (symbol.iconVisible) {
+                layer.layout["icon-image"] = ["concat", ["get", "ICON"], "_normal"];
+                layer.layout["icon-size"] = symbol.iconSize;
             }
-        };
-        this.styleLayers[layerID] = layer;
-        this.labelID = layerID;
+
+            if (symbol.textVisible) {
+                layer.paint["text-color"] = symbol.textColor;
+                layer.layout["text-field"] = ["get", "NAME"];
+                layer.layout["text-font"] = [`${symbol.textFont}-${buildingID}`];
+                layer.layout["text-size"] = symbol.textSize;
+                if (symbol.iconVisible) {
+                    layer.layout["text-anchor"] = "left";
+                    layer.layout["text-offset"] = [symbol.textOffsetX + 0.70, symbol.textOffsetY + 0.15];
+                } else {
+                    layer.layout["text-anchor"] = "center";
+                    layer.layout["text-offset"] = [symbol.textOffsetX, symbol.textOffsetY];
+                }
+            }
+
+            let levelMin = symbol.levelMin;
+            if (levelMin && levelMin != 0) {
+                layer.minzoom = baseZoom + levelMin;
+            }
+            let levelMax = symbol.levelMax;
+            if (levelMax && levelMax != 0) {
+                layer.maxzoom = baseZoom + levelMax;
+            }
+            this.styleLayers[layerID] = layer;
+        }
+        // console.log(subLayerName + " Layer: " + symbolUIDArray.length);
     }
 
     _getHeight(use3D) {
@@ -36,7 +72,11 @@ class indoor_layergroup_label extends IndoorGroupLayer {
     }
 
     _switch3D(use3D) {
-        this.map.setPaintProperty(this.labelID, "text-height", this._getHeight(use3D));
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setPaintProperty(layerID, "icon-height", this._getHeight(use3D));
+            this.map.setPaintProperty(layerID, "text-height", this._getHeight(use3D));
+        }
     }
 
     _setLabelIconVisibleRange(minZoom, maxZoom) {
@@ -44,7 +84,10 @@ class indoor_layergroup_label extends IndoorGroupLayer {
     }
 
     _setLabelVisibleRange(minZoom, maxZoom) {
-        this.map.setLayerZoomRange(this.labelID, minZoom, maxZoom);
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setLayerZoomRange(layerID, minZoom, maxZoom);
+        }
     }
 
     _updateFontIconSize(minZoom) {
@@ -53,15 +96,24 @@ class indoor_layergroup_label extends IndoorGroupLayer {
     }
 
     _updateFontSize(minZoom) {
-        this.map.setLayoutProperty(this.labelID, "text-size", {stops: [[minZoom, 12], [minZoom + 1, 18], [minZoom + 2, 24]]});
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setLayoutProperty(layerID, "text-size", {stops: [[minZoom, 12], [minZoom + 1, 18], [minZoom + 2, 24]]});
+        }
     }
 
     updateLayoutProperty(property, value) {
-        this.map.setLayoutProperty(this.labelID, property, value);
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setLayoutProperty(layerID, property, value);
+        }
     }
 
     updatePaintProperty(property, value) {
-        this.map.setPaintProperty(this.labelID, property, value);
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            this.map.setPaintProperty(layerID, property, value);
+        }
     }
 
     setFont(fontName) {
@@ -79,7 +131,8 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         let layers = this.styleLayers;
         for (let layerID in layers) {
             this.map.setFilter(layerID, ["all",
-                ["==", "floor", mapInfo.floorNumber]
+                ["==", "floor", mapInfo.floorNumber],
+                ["==", "symbolID", layers[layerID].symbolID]
             ]);
         }
     }
