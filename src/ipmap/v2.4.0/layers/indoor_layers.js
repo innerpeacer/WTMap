@@ -1,6 +1,5 @@
 import FillLayer from "./indoor_layergroup_fill"
-import FacilityLayer from "./indoor_layergroup_facility"
-import LabelLayer from "./indoor_layergroup_label"
+import IconTextLayer from "./indoor_layergroup_icon_text"
 
 // import ExtrusionLayer from "./indoor_layergroup_extrusion"
 import ExtrusionLayer from "./indoor_layergroup_ipextrusion"
@@ -30,12 +29,12 @@ class indoor_layers {
         this._baseLayerArray.push(this._extrusionLayer);
         this._3dLayerArray.push(this._extrusionLayer);
 
-        this._facilityLayer = new FacilityLayer(map).addToMap();
+        this._facilityLayer = new IconTextLayer(map, "facility").addToMap();
         this._baseLayerArray.push(this._facilityLayer);
         this._3dLayerArray.push(this._facilityLayer);
         this._labelIconLayerArray.push(this._facilityLayer);
 
-        this._labelLayer = new LabelLayer(map).addToMap();
+        this._labelLayer = new IconTextLayer(map, "label").addToMap();
         this._baseLayerArray.push(this._labelLayer);
         this._3dLayerArray.push(this._labelLayer);
         this._labelIconLayerArray.push(this._labelLayer);

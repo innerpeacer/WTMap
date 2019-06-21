@@ -1,9 +1,9 @@
 import IndoorGroupLayer from "./indoor_layer_base"
 
-class indoor_layergroup_label extends IndoorGroupLayer {
-    constructor(map) {
+class indoor_layergroup_icon_text extends IndoorGroupLayer {
+    constructor(map, name) {
         super(map);
-        let subLayerName = "label";
+        let subLayerName = name;
         this.styleLayers = {};
         this.buildingID = map.building.buildingID;
         let baseZoom = map.getBaseZoom();
@@ -162,4 +162,4 @@ class indoor_layergroup_label extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_label
+export default indoor_layergroup_icon_text
