@@ -3,6 +3,7 @@ import IPColorUtils from "../utils/ip_color_utils"
 class fill_symbol {
     constructor(obj) {
         this.symbolID = obj.symbolID;
+        this.UID = obj.UID;
 
         this.fillColor = IPColorUtils.parseColor(obj.fillColor);
         this.fillOpacity = IPColorUtils.parseOpacity(obj.fillColor);
