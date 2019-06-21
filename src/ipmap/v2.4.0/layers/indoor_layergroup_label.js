@@ -156,6 +156,10 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             ]);
         }
     }
+
+    _getLayerIDs() {
+        return Object.keys(this.styleLayers);
+    }
 }
 
 export default indoor_layergroup_label

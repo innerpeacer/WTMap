@@ -142,6 +142,14 @@ class indoor_layers {
             layer._setMapInfo(mapInfo);
         });
     }
+
+    getLayerIDs(subLayer) {
+        if (subLayer === "floor") return this._floorLayer._getLayerIDs();
+        if (subLayer === "room") return this._roomLayer._getLayerIDs();
+        if (subLayer === "asset") return this._assetLayer._getLayerIDs();
+        if (subLayer === "facility") return this._facilityLayer._getLayerIDs();
+        if (subLayer === "label") return this._labelLayer._getLayerIDs();
+    }
 }
 
 export default indoor_layers

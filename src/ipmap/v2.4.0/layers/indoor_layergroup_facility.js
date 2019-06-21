@@ -176,6 +176,10 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
             ]);
         }
     }
+
+    _getLayerIDs() {
+        return Object.keys(this.styleLayers);
+    }
 }
 
 export default indoor_layergroup_facility

@@ -379,6 +379,10 @@ class IPMap extends BoxMap {
     getFloorInfoArray() {
         return this.mapInfoArray;
     }
+
+    getLayerIDs(subLayer) {
+        return this._layerGroup.getLayerIDs(subLayer);
+    }
 }
 
 export default IPMap;
