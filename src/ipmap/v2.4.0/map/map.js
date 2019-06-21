@@ -235,6 +235,13 @@ class IPMap extends BoxMap {
         });
         map._layerSymbolMap = data["Symbols"];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
+        // let facilityList = data["Symbols"]["facility"];
+        // console.log("============== Facility ================");
+        // for (let i = 0; i < facilityList.length; ++i) {
+        //     let uid = facilityList[i];
+        //     let symbol = map._iconTextSymbolMap[uid];
+        //     console.log(symbol.UID + ": " + symbol.symbolID);
+        // }
 
         let initInfo = map.mapInfoArray[0];
         // console.log("initBounds");

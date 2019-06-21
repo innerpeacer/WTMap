@@ -6,6 +6,7 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         let subLayerName = "facility";
         this.styleLayers = {};
         let buildingID = map.building.buildingID;
+        let baseZoom = map.getBaseZoom();
 
         let height = this._getHeight(map._options.use3D);
         let symbolUIDArray = map._layerSymbolMap[subLayerName];
@@ -44,12 +45,22 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
                 layer.layout["text-field"] = ["get", "NAME"];
                 layer.layout["text-font"] = [`${symbol.textFont}-${buildingID}`];
                 layer.layout["text-size"] = symbol.textSize;
-                layer.layout["text-offset"] = [symbol.textOffsetX, symbol.textOffsetY];
                 if (symbol.iconVisible) {
                     layer.layout["text-anchor"] = "left";
+                    layer.layout["text-offset"] = [symbol.textOffsetX + 0.70, symbol.textOffsetY + 0.15];
                 } else {
                     layer.layout["text-anchor"] = "center";
+                    layer.layout["text-offset"] = [symbol.textOffsetX, symbol.textOffsetY];
                 }
+            }
+
+            let levelMin = symbol.levelMin;
+            if (levelMin && levelMin != 0) {
+                layer.minzoom = baseZoom + levelMin;
+            }
+            let levelMax = symbol.levelMax;
+            if (levelMax && levelMax != 0) {
+                layer.maxzoom = baseZoom + levelMax;
             }
             this.styleLayers[layerID] = layer;
         }
