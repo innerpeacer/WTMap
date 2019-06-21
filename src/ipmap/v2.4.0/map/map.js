@@ -4,7 +4,7 @@ import {version} from "../config/config"
 import IPCity from "../entity/city"
 import IPBuilding from "../entity/building"
 import IPMapInfo from "../entity/mapinfo"
-import IPIconSymbol from "../entity/icon_symbol"
+import IPIconTextSymbol from "../entity/icon_text_symbol"
 import IPFillSymbol from "../entity/fill_symbol"
 
 import IPDataManager from "../data/data_manager"
@@ -81,25 +81,14 @@ class IPMap extends BoxMap {
         this.currentMapInfo = null;
         this._fillSymbolArray = [];
         this._fillSymbolMap = {};
-        this._iconSymbolArray = [];
-        this._iconSymbolMap = {};
-        this._layerSymbolMap ={};
+        this._iconTextSymbolArray = [];
+        this._iconTextSymbolMap = {};
+        this._layerSymbolMap = {};
         this._resourceBuildingID = null;
 
         this.__abort = false;
 
         let map = this;
-
-        this._locator = new IndoorLocator(this.buildingID);
-        this._locator.on("inner-locator-ready", function () {
-            // console.log("inner-locator-ready");
-            map.fire("locator-ready");
-        });
-        this._locator.on("inner-locator-failed", function (error) {
-            // console.log("inner-locator-failed");
-            map.fire("locator-failed", error);
-        });
-
         this.resourceBuildingID = this.buildingID;
         options._dataRootDir = options._mDataRoot;
 
@@ -141,6 +130,16 @@ class IPMap extends BoxMap {
                 return;
             }
             map._requestCBM();
+        });
+
+        this._locator = new IndoorLocator(this.buildingID);
+        this._locator.on("inner-locator-ready", function () {
+            // console.log("inner-locator-ready");
+            map.fire("locator-ready");
+        });
+        this._locator.on("inner-locator-failed", function (error) {
+            // console.log("inner-locator-failed");
+            map.fire("locator-failed", error);
         });
     }
 
@@ -228,11 +227,11 @@ class IPMap extends BoxMap {
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data["MapInfo"]);
         map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data["FillSymbols"]);
         map._fillSymbolArray.forEach(function (fill, index) {
-            map._fillSymbolMap[fill.symbolID] = fill;
+            map._fillSymbolMap[fill.UID] = fill;
         });
-        map._iconSymbolArray = IPIconSymbol.getIconSymbolArray(data["IconSymbols"]);
-        map._iconSymbolArray.forEach(function (icon, index) {
-            map._iconSymbolMap[icon.symbolID] = icon;
+        map._iconTextSymbolArray = IPIconTextSymbol.getIconTextSymbolArray(data["IconTextSymbols"]);
+        map._iconTextSymbolArray.forEach(function (iconText, index) {
+            map._iconTextSymbolMap[iconText.UID] = iconText;
         });
         map._layerSymbolMap = data["Symbols"];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
@@ -259,8 +258,6 @@ class IPMap extends BoxMap {
             "bounds": initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        map._layerGroup._updateFontIconSize(map._baseZoom);
-        map.setFont("simhei-" + map.building.buildingID);
         map.fire("mapready");
 
         if (this._targetFloorID != null) {
@@ -351,8 +348,6 @@ class IPMap extends BoxMap {
             map.setZoom(10);
 
             if (map._firstLoad) {
-                map._layerGroup._updateFontIconSize(map.getBaseZoom());
-                map._layerGroup._setLabelIconVisibleRange(map.getBaseZoom() + 0.6, null);
                 map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
                 map._firstLoad = false;
             }

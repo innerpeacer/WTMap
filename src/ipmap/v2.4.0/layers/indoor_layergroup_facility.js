@@ -5,46 +5,52 @@ class indoor_layergroup_facility extends IndoorGroupLayer {
         super(map);
         let subLayerName = "facility";
         this.styleLayers = {};
+        let buildingID = map.building.buildingID;
 
         let height = this._getHeight(map._options.use3D);
-        let symbolIDArray = map._layerSymbolMap[subLayerName];
-        for (let i = 0; i < symbolIDArray.length; ++i) {
-            let symbolID = symbolIDArray[i];
-            let symbol = map._iconSymbolMap[symbolID];
+        let symbolUIDArray = map._layerSymbolMap[subLayerName];
+        for (let i = 0; i < symbolUIDArray.length; ++i) {
+            let symbolUID = symbolUIDArray[i];
+            let symbol = map._iconTextSymbolMap[symbolUID];
+            if (!symbol) continue;
 
-            let layerID = `${subLayerName}-icon-${symbolID}`;
+            let layerID = `${subLayerName}-icon-${symbolUID}`;
             let layer = {
                 'id': layerID,
-                'symbolID': symbolID,
+                'symbolID': symbol.symbolID,
                 'type': 'symbol',
                 'source': this.sourceID,
                 "source-layer": subLayerName,
                 'paint': {
                     "icon-height": height,
-                    "text-color": "#666666",
                     "text-halo-color": "#ffffff",
                     "text-height": height,
                     "text-halo-width": 1
                 },
                 'layout': {
-                    "icon-image": `${symbol.icon}_normal`,
-                    // "icon-text-fit":"height",
-                    "icon-size": {
-                        "stops": [
-                            [19, 0.25],
-                            [20, 0.5],
-                            [21, 1],
-                            [22, 1]
-                        ]
-                    },
-                    "text-field": ["get", "NAME"],
-                    "text-font": ["simhei"],
-                    "text-size": 13,
-                    "text-anchor": "left",
+                    "text-anchor": "center",
                     "text-offset": [0.6, 0.1],
                     "text-padding": 2,
                 },
             };
+
+            if (symbol.iconVisible) {
+                layer.layout["icon-image"] = ["concat", ["get", "ICON"], "_normal"];
+                layer.layout["icon-size"] = symbol.iconSize;
+            }
+
+            if (symbol.textVisible) {
+                layer.paint["text-color"] = symbol.textColor;
+                layer.layout["text-field"] = ["get", "NAME"];
+                layer.layout["text-font"] = [`${symbol.textFont}-${buildingID}`];
+                layer.layout["text-size"] = symbol.textSize;
+                layer.layout["text-offset"] = [symbol.textOffsetX, symbol.textOffsetY];
+                if (symbol.iconVisible) {
+                    layer.layout["text-anchor"] = "left";
+                } else {
+                    layer.layout["text-anchor"] = "center";
+                }
+            }
             this.styleLayers[layerID] = layer;
         }
         // console.log(subLayerName + " Layer: " + symbolIDArray.length);
