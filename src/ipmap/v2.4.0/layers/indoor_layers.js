@@ -52,6 +52,12 @@ class indoor_layers {
         });
     }
 
+    switchLanguage(options) {
+        this._labelIconLayerArray.forEach(function (layer, index) {
+            layer.switchLanguage(options);
+        });
+    }
+
     _setLabelIconVisibleRange(minZoom, maxZoom) {
         this._labelIconLayerArray.forEach(function (layer, index) {
             layer._setLabelIconVisibleRange(minZoom, maxZoom);

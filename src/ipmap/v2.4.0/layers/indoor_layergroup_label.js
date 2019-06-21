@@ -5,7 +5,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         super(map);
         let subLayerName = "label";
         this.styleLayers = {};
-        let buildingID = map.building.buildingID;
+        this.buildingID = map.building.buildingID;
         let baseZoom = map.getBaseZoom();
 
         let height = this._getHeight(map._options.use3D);
@@ -18,6 +18,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             let layerID = `${subLayerName}-${symbolUID}`;
             let layer = {
                 'id': layerID,
+                'symbol': symbol,
                 'symbolID': symbol.symbolID,
                 'type': 'symbol',
                 'source': this.sourceID,
@@ -43,7 +44,7 @@ class indoor_layergroup_label extends IndoorGroupLayer {
             if (symbol.textVisible) {
                 layer.paint["text-color"] = symbol.textColor;
                 layer.layout["text-field"] = ["get", "NAME"];
-                layer.layout["text-font"] = [`${symbol.textFont}-${buildingID}`];
+                layer.layout["text-font"] = [`${symbol.textFont}-${this.buildingID}`];
                 layer.layout["text-size"] = symbol.textSize;
                 if (symbol.iconVisible) {
                     layer.layout["text-anchor"] = "left";
@@ -76,6 +77,25 @@ class indoor_layergroup_label extends IndoorGroupLayer {
         for (let layerID in layers) {
             this.map.setPaintProperty(layerID, "icon-height", this._getHeight(use3D));
             this.map.setPaintProperty(layerID, "text-height", this._getHeight(use3D));
+        }
+    }
+
+    switchLanguage(options) {
+        if (!options || !options.lang) return;
+        let layers = this.styleLayers;
+        for (let layerID in layers) {
+            let layerDef = layers[layerID];
+            let symbol = layerDef.symbol;
+            if (symbol.textVisible) {
+                if (options.lang === "cn") {
+                    this.map.setLayoutProperty(layerID, "text-field", ["get", "NAME"]);
+                    this.map.setLayoutProperty(layerID, "text-font", [`${symbol.textFont}-${this.buildingID}`]);
+                } else if (options.lang === "en") {
+                    this.map.setLayoutProperty(layerID, "text-field", ["get", "NAME_EN"]);
+                    let enFont = options.font || "simhei";
+                    this.map.setLayoutProperty(layerID, "text-font", [`${enFont}-${this.buildingID}`]);
+                }
+            }
         }
     }
 
