@@ -25,7 +25,7 @@ class indoor_layers {
         this._routeLayer = new MultiStopRouteLayer(map).addToMap();
         this._baseLayerArray.push(this._routeLayer);
 
-        this._extrusionLayer = new ExtrusionLayer(map, "indoor").addToMap();
+        this._extrusionLayer = new ExtrusionLayer(map, "extrusion").addToMap();
         this._baseLayerArray.push(this._extrusionLayer);
         this._3dLayerArray.push(this._extrusionLayer);
 
@@ -148,6 +148,7 @@ class indoor_layers {
         if (subLayer === "asset") return this._assetLayer._getLayerIDs();
         if (subLayer === "facility") return this._facilityLayer._getLayerIDs();
         if (subLayer === "label") return this._labelLayer._getLayerIDs();
+        if (subLayer === "extrusion") return this._extrusionLayer._getLayerIDs();
     }
 }
 

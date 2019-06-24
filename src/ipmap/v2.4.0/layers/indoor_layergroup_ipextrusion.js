@@ -1,60 +1,83 @@
 import IndoorGroupLayer from "./indoor_layer_base"
 
 class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
-    constructor(map, layerName) {
+    constructor(map, name) {
         super(map);
-        let subLayerName = `${layerName}-extrusion`;
+        let subLayerName = name;
         this.styleLayers = {};
         this.sourceLayer = "fill";
 
-        let extrusionLayerID = `${subLayerName}`;
-        let extrusionLayer = {
-            'id': extrusionLayerID,
-            'type': 'fill-extrusion',
-            'source': this.sourceID,
-            "source-layer": this.sourceLayer,
-            'paint': {
-                'fill-extrusion-color': ["get", 'fill-color'],
-                'fill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
-                'fill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
-                'fill-extrusion-opacity': 0.90,
-            },
-            "filter": ["all",
-                ["has", "extrusion"],
-                ["==", "extrusion", true],
-            ]
-        };
+        let baseZoom = map.getBaseZoom();
+        let symbolUIDArray = map._layerSymbolMap[subLayerName];
+        for (let i = 0; i < symbolUIDArray.length; ++i) {
+            let symbolUID = symbolUIDArray[i];
+            let symbol = map._fillSymbolMap[symbolUID];
+            if (!symbol) continue;
 
-        var useIpExtrusion = false;
-        useIpExtrusion = true;
-        if (useIpExtrusion) {
-            extrusionLayer = {
+            let extrusionLayerID = `${subLayerName}-${symbolUID}`;
+            let extrusionLayer = {
                 'id': extrusionLayerID,
-                'type': 'ipfill-extrusion',
+                'symbol': symbol,
+                'symbolID': symbol.symbolID,
+                'type': 'fill-extrusion',
                 'source': this.sourceID,
                 "source-layer": this.sourceLayer,
-                'layout': {
-                    "ipfill-extrusion-outline-join": "round",
-                    "ipfill-extrusion-outline-cap": "round",
-                },
                 'paint': {
-                    'ipfill-extrusion-color': ["get", 'fill-color'],
-                    'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
-                    'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
-                    'ipfill-extrusion-opacity': 0.90,
-
-                    "ipfill-extrusion-outline-color": ["get", "outline-color"],
-                    'ipfill-extrusion-outline-opacity': 1,
-                    "ipfill-extrusion-outline-width": ["get", "outline-width"],
-                    "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
+                    'fill-extrusion-color': symbol.fillColor,
+                    'fill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
+                    'fill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
+                    'fill-extrusion-opacity': symbol.fillOpacity,
                 },
                 "filter": ["all",
                     ["has", "extrusion"],
                     ["==", "extrusion", true],
                 ]
             };
+
+            var useIpExtrusion = false;
+            // useIpExtrusion = true;
+            if (useIpExtrusion) {
+                extrusionLayer = {
+                    'id': extrusionLayerID,
+                    'symbol': symbol,
+                    'symbolID': symbol.symbolID,
+                    'type': 'ipfill-extrusion',
+                    'source': this.sourceID,
+                    "source-layer": this.sourceLayer,
+                    'layout': {
+                        "ipfill-extrusion-outline-join": "round",
+                        "ipfill-extrusion-outline-cap": "round",
+                    },
+                    'paint': {
+                        'ipfill-extrusion-color': symbol.fillColor,
+                        'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
+                        'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
+                        'ipfill-extrusion-opacity': symbol.fillOpacity,
+
+                        "ipfill-extrusion-outline-color": symbol.outlineColor,
+                        'ipfill-extrusion-outline-opacity': symbol.outlineOpacity,
+                        "ipfill-extrusion-outline-width": symbol.outlineWidth,
+                        "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
+                    },
+                    "filter": ["all",
+                        ["has", "extrusion"],
+                        ["==", "extrusion", true],
+                    ]
+                };
+            }
+
+            let levelMin = symbol.levelMin;
+            if (levelMin && levelMin != 0) {
+                extrusionLayer.minzoom = baseZoom + levelMin;
+            }
+            let levelMax = symbol.levelMax;
+            if (levelMax && levelMax != 0) {
+                extrusionLayer.maxzoom = baseZoom + levelMax;
+            }
+
+            this.styleLayers[extrusionLayerID] = extrusionLayer;
         }
-        this.styleLayers[extrusionLayerID] = extrusionLayer;
+        // console.log(subLayerName + " Layer: " + symbolUIDArray.length);
 
         // var useIpLine = false;
         // // useIpLine = true;
@@ -78,7 +101,6 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
         //     };
         //     this.styleLayers[outlineLayerID] = outlineLayer;
         // }
-
     }
 
     _setMapInfo(mapInfo) {
@@ -88,6 +110,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                 ["has", "extrusion"],
                 ["==", "extrusion", true],
                 ["==", "floor", mapInfo.floorNumber],
+                ["==", "symbolID", layers[layerID].symbolID]
             ]);
         }
     }
