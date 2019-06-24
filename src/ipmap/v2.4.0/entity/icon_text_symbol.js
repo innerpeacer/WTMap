@@ -23,8 +23,12 @@ class icon_text_symbol {
         this.levelMin = obj.levelMin;
         this.levelMax = obj.levelMax;
 
-        this.otherPaint = obj.otherPaint;
-        this.otherLayout = obj.otherLayout;
+        if (obj.otherPaint) {
+            this.otherPaint = JSON.parse(obj.otherPaint);
+        }
+        if (obj.otherLayout) {
+            this.otherLayout = JSON.parse(obj.otherLayout);
+        }
     }
 
     toString() {

@@ -55,6 +55,18 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 }
             }
 
+            if (symbol.otherLayout) {
+                for (let key in symbol.otherLayout) {
+                    layer.layout[key] = symbol.otherLayout[key];
+                }
+            }
+
+            if (symbol.otherPaint) {
+                for (let key in symbol.otherPaint) {
+                    layer.paint[key] = symbol.otherPaint[key];
+                }
+            }
+
             let levelMin = symbol.levelMin;
             if (levelMin && levelMin != 0) {
                 layer.minzoom = baseZoom + levelMin;
