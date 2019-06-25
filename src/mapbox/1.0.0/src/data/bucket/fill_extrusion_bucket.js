@@ -207,8 +207,8 @@ class FillExtrusionBucket implements Bucket {
                             // │      │ Triangle 1: 0 => 2 => 1
                             // │ 2  3 │ Triangle 2: 1 => 2 => 3
                             // └──────┘
-                            this.indexArray.emplaceBack(bottomRight, bottomRight + 2, bottomRight + 1);
-                            this.indexArray.emplaceBack(bottomRight + 1, bottomRight + 2, bottomRight + 3);
+                            this.indexArray.emplaceBack(bottomRight, bottomRight + 1, bottomRight + 2);
+                            this.indexArray.emplaceBack(bottomRight + 1, bottomRight + 3, bottomRight + 2);
 
                             segment.vertexLength += 4;
                             segment.primitiveLength += 2;
