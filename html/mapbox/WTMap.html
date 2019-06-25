@@ -7,8 +7,8 @@
 
     <!--<script src="../../src/mapbox/0.50.0/dist/mapbox-gl.js"></script>-->
     <!--<link href="../../src/mapbox/0.50.0/dist/mapbox-gl.css" rel="stylesheet">-->
-    <script src="../../src/mapbox/1.0.0/dist/mapbox-gl.js"></script>
-    <link href="../../src/mapbox/1.0.0/dist/mapbox-gl.css" rel="stylesheet">
+    <script src="../../src/mapbox/1.0.0/dist/wtmap-gl-v2.5.0.js"></script>
+    <link href="../../src/mapbox/1.0.0/dist/wtmap-gl-v2.5.0.css" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -27,9 +27,9 @@
 
 <div id='map'></div>
 <script>
-    console.log(mapboxgl);
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaW5uZXJwZWFjZXIiLCJhIjoiY2lvdHJpa3dtMDBjanU5bTQ1NGJ5azc3MyJ9.lIu8RdS7tUD3uKvsqIjJlg';
-    var map = new mapboxgl.Map({
+    console.log(wtmap);
+    wtmap.accessToken = 'pk.eyJ1IjoiaW5uZXJwZWFjZXIiLCJhIjoiY2lvdHJpa3dtMDBjanU5bTQ1NGJ5azc3MyJ9.lIu8RdS7tUD3uKvsqIjJlg';
+    var map = new wtmap.Map({
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
         center: [-74.50, 40], // starting position [lng, lat]
