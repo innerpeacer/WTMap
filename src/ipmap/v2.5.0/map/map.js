@@ -49,6 +49,7 @@ class IPMap extends BoxMap {
         if (options.glyphs != null) options.style.glyphs = options.glyphs;
 
         if (options.brtStyle != null) options.style = options.brtStyle;
+        if (options.localIdeographFontFamily == null) options.localIdeographFontFamily = false;
 
         if (options.maxZoom == null) options.maxZoom = 22;
         if (options._useFile == null) options._useFile = true;
