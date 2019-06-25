@@ -26,7 +26,8 @@ export default [{
     // sources as strings, etc.
     input: ['src/index.js', 'src/source/worker.js'],
     output: {
-        dir: 'rollup/build/mapboxgl',
+        // dir: 'rollup/build/mapboxgl',
+        dir: 'ip_rollup/build/ipmap-' + ip_version,
         format: 'amd',
         sourcemap: 'inline',
         indent: false,
@@ -38,7 +39,8 @@ export default [{
     // Next, bundle together the three "chunks" produced in the previous pass
     // into a single, final bundle. See rollup/bundle_prelude.js and
     // rollup/mapboxgl.js for details.
-    input: 'rollup/mapboxgl.js',
+    // input: 'rollup/mapboxgl.js',
+    input: 'ip_rollup/ipmap-' + ip_version + '.js',
     output: {
         name: 'wtmap',
         file: outputFile,
