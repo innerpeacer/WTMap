@@ -1884,6 +1884,9 @@
     },
     "text-anchor": {
       "type": "enum",
+      "requires": {
+        "!": "text-variable-anchor"
+      },
       "values": {
         "center": {
           "doc": "The center of the text is placed closest to the anchor."
@@ -1916,10 +1919,7 @@
       "default": "center",
       "doc": "Part of the text placed closest to the anchor.",
       "requires": [
-        "text-field",
-        {
-          "!": "text-variable-anchor"
-        }
+        "text-field"
       ],
       "sdk-support": {
         "basic functionality": {
@@ -5016,37 +5016,6 @@
           "android": "5.0.0",
           "ios": "3.5.0",
           "macos": "0.4.0"
-        }
-      },
-      "expression": {
-        "interpolated": true,
-        "parameters": [
-          "zoom",
-          "feature",
-          "feature-state"
-        ]
-      },
-      "property-type": "data-driven"
-    },
-    "text-height": {
-      "type": "number",
-      "default": 0,
-      "minimum": 0,
-      "units": "meters",
-      "doc": "Text Height",
-      "transition": true,
-      "sdk-support": {
-        "basic functionality": {
-          "js": "0.27.0",
-          "android": "5.1.0",
-          "ios": "3.6.0",
-          "macos": "0.5.0"
-        },
-        "data-driven styling": {
-          "js": "0.27.0",
-          "android": "5.1.0",
-          "ios": "3.6.0",
-          "macos": "0.5.0"
         }
       },
       "expression": {

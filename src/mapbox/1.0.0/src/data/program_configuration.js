@@ -780,6 +780,7 @@ function paintAttributeNames(property, type) {
         'text-opacity': ['opacity'],
         'icon-opacity': ['opacity'],
         'text-color': ['fill_color'],
+        'text-height': ['height'],
         'icon-color': ['fill_color'],
         'text-halo-color': ['halo_color'],
         'icon-halo-color': ['halo_color'],

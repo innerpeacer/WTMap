@@ -130,6 +130,7 @@ const paint: Properties<PaintProps> = new Properties({
     "icon-translate-anchor": new DataConstantProperty(styleSpec["paint_symbol"]["icon-translate-anchor"]),
     "text-opacity": new DataDrivenProperty(styleSpec["paint_symbol"]["text-opacity"]),
     "text-color": new DataDrivenProperty(styleSpec["paint_symbol"]["text-color"]),
+    "text-height": new DataDrivenProperty(styleSpec["paint_symbol"]["text-height"]),
     "text-halo-color": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-color"]),
     "text-halo-width": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-width"]),
     "text-halo-blur": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-blur"]),
