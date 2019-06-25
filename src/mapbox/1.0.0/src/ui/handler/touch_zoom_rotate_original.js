@@ -16,8 +16,8 @@ const inertiaLinearity = 0.15,
     inertiaDeceleration = 12, // scale / s^2
     inertiaMaxSpeed = 2.5, // scale / s
     significantScaleThreshold = 0.15,
-    significantRotateThreshold = 4,
-    significantPitchThreshold = 10;
+    significantRotateThreshold = 10;
+
 /**
  * The `TouchZoomRotateHandler` allows the user to zoom and rotate the map by
  * pinching on a touchscreen.
@@ -125,10 +125,6 @@ class TouchZoomRotateHandler {
         this._gestureIntent = undefined;
         this._inertia = [];
 
-        this._startPitch = this._map.transform.pitch;
-        this._startCenter = p0.add(p1).div(2);
-        this._pitchWithRotate = this._map._options.pitchWithRotate === undefined ? true : this._map._options.pitchWithRotate;
-
         DOM.addEventListener(window.document, 'touchmove', this._onMove, {passive: false});
         DOM.addEventListener(window.document, 'touchend', this._onEnd);
     }
@@ -149,19 +145,16 @@ class TouchZoomRotateHandler {
     _onMove(e: TouchEvent) {
         if (e.touches.length !== 2) return;
 
-        const {vec, center, scale, bearing} = this._getTouchEventData(e);
+        const {vec, scale, bearing} = this._getTouchEventData(e);
 
         // Determine 'intent' by whichever threshold is surpassed first,
         // then keep that state for the duration of this gesture.
         if (!this._gestureIntent) {
             // when rotation is disabled, any scale change triggers the zoom gesture to start
             const scalingSignificantly = (this._rotationDisabled && scale !== 1) || (Math.abs(1 - scale) > significantScaleThreshold),
-                rotatingSignificantly = (Math.abs(bearing) > significantRotateThreshold),
-                pitchingSignificantly = Math.abs(center.y - this._startCenter.y) > significantPitchThreshold;
+                rotatingSignificantly = (Math.abs(bearing) > significantRotateThreshold);
 
-            if (pitchingSignificantly && this._pitchWithRotate) {
-                this._gestureIntent = 'pitch';
-            } else if (rotatingSignificantly) {
+            if (rotatingSignificantly) {
                 this._gestureIntent = 'rotate';
             } else if (scalingSignificantly) {
                 this._gestureIntent = 'zoom';
@@ -199,18 +192,13 @@ class TouchZoomRotateHandler {
         const around = tr.pointLocation(center);
         const aroundPoint = tr.locationPoint(around);
 
-        if (gestureIntent === 'pitch') {
-            tr.pitch = this._startPitch - (center.y - this._startCenter.y - 10) * 0.5;
-        }
-
-        if (gestureIntent === 'rotate' || gestureIntent === 'pitch') {
+        if (gestureIntent === 'rotate') {
             tr.bearing = this._startBearing + bearing;
         }
 
         tr.zoom = tr.scaleZoom(this._startScale * scale);
-        if (gestureIntent !== 'pitch') {
-            tr.setLocationAtPoint(this._startAround, aroundPoint);
-        }
+
+        tr.setLocationAtPoint(this._startAround, aroundPoint);
 
         this._map.fire(new Event(gestureIntent, {originalEvent: this._lastTouchEvent}));
         this._map.fire(new Event('move', {originalEvent: this._lastTouchEvent}));
@@ -280,25 +268,13 @@ class TouchZoomRotateHandler {
             targetScale = 0;
         }
 
-        var j = {
-            duration: duration,
+        map.easeTo({
+            zoom: targetScale,
+            duration,
             easing: inertiaEasing,
             around: this._aroundCenter ? map.getCenter() : map.unproject(p),
             noMoveStart: true
-        };
-
-        j.zoom = targetScale;
-        if (this._gestureIntent !== "pitch") {
-            j.around = this._aroundCenter ? map.getCenter() : map.unproject(p);
-        }
-        map.easeTo(j, {originalEvent: e});
-        // map.easeTo({
-        //     zoom: targetScale,
-        //     duration,
-        //     easing: inertiaEasing,
-        //     around: this._aroundCenter ? map.getCenter() : map.unproject(p),
-        //     noMoveStart: true
-        // }, { originalEvent: e });
+        }, { originalEvent: e });
     }
 
     _drainInertiaBuffer() {
