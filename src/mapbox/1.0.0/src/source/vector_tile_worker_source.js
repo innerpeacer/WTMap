@@ -142,6 +142,29 @@ class VectorTileWorkerSource implements WorkerSource {
         });
     }
 
+    loadTileFromCache(params, callback){
+        const uid = params.uid;
+
+        if (!this.loading) this.loading = {};
+
+        const workerTile = this.loading[uid] = new WorkerTile(params);
+        delete this.loading[uid];
+
+        const rawTileData = params.rawData;
+        const vectorTile = new vt.VectorTile(new Protobuf(params.rawData));
+        const cacheControl = {};
+        const resourceTiming = {};
+        workerTile.vectorTile = vectorTile;
+        workerTile.parse(vectorTile, this.layerIndex, this.actor, (err, result) => {
+            if (err || !result) return callback(err);
+
+            // Transferring a copy of rawTileData because the worker needs to retain its copy.
+            callback(null, extend({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+        });
+        this.loaded = this.loaded || {};
+        this.loaded[uid] = workerTile;
+    }
+
     /**
      * Implements {@link WorkerSource#reloadTile}.
      */

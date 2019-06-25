@@ -17,6 +17,7 @@ import type Tile from './tile';
 import type {Callback} from '../types/callback';
 import type {Cancelable} from '../types/cancelable';
 import type {VectorSourceSpecification} from '../style-spec/types';
+import TileCacheDB from "../cache/tile_cache_db"
 
 class VectorTileSource extends Evented implements Source {
     type: 'vector';
@@ -105,6 +106,54 @@ class VectorTileSource extends Evented implements Source {
         return extend({}, this._options);
     }
 
+    // loadTile(tile: Tile, callback: Callback<void>) {
+    //     if (tile.tileID.canonical.z == 0) return;
+    //     const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, null);
+    //     const params = {
+    //         request: this.map._requestManager.transformRequest(url, ResourceType.Tile),
+    //         uid: tile.uid,
+    //         tileID: tile.tileID,
+    //         zoom: tile.tileID.overscaledZ,
+    //         tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+    //         type: this.type,
+    //         source: this.id,
+    //         pixelRatio: browser.devicePixelRatio,
+    //         showCollisionBoxes: this.map.showCollisionBoxes,
+    //     };
+    //     params.request.collectResourceTiming = this._collectResourceTiming;
+    //
+    //     if (tile.workerID === undefined || tile.state === 'expired') {
+    //         tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
+    //     } else if (tile.state === 'loading') {
+    //         // schedule tile reloading after it has been loaded
+    //         tile.reloadCallback = callback;
+    //     } else {
+    //         this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
+    //     }
+    //
+    //     function done(err, data) {
+    //         if (tile.aborted)
+    //             return callback(null);
+    //
+    //         if (err && err.status !== 404) {
+    //             return callback(err);
+    //         }
+    //
+    //         if (data && data.resourceTiming)
+    //             tile.resourceTiming = data.resourceTiming;
+    //
+    //         if (this.map._refreshExpiredTiles && data) tile.setExpiryData(data);
+    //         tile.loadVectorData(data, this.map.painter);
+    //
+    //         callback(null);
+    //
+    //         if (tile.reloadCallback) {
+    //             this.loadTile(tile, tile.reloadCallback);
+    //             tile.reloadCallback = null;
+    //         }
+    //     }
+    // }
+
     loadTile(tile: Tile, callback: Callback<void>) {
         if (tile.tileID.canonical.z == 0) return;
         const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, null);
@@ -121,36 +170,97 @@ class VectorTileSource extends Evented implements Source {
         };
         params.request.collectResourceTiming = this._collectResourceTiming;
 
-        if (tile.workerID === undefined || tile.state === 'expired') {
-            tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
-        } else if (tile.state === 'loading') {
-            // schedule tile reloading after it has been loaded
-            tile.reloadCallback = callback;
-        } else {
-            this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
-        }
-
-        function done(err, data) {
-            if (tile.aborted)
-                return callback(null);
-
-            if (err && err.status !== 404) {
-                return callback(err);
+        let that = this;
+        TileCacheDB.get(params.request.url, function (data) {
+            params.rawData = data.data;
+            if (tile.workerID === undefined || tile.state === 'expired') {
+                tile.workerID = that.dispatcher.send('loadTileFromCache', params, cacheDone.bind(that));
+            } else if (tile.state === 'loading') {
+                tile.reloadCallback = callback;
+            } else {
+                that.dispatcher.send('reloadTile', params, done.bind(that), tile.workerID);
             }
 
-            if (data && data.resourceTiming)
-                tile.resourceTiming = data.resourceTiming;
+            function cacheDone(err, data) {
+                if (tile.aborted)
+                    return callback(null);
 
-            if (this.map._refreshExpiredTiles && data) tile.setExpiryData(data);
-            tile.loadVectorData(data, this.map.painter);
+                if (err && err.status !== 404) {
+                    return callback(err);
+                }
 
-            callback(null);
+                if (data && data.resourceTiming)
+                    tile.resourceTiming = data.resourceTiming;
 
-            if (tile.reloadCallback) {
-                this.loadTile(tile, tile.reloadCallback);
-                tile.reloadCallback = null;
+                if (that.map._refreshExpiredTiles && data) tile.setExpiryData(data);
+                tile.loadVectorData(data, this.map.painter);
+
+                callback(null);
+
+                if (tile.reloadCallback) {
+                    that.loadTile(tile, tile.reloadCallback);
+                    tile.reloadCallback = null;
+                }
             }
-        }
+
+            function done(err, data) {
+                if (tile.aborted)
+                    return callback(null);
+
+                if (err && err.status !== 404) {
+                    return callback(err);
+                }
+
+                if (data && data.resourceTiming)
+                    tile.resourceTiming = data.resourceTiming;
+
+                if (this.map._refreshExpiredTiles && data) tile.setExpiryData(data);
+                tile.loadVectorData(data, this.map.painter);
+
+                TileCacheDB.put(params.request.url, data.rawTileData);
+                callback(null);
+
+                if (tile.reloadCallback) {
+                    that.loadTile(tile, tile.reloadCallback);
+                    tile.reloadCallback = null;
+                }
+            }
+
+        }, function (error) {
+            if (tile.workerID === undefined || tile.state === 'expired') {
+                done.tag = "done-callback";
+                tile.workerID = that.dispatcher.send('loadTile', params, done.bind(that));
+            } else if (tile.state === 'loading') {
+                // schedule tile reloading after it has been loaded
+                tile.reloadCallback = callback;
+            } else {
+                that.dispatcher.send('reloadTile', params, done.bind(that), tile.workerID);
+            }
+
+            function done(err, data) {
+                if (tile.aborted)
+                    return callback(null);
+
+                if (err && err.status !== 404) {
+                    return callback(err);
+                }
+
+                if (data && data.resourceTiming)
+                    tile.resourceTiming = data.resourceTiming;
+
+                if (that.map._refreshExpiredTiles && data) tile.setExpiryData(data);
+                tile.loadVectorData(data, that.map.painter);
+
+                TileCacheDB.put(params.request.url, data.rawTileData);
+
+                callback(null);
+
+                if (tile.reloadCallback) {
+                    that.loadTile(tile, tile.reloadCallback);
+                    tile.reloadCallback = null;
+                }
+            }
+        });
     }
 
     abortTile(tile: Tile) {

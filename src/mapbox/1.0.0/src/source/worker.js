@@ -85,6 +85,11 @@ export default class Worker {
         this.getWorkerSource(mapId, params.type, params.source).loadTile(params, callback);
     }
 
+    loadTileFromCache(mapId: string, params: WorkerTileParameters & {type: string}, callback: WorkerTileCallback) {
+        assert(params.type);
+        this.getWorkerSource(mapId, params.type, params.source).loadTileFromCache(params, callback);
+    }
+
     loadDEMTile(mapId: string, params: WorkerDEMTileParameters, callback: WorkerDEMTileCallback) {
         this.getDEMWorkerSource(mapId, params.source).loadTile(params, callback);
     }
