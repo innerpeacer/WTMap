@@ -782,6 +782,7 @@ function paintAttributeNames(property, type) {
         'text-color': ['fill_color'],
         'text-height': ['height'],
         'icon-color': ['fill_color'],
+        'icon-height': ['height'],
         'text-halo-color': ['halo_color'],
         'icon-halo-color': ['halo_color'],
         'text-halo-blur': ['halo_blur'],

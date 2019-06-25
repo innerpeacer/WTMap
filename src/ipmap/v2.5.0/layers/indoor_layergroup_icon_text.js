@@ -24,7 +24,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 'source': this.sourceID,
                 "source-layer": subLayerName,
                 'paint': {
-                    // "icon-height": height,
+                    "icon-height": height,
                     "text-halo-color": "#ffffff",
                     "text-height": height,
                     "text-halo-width": 1
