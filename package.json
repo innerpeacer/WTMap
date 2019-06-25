@@ -32,7 +32,7 @@
     "@mapbox/batfish": "^1.9.4",
     "@mapbox/flow-remove-types": "^1.3.0-await.upstream.1",
     "@mapbox/mapbox-gl-rtl-text": "^0.2.0",
-    "@mapbox/mapbox-gl-test-suite": "file:test/integration",
+    "@mapbox/mapbox-gl-test-suitwe": "file:test/integration",
     "@octokit/rest": "^15.9.5",
     "babel-eslint": "^7.0.0",
     "benchmark": "~2.1.0",
