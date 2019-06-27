@@ -18,7 +18,7 @@ import type {
 } from '../data/array_types';
 import { WritingMode } from '../symbol/shaping';
 
-export { updateLineLabels, hideGlyphs, getLabelPlaneMatrix, getGlCoordMatrix, project, placeFirstAndLastGlyph, xyTransformMat4 };
+export { updateLineLabels, hideGlyphs, getLabelPlaneMatrix, getGlCoordMatrix, project, project2, placeFirstAndLastGlyph, xyTransformMat4 };
 
 /*
  * # Overview of coordinate spaces
@@ -108,6 +108,16 @@ function getGlCoordMatrix(posMatrix: mat4,
 function project(point: Point, matrix: mat4) {
     const pos = [point.x, point.y, 0, 1];
     xyTransformMat4(pos, pos, matrix);
+    const w = pos[3];
+    return {
+        point: new Point(pos[0] / w, pos[1] / w),
+        signedDistanceFromCamera: w
+    };
+}
+
+function project2(point: Point, matrix: mat4) {
+    const pos = [point.x, point.y, point.z, 1];
+    vec4.transformMat4(pos, pos, matrix);
     const w = pos[3];
     return {
         point: new Point(pos[0] / w, pos[1] / w),

@@ -400,8 +400,10 @@ class SymbolBucket implements Bucket {
                 symbolSortKey.evaluate(feature, {}) :
                 undefined;
 
+            const textHeight = layer.paint.get("text-height").evaluate(feature, {}) || 0;
             const symbolFeature: SymbolFeature = {
                 text,
+                textHeight,
                 icon,
                 index,
                 sourceLayerIndex,
@@ -557,7 +559,7 @@ class SymbolBucket implements Bucket {
             lineOffset[0], lineOffset[1],
             writingMode, (false: any),
             // The crossTileID is only filled/used on the foreground for dynamic text anchors
-            0);
+            0, feature.textHeight || 0);
 
         arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index, {});
     }

@@ -30,7 +30,8 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                     "text-halo-width": 1
                 },
                 'layout': {
-                    "text-anchor": "center",
+                    // "text-anchor": "center",
+                    // "text-variable-anchor": ["top", "bottom", "left", "right"],
                     "text-offset": [0.6, 0.1],
                     "text-padding": 2,
                 },
@@ -47,8 +48,10 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 layer.layout["text-font"] = [`${symbol.textFont}-${this.buildingID}`];
                 layer.layout["text-size"] = symbol.textSize;
                 if (symbol.iconVisible) {
-                    layer.layout["text-anchor"] = "left";
-                    layer.layout["text-offset"] = [symbol.textOffsetX + 0.70, symbol.textOffsetY + 0.15];
+                    // layer.layout["text-anchor"] = "left";
+                    layer.layout["text-variable-anchor"] = ["top", "bottom", "left", "right"];
+                    layer.layout["text-radial-offset"] = 1.0;
+                    // layer.layout["text-offset"] = [symbol.textOffsetX + 0.70, symbol.textOffsetY + 0.15];
                 } else {
                     layer.layout["text-anchor"] = "center";
                     layer.layout["text-offset"] = [symbol.textOffsetX, symbol.textOffsetY];
