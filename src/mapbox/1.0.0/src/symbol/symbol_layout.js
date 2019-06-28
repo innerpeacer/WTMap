@@ -62,7 +62,7 @@ export type TextAnchor = 'center' | 'left' | 'right' | 'top' | 'bottom' | 'top-l
 // But in the vertical direction, the glyphs appear to "start" at the baseline
 // We don't actually load baseline data, but we assume an offset of ONE_EM - 17
 // (see "yOffset" in shaping.js)
-const baselineOffset = 7;
+const baselineOffset = 1;
 
 export function evaluateRadialOffset(anchor: TextAnchor, radialOffset: number) {
     let x = 0, y = 0;
