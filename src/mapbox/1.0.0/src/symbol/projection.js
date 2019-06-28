@@ -18,7 +18,7 @@ import type {
 } from '../data/array_types';
 import { WritingMode } from '../symbol/shaping';
 
-export { updateLineLabels, hideGlyphs, getLabelPlaneMatrix, getGlCoordMatrix, project, project2, placeFirstAndLastGlyph, xyTransformMat4 };
+export { updateLineLabels, hideGlyphs, getLabelPlaneMatrix, getGlCoordMatrix, project, project2, placeFirstAndLastGlyph, xyTransformMat4, xyTransformMat4_V2 };
 
 /*
  * # Overview of coordinate spaces
@@ -460,5 +460,10 @@ function xyTransformMat4(out: vec4, a: vec4, m: mat4) {
     out[0] = m[0] * x + m[4] * y + m[12];
     out[1] = m[1] * x + m[5] * y + m[13];
     out[3] = m[3] * x + m[7] * y + m[15];
+    return out;
+}
+
+function xyTransformMat4_V2(out: vec4, a: vec4, m: mat4) {
+    vec4.transformMat4(out, a, m);
     return out;
 }

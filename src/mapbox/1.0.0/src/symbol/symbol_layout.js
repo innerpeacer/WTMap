@@ -595,7 +595,8 @@ function addSymbol(bucket: SymbolBucket,
         numIconVertices,
         0,
         textBoxScale,
-        radialTextOffset);
+        radialTextOffset,
+        feature.textHeight);
 }
 
 function anchorIsTooClose(bucket: any, text: string, repeatDistance: number, anchor: Point) {

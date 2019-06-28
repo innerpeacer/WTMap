@@ -62,8 +62,9 @@ class CollisionIndex {
         this.gridBottomBoundary = transform.height + 2 * viewportPadding;
     }
 
-    placeCollisionBox(collisionBox: SingleCollisionBox, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4, collisionGroupPredicate?: any): { box: Array<number>, offscreen: boolean } {
-        const projectedPoint = this.projectAndGetPerspectiveRatio(posMatrix, collisionBox.anchorPointX, collisionBox.anchorPointY);
+    // placeCollisionBox(collisionBox: SingleCollisionBox, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4, collisionGroupPredicate?: any): { box: Array<number>, offscreen: boolean } {
+    placeCollisionBox(collisionBox: SingleCollisionBox, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4, collisionGroupPredicate?: any, height: number): { box: Array<number>, offscreen: boolean } {
+        const projectedPoint = this.projectAndGetPerspectiveRatio2(posMatrix, collisionBox.anchorPointX, collisionBox.anchorPointY, height || 0);
         const tileToViewport = textPixelRatio * projectedPoint.perspectiveRatio;
         const tlX = collisionBox.x1 * tileToViewport + projectedPoint.point.x;
         const tlY = collisionBox.y1 * tileToViewport + projectedPoint.point.y;
@@ -343,6 +344,22 @@ class CollisionIndex {
     projectAndGetPerspectiveRatio(posMatrix: mat4, x: number, y: number) {
         const p = [x, y, 0, 1];
         projection.xyTransformMat4(p, p, posMatrix);
+        const a = new Point(
+            (((p[0] / p[3] + 1) / 2) * this.transform.width) + viewportPadding,
+            (((-p[1] / p[3] + 1) / 2) * this.transform.height) + viewportPadding
+        );
+        return {
+            point: a,
+            // See perspective ratio comment in symbol_sdf.vertex
+            // We're doing collision detection in viewport space so we need
+            // to scale down boxes in the distance
+            perspectiveRatio: 0.5 + 0.5 * (this.transform.cameraToCenterDistance / p[3])
+        };
+    }
+
+    projectAndGetPerspectiveRatio2(posMatrix: mat4, x: number, y: number, z: number) {
+        const p = [x, y, z, 1];
+        projection.xyTransformMat4_V2(p, p, posMatrix);
         const a = new Point(
             (((p[0] / p[3] + 1) / 2) * this.transform.width) + viewportPadding,
             (((-p[1] / p[3] + 1) / 2) * this.transform.height) + viewportPadding

@@ -51,6 +51,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                     // layer.layout["text-anchor"] = "left";
                     layer.layout["text-variable-anchor"] = ["top", "bottom", "left", "right"];
                     layer.layout["text-radial-offset"] = 0.8;
+                    layer.layout["text-justify"] = "auto";
                     // layer.layout["text-offset"] = [symbol.textOffsetX + 0.70, symbol.textOffsetY + 0.15];
                 } else {
                     layer.layout["text-anchor"] = "center";

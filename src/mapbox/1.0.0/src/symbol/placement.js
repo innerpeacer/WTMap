@@ -244,7 +244,7 @@ export class Placement {
             shiftVariableCollisionBox(
                 textBox, shift.x, shift.y,
                 rotateWithMap, pitchWithMap, this.transform.angle),
-            textAllowOverlap, textPixelRatio, posMatrix, collisionGroup.predicate);
+            textAllowOverlap, textPixelRatio, posMatrix, collisionGroup.predicate, symbolInstance.symbolHeight);
 
         if (placedGlyphBoxes.box.length > 0) {
             let prevAnchor;
@@ -335,7 +335,7 @@ export class Placement {
                 if (textBox) {
                     if (!layout.get('text-variable-anchor')) {
                         placedGlyphBoxes = this.collisionIndex.placeCollisionBox(textBox,
-                                layout.get('text-allow-overlap'), textPixelRatio, posMatrix, collisionGroup.predicate);
+                                layout.get('text-allow-overlap'), textPixelRatio, posMatrix, collisionGroup.predicate, symbolInstance.symbolHeight);
                         placeText = placedGlyphBoxes.box.length > 0;
                     } else {
                         const width = textBox.x2 - textBox.x1;
@@ -407,7 +407,7 @@ export class Placement {
                 }
                 if (collisionArrays.iconBox) {
                     placedIconBoxes = this.collisionIndex.placeCollisionBox(collisionArrays.iconBox,
-                            layout.get('icon-allow-overlap'), textPixelRatio, posMatrix, collisionGroup.predicate);
+                            layout.get('icon-allow-overlap'), textPixelRatio, posMatrix, collisionGroup.predicate, symbolInstance.symbolHeight);
                     placeIcon = placedIconBoxes.box.length > 0;
                     offscreen = offscreen && placedIconBoxes.offscreen;
                 }
