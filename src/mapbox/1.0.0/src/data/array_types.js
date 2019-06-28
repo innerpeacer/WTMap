@@ -389,6 +389,39 @@ class StructArrayLayout2i2i2i12 extends StructArray {
 StructArrayLayout2i2i2i12.prototype.bytesPerElement = 12;
 register('StructArrayLayout2i2i2i12', StructArrayLayout2i2i2i12);
 
+class StructArrayLayout2i2i2i1f16 extends StructArray {
+    uint8: Uint8Array;
+    int16: Int16Array;
+    float32: Float32Array;
+
+    _refreshViews() {
+        this.uint8 = new Uint8Array(this.arrayBuffer);
+        this.int16 = new Int16Array(this.arrayBuffer);
+        this.float32 = new Float32Array(this.arrayBuffer);
+    }
+
+    emplaceBack(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number) {
+        const i = this.length;
+        this.resize(i + 1);
+        return this.emplace(i, v0, v1, v2, v3, v4, v5, v6);
+    }
+
+    emplace(i: number, v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number) {
+        const o2 = i * 8;
+        const o3 = i * 4;
+        this.int16[o2 + 0] = v0;
+        this.int16[o2 + 1] = v1;
+        this.int16[o2 + 2] = v2;
+        this.int16[o2 + 3] = v3;
+        this.int16[o2 + 4] = v4;
+        this.int16[o2 + 5] = v5;
+        this.float32[o3 + 3] = v6;
+        return i;
+    }
+}
+
+StructArrayLayout2i2i2i1f16.prototype.bytesPerElement = 16;
+register('StructArrayLayout2i2i2i1f16', StructArrayLayout2i2i2i1f16);
 
 /**
  * Implementation of the StructArray layout:
@@ -1335,7 +1368,8 @@ export {
     StructArrayLayout4i4ui16 as SymbolLayoutArray,
     StructArrayLayout3f12 as SymbolDynamicLayoutArray,
     StructArrayLayout1ul4 as SymbolOpacityArray,
-    StructArrayLayout2i2i2i12 as CollisionBoxLayoutArray,
+    // StructArrayLayout2i2i2i12 as CollisionBoxLayoutArray,
+    StructArrayLayout2i2i2i1f16 as CollisionBoxLayoutArray,
     StructArrayLayout2i2i2i12 as CollisionCircleLayoutArray,
     StructArrayLayout2ub2f12 as CollisionVertexArray,
     StructArrayLayout3ui6 as TriangleIndexArray,

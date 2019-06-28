@@ -564,7 +564,7 @@ class SymbolBucket implements Bucket {
         arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index, {});
     }
 
-    _addCollisionDebugVertex(layoutVertexArray: StructArray, collisionVertexArray: StructArray, point: Point, anchorX: number, anchorY: number, extrude: Point) {
+    _addCollisionDebugVertex(layoutVertexArray: StructArray, collisionVertexArray: StructArray, point: Point, symbolHeight: number, anchorX: number, anchorY: number, extrude: Point) {
         collisionVertexArray.emplaceBack(0, 0);
         return layoutVertexArray.emplaceBack(
             // pos
@@ -575,9 +575,11 @@ class SymbolBucket implements Bucket {
             anchorY,
             // extrude
             Math.round(extrude.x),
-            Math.round(extrude.y));
+            Math.round(extrude.y),
+            // symbleHeight
+            symbolHeight,
+        );
     }
-
 
     addCollisionDebugVertices(x1: number, y1: number, x2: number, y2: number, arrays: CollisionBuffers, boxAnchorPoint: Point, symbolInstance: SymbolInstance, isCircle: boolean) {
         const segment = arrays.segments.prepareSegment(4, arrays.layoutVertexArray, arrays.indexArray);
@@ -588,11 +590,12 @@ class SymbolBucket implements Bucket {
 
         const anchorX = symbolInstance.anchorX;
         const anchorY = symbolInstance.anchorY;
+        const symbolHeight = symbolInstance.symbolHeight;
 
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x1, y1));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x2, y1));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x2, y2));
-        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, anchorX, anchorY, new Point(x1, y2));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, symbolHeight, anchorX, anchorY, new Point(x1, y1));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, symbolHeight, anchorX, anchorY, new Point(x2, y1));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, symbolHeight, anchorX, anchorY, new Point(x2, y2));
+        this._addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, boxAnchorPoint, symbolHeight, anchorX, anchorY, new Point(x1, y2));
 
         segment.vertexLength += 4;
         if (isCircle) {

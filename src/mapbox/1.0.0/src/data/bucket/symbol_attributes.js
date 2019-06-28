@@ -48,7 +48,8 @@ export const collisionBox = createLayout([
 export const collisionBoxLayout = createLayout([ // used to render collision boxes for debugging purposes
     {name: 'a_pos',        components: 2, type: 'Int16'},
     {name: 'a_anchor_pos', components: 2, type: 'Int16'},
-    {name: 'a_extrude',    components: 2, type: 'Int16'}
+    {name: 'a_extrude',    components: 2, type: 'Int16'},
+    {name: 'a_symbol_height', components: 1, type: "Float32"},
 ], 4);
 
 export const collisionCircleLayout = createLayout([ // used to render collision circles for debugging purposes
