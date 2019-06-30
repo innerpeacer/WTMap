@@ -91,8 +91,8 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     _switch3D(use3D) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            // this.map.setPaintProperty(layerID, "icon-height", this._getHeight(use3D));
-            // this.map.setPaintProperty(layerID, "text-height", this._getHeight(use3D));
+            this.map.setPaintProperty(layerID, "icon-height", this._getHeight(use3D));
+            this.map.setPaintProperty(layerID, "text-height", this._getHeight(use3D));
         }
     }
 
