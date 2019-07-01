@@ -324,8 +324,8 @@ class SymbolBucket implements Bucket {
     }
 
     createArrays() {
-        this.text = new SymbolBuffers(new ProgramConfigurationSet(symbolLayoutAttributes.members, this.layers, this.zoom, property => /^text/.test(property)));
-        this.icon = new SymbolBuffers(new ProgramConfigurationSet(symbolLayoutAttributes.members, this.layers, this.zoom, property => /^icon/.test(property)));
+        this.text = new SymbolBuffers(new ProgramConfigurationSet(symbolLayoutAttributes.members, this.layers, this.zoom, property => /^text|^symbol/.test(property)));
+        this.icon = new SymbolBuffers(new ProgramConfigurationSet(symbolLayoutAttributes.members, this.layers, this.zoom, property => /^icon|^symbol/.test(property)));
 
         this.collisionBox = new CollisionBuffers(CollisionBoxLayoutArray, collisionBoxLayout.members, LineIndexArray);
         this.collisionCircle = new CollisionBuffers(CollisionCircleLayoutArray, collisionCircleLayout.members, TriangleIndexArray);
@@ -400,10 +400,10 @@ class SymbolBucket implements Bucket {
                 symbolSortKey.evaluate(feature, {}) :
                 undefined;
 
-            const textHeight = layer.paint.get("text-height").evaluate(feature, {}) || 0;
+            const symbolHeight = layer.paint.get("symbol-height").evaluate(feature, {}) || 0;
             const symbolFeature: SymbolFeature = {
                 text,
-                textHeight,
+                symbolHeight,
                 icon,
                 index,
                 sourceLayerIndex,
@@ -559,7 +559,7 @@ class SymbolBucket implements Bucket {
             lineOffset[0], lineOffset[1],
             writingMode, (false: any),
             // The crossTileID is only filled/used on the foreground for dynamic text anchors
-            0, feature.textHeight || 0);
+            0, feature.symbolHeight || 0);
 
         arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index, {});
     }

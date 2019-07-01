@@ -1085,7 +1085,7 @@ class PlacedSymbolStruct extends Struct {
     writingMode: number;
     hidden: number;
     crossTileID: number;
-    textHeight: number;
+    symbolHeight: number;
     get anchorX() { return this._structArray.int16[this._pos2 + 0]; }
     set anchorX(x) { this._structArray.int16[this._pos2 + 0] = x; }
     get anchorY() { return this._structArray.int16[this._pos2 + 1]; }
@@ -1116,8 +1116,8 @@ class PlacedSymbolStruct extends Struct {
     set hidden(x) { this._structArray.uint8[this._pos1 + 37] = x; }
     get crossTileID() { return this._structArray.uint32[this._pos4 + 10]; }
     set crossTileID(x) { this._structArray.uint32[this._pos4 + 10] = x; }
-    get textHeight() { return this._structArray.float32[this._pos4 + 11]; }
-    set textHeight(x) { this._structArray.float32[this._pos4 + 11] = x; }
+    get symbolHeight() { return this._structArray.float32[this._pos4 + 11]; }
+    set symbolHeight(x) { this._structArray.float32[this._pos4 + 11] = x; }
 }
 
 PlacedSymbolStruct.prototype.size = 48;

@@ -777,12 +777,11 @@ export class ProgramConfigurationSet<Layer: TypedStyleLayer> {
 
 function paintAttributeNames(property, type) {
     const attributeNameExceptions = {
+        'symbol-height': ['height'],
         'text-opacity': ['opacity'],
         'icon-opacity': ['opacity'],
         'text-color': ['fill_color'],
-        'text-height': ['height'],
         'icon-color': ['fill_color'],
-        'icon-height': ['height'],
         'text-halo-color': ['halo_color'],
         'icon-halo-color': ['halo_color'],
         'text-halo-blur': ['halo_blur'],

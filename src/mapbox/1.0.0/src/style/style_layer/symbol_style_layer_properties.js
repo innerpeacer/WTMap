@@ -121,9 +121,9 @@ export type PaintProps = {|
 |};
 
 const paint: Properties<PaintProps> = new Properties({
+    "symbol-height": new DataDrivenProperty(styleSpec["paint_symbol"]["symbol-height"]),
     "icon-opacity": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-opacity"]),
     "icon-color": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-color"]),
-    "icon-height": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-height"]),
     "icon-halo-color": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-halo-color"]),
     "icon-halo-width": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-halo-width"]),
     "icon-halo-blur": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-halo-blur"]),
@@ -131,7 +131,6 @@ const paint: Properties<PaintProps> = new Properties({
     "icon-translate-anchor": new DataConstantProperty(styleSpec["paint_symbol"]["icon-translate-anchor"]),
     "text-opacity": new DataDrivenProperty(styleSpec["paint_symbol"]["text-opacity"]),
     "text-color": new DataDrivenProperty(styleSpec["paint_symbol"]["text-color"]),
-    "text-height": new DataDrivenProperty(styleSpec["paint_symbol"]["text-height"]),
     "text-halo-color": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-color"]),
     "text-halo-width": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-width"]),
     "text-halo-blur": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-blur"]),

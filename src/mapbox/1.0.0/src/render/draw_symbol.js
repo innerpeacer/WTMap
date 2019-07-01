@@ -111,7 +111,7 @@ function updateVariableAnchors(bucket, rotateWithMap, pitchWithMap, variableOffs
         } else  {
             const tileAnchor = new Point(symbol.anchorX, symbol.anchorY);
             // const projectedAnchor = symbolProjection.project(tileAnchor, pitchWithMap ? posMatrix : labelPlaneMatrix);
-            tileAnchor.z = symbol.textHeight || 0;
+            tileAnchor.z = symbol.symbolHeight || 0;
             const projectedAnchor = symbolProjection.project2(tileAnchor, pitchWithMap ? posMatrix : labelPlaneMatrix);
             const perspectiveRatio = 0.5 + 0.5 * (transform.cameraToCenterDistance / projectedAnchor.signedDistanceFromCamera);
             let renderTextSize = symbolSize.evaluateSizeForFeature(bucket.textSizeData, size, symbol) * perspectiveRatio / ONE_EM;
