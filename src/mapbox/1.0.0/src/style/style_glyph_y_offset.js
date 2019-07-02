@@ -4,6 +4,8 @@ let yOffsetMap = {
     "simsun": -12,
     "Kaiti": -12,
     "Fangsong": -12,
+
+    "Arial": -14,
     // "STHUPO": -13,
     // "STXINWEI": -12,
     // "DFPHeiStd-W3": -12,
