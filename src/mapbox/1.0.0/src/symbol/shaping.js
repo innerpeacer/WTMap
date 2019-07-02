@@ -11,6 +11,7 @@ import ONE_EM from './one_em';
 import type {StyleGlyph} from '../style/style_glyph';
 import type {ImagePosition} from '../render/image_atlas';
 import Formatted from '../style-spec/expression/types/formatted';
+import GlyphYOffset from "../style/style_glyph_y_offset";
 
 const WritingMode = {
     horizontal: 1,
@@ -432,7 +433,10 @@ function shapeLines(shaping: Shaping,
                     writingMode: 1 | 2,
                     spacing: number) {
     // the y offset *should* be part of the font metadata
-    const yOffset = -17;
+    let yOffset = -17;
+    for(let font in glyphMap){
+        yOffset  = GlyphYOffset.getYOffset(font);
+    }
 
     let x = 0;
     let y = yOffset;

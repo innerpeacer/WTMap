@@ -153,7 +153,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     setFont(fontName) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setLayoutProperty(layerID, "text-font", [fontName]);
+            this.map.setLayoutProperty(layerID, "text-font", [`${fontName}-${this.buildingID}`]);
         }
     }
 
