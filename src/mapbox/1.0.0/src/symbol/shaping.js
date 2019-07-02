@@ -434,8 +434,14 @@ function shapeLines(shaping: Shaping,
                     spacing: number) {
     // the y offset *should* be part of the font metadata
     let yOffset = -17;
-    for(let font in glyphMap){
-        yOffset  = GlyphYOffset.getYOffset(font);
+    for (const line of lines){
+        if (!line.length()) continue;
+        for (let i = 0; i < line.length(); i++) {
+            const section = line.getSection(i);
+            yOffset =  GlyphYOffset.getYOffset(section.fontStack);
+            break;
+        }
+        break;
     }
 
     let x = 0;
