@@ -23,6 +23,8 @@ class icon_text_symbol {
         this.levelMin = obj.levelMin;
         this.levelMax = obj.levelMax;
 
+        this.priority = obj.priority;
+
         if (obj.otherPaint) {
             this.otherPaint = JSON.parse(obj.otherPaint);
         }

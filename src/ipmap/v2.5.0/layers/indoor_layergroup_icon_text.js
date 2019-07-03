@@ -3,6 +3,7 @@ import IndoorGroupLayer from "./indoor_layer_base"
 class indoor_layergroup_icon_text extends IndoorGroupLayer {
     constructor(map, name) {
         super(map);
+        this.usePriority = true;
         let subLayerName = name;
         this.styleLayers = {};
         this.buildingID = map.building.buildingID;
@@ -31,6 +32,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 'layout': {
                     // "text-anchor": "center",
                     // "text-variable-anchor": ["top", "bottom", "left", "right"],
+                    "symbol-z-order": "source",
                     "text-offset": [0.6, 0.1],
                     "text-padding": 2,
                 },
