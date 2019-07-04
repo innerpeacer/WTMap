@@ -31,6 +31,7 @@ import line from './draw_line';
 import ipline from './draw_ipline';
 import fill from './draw_fill';
 import fillExtrusion from './draw_fill_extrusion';
+import ipfillExtrusion from './draw_ipfill_extrusion';
 import hillshade from './draw_hillshade';
 import raster from './draw_raster';
 import background from './draw_background';
@@ -45,6 +46,7 @@ const draw = {
     ipline,
     fill,
     'fill-extrusion': fillExtrusion,
+    'ipfill-extrusion': ipfillExtrusion,
     hillshade,
     raster,
     background,
