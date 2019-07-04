@@ -50,6 +50,30 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 "filter": ["all"]
             };
 
+            let testIpLine = true;
+            testIpLine = false;
+            if (testIpLine) {
+                outlineLayer = {
+                    'id': outlineLayerID,
+                    'symbolID': symbolID,
+                    "type": "ipline",
+                    "layout": {
+                        "ipline-join": "round",
+                        "ipline-cap": "round",
+                    },
+                    'source': this.sourceID,
+                    "source-layer": "fill",
+                    "paint": {
+                        // "ipline-color": symbol.outlineColor,
+                        "ipline-color": "red",
+                        'ipline-opacity': symbol.outlineOpacity,
+                        // "ipline-width": symbol.outlineWidth
+                        "ipline-width": 2
+                    },
+                    "filter": ["all"]
+                };
+            }
+
             let levelMin = symbol.levelMin;
             if (levelMin && levelMin != 0) {
                 layer.minzoom = baseZoom + levelMin;

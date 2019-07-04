@@ -1364,6 +1364,7 @@ export {
     StructArrayLayout2i4i12 as FillExtrusionLayoutArray,
     StructArrayLayout2i4 as HeatmapLayoutArray,
     StructArrayLayout4i4ub12 as LineLayoutArray,
+    StructArrayLayout4i4ub12 as IPLineLayoutArray,
     StructArrayLayout8ui16 as PatternLayoutArray,
     StructArrayLayout4i4ui16 as SymbolLayoutArray,
     StructArrayLayout3f12 as SymbolDynamicLayoutArray,

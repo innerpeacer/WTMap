@@ -28,6 +28,7 @@ import symbol from './draw_symbol';
 import circle from './draw_circle';
 import heatmap from './draw_heatmap';
 import line from './draw_line';
+import ipline from './draw_ipline';
 import fill from './draw_fill';
 import fillExtrusion from './draw_fill_extrusion';
 import hillshade from './draw_hillshade';
@@ -41,6 +42,7 @@ const draw = {
     circle,
     heatmap,
     line,
+    ipline,
     fill,
     'fill-extrusion': fillExtrusion,
     hillshade,
