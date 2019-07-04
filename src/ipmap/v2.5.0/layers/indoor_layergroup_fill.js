@@ -11,6 +11,8 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
         let baseZoom = map.getBaseZoom();
 
         let symbolIDArray = map._layerSymbolMap[subLayerName];
+        let _fillArray = {};
+        let _outlineArray = {};
         for (let i = 0; i < symbolIDArray.length; ++i) {
             let symbolID = symbolIDArray[i];
             let symbol = map._fillSymbolMap[symbolID];
@@ -51,7 +53,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             };
 
             let testIpLine = true;
-            testIpLine = false;
+            // testIpLine = false;
             if (testIpLine) {
                 outlineLayer = {
                     'id': outlineLayerID,
@@ -87,9 +89,21 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 outlineLayer.maxzoom = baseZoom + levelMax;
             }
 
-            this.styleLayers[layerID] = layer;
-            this.styleLayers[outlineLayerID] = outlineLayer;
+            _fillArray[layerID] = layer;
+            _outlineArray[outlineLayerID] = outlineLayer;
+
+            // this.styleLayers[layerID] = layer;
+            // this.styleLayers[outlineLayerID] = outlineLayer;
         }
+
+        for (let layerID in _fillArray) {
+            this.styleLayers[layerID] = _fillArray[layerID];
+        }
+
+        for (let layerID in _outlineArray) {
+            this.styleLayers[layerID] = _outlineArray[layerID];
+        }
+
         // console.log(subLayerName + " Layer: " + symbolIDArray.length);
     }
 
