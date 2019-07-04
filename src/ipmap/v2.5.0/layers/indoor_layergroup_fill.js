@@ -65,10 +65,12 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                     "source-layer": "fill",
                     "paint": {
                         // "ipline-color": symbol.outlineColor,
-                        "ipline-color": "red",
+                        "ipline-color": "green",
                         'ipline-opacity': symbol.outlineOpacity,
                         // "ipline-width": symbol.outlineWidth
-                        "ipline-width": 2
+                        "ipline-height": ["/", ["get", 'extrusion-height'], 10],
+                        // "ipline-height": 10,
+                        "ipline-width": 1
                     },
                     "filter": ["all"]
                 };
