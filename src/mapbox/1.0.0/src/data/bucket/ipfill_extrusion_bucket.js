@@ -102,11 +102,8 @@ class IPFillExtrusionBucket {
             if (this.hasPattern) {
                 this.features.push(addPatternDependencies('ipfill-extrusion', this.layers, patternFeature, this.zoom, options));
             } else {
-                if (flagOutline){
-                    this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
-                } else {
-                    this.addFillExtrusionFeature(patternFeature, geometry, index, {});
-                }
+                this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
+                this.addFillExtrusionFeature(patternFeature, geometry, index, {});
             }
 
             options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index, true);
@@ -116,11 +113,8 @@ class IPFillExtrusionBucket {
     addFeatures(options, imagePositions) {
         for (const feature of this.features) {
             const {geometry} = feature;
-            if (flagOutline){
-                this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
-            } else {
-                this.addFillExtrusionFeature(feature, geometry, feature.index, imagePositions);
-            }
+            this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
+            this.addFillExtrusionFeature(feature, geometry, feature.index, imagePositions);
         }
     }
 

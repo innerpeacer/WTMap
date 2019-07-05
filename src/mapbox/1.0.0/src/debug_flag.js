@@ -1,3 +1,3 @@
 let flagOutline = true;
-// flagOutline = false;
+flagOutline = false;
 export {flagOutline}

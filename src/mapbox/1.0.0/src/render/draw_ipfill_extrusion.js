@@ -20,8 +20,44 @@ import {
 import {flagOutline} from "../debug_flag";
 export default (flagOutline ? drawIPLine : draw);
 
-
 function draw(painter, source, layer, coords) {
+    const opacity = layer.paint.get('ipfill-extrusion-opacity');
+    if (opacity === 0) {
+        return;
+    }
+
+    if (painter.renderPass === 'translucent') {
+        // console.log("Draw extrusion in translucent");
+        const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, painter.depthRangeFor3D);
+
+        if (opacity === 1 && !layer.paint.get('ipfill-extrusion-pattern').constantOr((1))) {
+            const colorMode = painter.colorModeForRenderPass();
+            drawExtrusionTiles(painter, source, layer, coords, depthMode, StencilMode.disabled, colorMode);
+
+        } else {
+            // Draw transparent buildings in two passes so that only the closest surface is drawn.
+            // First draw all the extrusions into only the depth buffer. No colors are drawn.
+            drawExtrusionTiles(painter, source, layer, coords, depthMode,
+                StencilMode.disabled,
+                ColorMode.disabled);
+
+            // Then draw all the extrusions a second type, only coloring fragments if they have the
+            // same depth value as the closest fragment in the previous pass. Use the stencil buffer
+            // to prevent the second draw in cases where we have coincident polygons.
+            drawExtrusionTiles(painter, source, layer, coords, depthMode,
+                painter.stencilModeFor3D(),
+                painter.colorModeForRenderPass());
+        }
+
+        // console.log("Draw extrusion outline in translucent")
+        const outlineOpacity = layer.paint.get('ipfill-extrusion-outline-opacity');
+        const outlineWidth = layer.paint.get('ipfill-extrusion-outline-width');
+        if (outlineOpacity.constantOr(1) === 0 || outlineWidth.constantOr(1) === 0) return;
+        drawExtrusionOutlineTiles(painter, source, layer, coords);
+    }
+}
+
+function drawIPExtrusion(painter, source, layer, coords) {
     const opacity = layer.paint.get('ipfill-extrusion-opacity');
     if (opacity === 0) {
         return;
@@ -99,15 +135,9 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
     }
 }
 
-
-// export default function drawLine(painter, sourceCache, layer, coords) {
-function drawIPLine(painter, sourceCache, layer, coords) {
-    if (painter.renderPass !== 'translucent') return;
-    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
-    const width = layer.paint.get('ipfill-extrusion-outline-width');
-    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-
-    const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
+function drawExtrusionOutlineTiles(painter, sourceCache, layer, coords) {
+    // const depthMode = painter.depthModeForSublayer(0, DepthMode.ReadOnly);
+    const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, painter.depthRangeFor3D);
     const colorMode = painter.colorModeForRenderPass();
 
     const dasharray = layer.paint.get('ipfill-extrusion-outline-dasharray');
@@ -167,11 +197,25 @@ function drawIPLine(painter, sourceCache, layer, coords) {
             programConfiguration.updatePatternPaintBuffers(crossfade);
         }
 
+        // program.draw(context, gl.TRIANGLES, depthMode,
+        //     painter.stencilModeForClipping(coord), colorMode, CullFaceMode.disabled, uniformValues,
+        //     layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
+        //     layer.paint, painter.transform.zoom, programConfiguration);
         program.draw(context, gl.TRIANGLES, depthMode,
-            painter.stencilModeForClipping(coord), colorMode, CullFaceMode.disabled, uniformValues,
+            StencilMode.disabled, colorMode, CullFaceMode.disabled, uniformValues,
             layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
             layer.paint, painter.transform.zoom, programConfiguration);
 
         firstTile = false;
     }
+}
+
+// export default function drawLine(painter, sourceCache, layer, coords) {
+function drawIPLine(painter, sourceCache, layer, coords) {
+    // console.log("drawIPLine");
+    if (painter.renderPass !== 'translucent') return;
+    const opacity = layer.paint.get('ipfill-extrusion-outline-opacity');
+    const width = layer.paint.get('ipfill-extrusion-outline-width');
+    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
+    drawExtrusionOutlineTiles(painter, sourceCache, layer, coords);
 }

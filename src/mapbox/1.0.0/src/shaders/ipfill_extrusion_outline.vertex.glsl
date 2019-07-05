@@ -30,7 +30,7 @@ void main() {
     #pragma mapbox: initialize mediump float outline_width
     #pragma mapbox: initialize mediump float outline_height
 
-    outline_height = max(0.0, outline_height);
+    outline_height = max(0.0, outline_height) + 0.01;
 
     vec2 a_extrude = a_data.xy - 128.0;
     float a_direction = mod(a_data.z, 4.0) - 1.0;
