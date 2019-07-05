@@ -52,12 +52,22 @@ class Program<Us: UniformBindings> {
         assert(gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(fragmentShader): any));
         gl.attachShader(this.program, fragmentShader);
 
+        let compiled = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
+        if (!compiled) {
+            let error = gl.getShaderInfoLog(fragmentShader);
+            console.log('----> Failed to compile fragment shader: ' + error);
+        }
         const vertexShader = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vertexShader, vertexSource);
         gl.compileShader(vertexShader);
         assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader): any));
         gl.attachShader(this.program, vertexShader);
 
+        compiled = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+        if (!compiled) {
+            let error = gl.getShaderInfoLog(vertexShader);
+            console.log('----> Failed to compile vertex shader: ' + error);
+        }
         // Manually bind layout attributes in the order defined by their
         // ProgramInterface so that we don't dynamically link an unused
         // attribute at position 0, which can cause rendering to fail for an
@@ -68,6 +78,12 @@ class Program<Us: UniformBindings> {
         }
 
         gl.linkProgram(this.program);
+        let linked = gl.getProgramParameter(this.program, gl.LINK_STATUS);
+        if (!linked) {
+            let error = gl.getProgramInfoLog(this.program);
+            console.log('----> Failed to link program: ' + error);
+            console.log(configuration);
+        }
         assert(gl.getProgramParameter(this.program, gl.LINK_STATUS), (gl.getProgramInfoLog(this.program): any));
 
         this.numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);

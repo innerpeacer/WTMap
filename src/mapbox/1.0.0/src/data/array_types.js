@@ -113,6 +113,53 @@ StructArrayLayout2i4i12.prototype.bytesPerElement = 12;
 register('StructArrayLayout2i4i12', StructArrayLayout2i4i12);
 
 
+// ================== For IPFillExtrusion =======================
+/**
+ * Implementation of the StructArray layout:
+ * [0]: Int16[2]
+ * [4]: Int16[4]
+ *
+ * @private
+ */
+class StructArrayLayout2i4i4i4ub24 extends StructArray {
+    // uint8: Uint8Array;
+    // int16: Int16Array;
+
+    _refreshViews() {
+        this.uint8 = new Uint8Array(this.arrayBuffer);
+        this.int16 = new Int16Array(this.arrayBuffer);
+    }
+
+    emplaceBack(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) {
+        const i = this.length;
+        this.resize(i + 1);
+        return this.emplace(i, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
+    }
+
+    emplace(i, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) {
+        const o2 = i * 12;
+        const o1 = i * 24;
+        this.int16[o2 + 0] = v0;
+        this.int16[o2 + 1] = v1;
+        this.int16[o2 + 2] = v2;
+        this.int16[o2 + 3] = v3;
+        this.int16[o2 + 4] = v4;
+        this.int16[o2 + 5] = v5;
+        this.int16[o2 + 6] = v6;
+        this.int16[o2 + 7] = v7;
+        this.int16[o2 + 8] = v8;
+        this.int16[o2 + 9] = v9;
+        this.uint8[o1 + 20] = v10;
+        this.uint8[o1 + 21] = v11;
+        this.uint8[o1 + 22] = v12;
+        this.uint8[o1 + 23] = v13;
+        return i;
+    }
+}
+
+StructArrayLayout2i4i4i4ub24.prototype.bytesPerElement = 24;
+register('StructArrayLayout2i4i4i4ub24', StructArrayLayout2i4i4i4ub24);
+
 /**
  * Implementation of the StructArray layout:
  * [0]: Int16[4]
@@ -1362,7 +1409,7 @@ export {
     StructArrayLayout2i4 as CircleLayoutArray,
     StructArrayLayout2i4 as FillLayoutArray,
     StructArrayLayout2i4i12 as FillExtrusionLayoutArray,
-    StructArrayLayout2i4i12 as IPFillExtrusionLayoutArray,
+    StructArrayLayout2i4i4i4ub24 as IPFillExtrusionLayoutArray,
     StructArrayLayout2i4 as HeatmapLayoutArray,
     StructArrayLayout4i4ub12 as LineLayoutArray,
     StructArrayLayout4i4ub12 as IPLineLayoutArray,

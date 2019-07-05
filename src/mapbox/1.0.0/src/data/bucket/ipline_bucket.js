@@ -33,10 +33,6 @@ function addLineVertex(layoutVertexBuffer, point, extrude, round, up, dir, lines
         (linesofar * LINE_DISTANCE_SCALE) >> 6);
 }
 
-
-/**
- * @private
- */
 class IPLineBucket {
     constructor(options) {
         this.zoom = options.zoom;
@@ -417,16 +413,6 @@ class IPLineBucket {
         this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index, imagePositions);
     }
 
-    /**
-     * Add two vertices to the buffers.
-     *
-     * @param {Object} currentVertex the line vertex to add buffer vertices for
-     * @param {number} distance the distance from the beginning of the line to the vertex
-     * @param {number} endLeft extrude to shift the left vertex along the line
-     * @param {number} endRight extrude to shift the left vertex along the line
-     * @param {boolean} round whether this is a round cap
-     * @private
-     */
     addCurrentVertex(currentVertex,
                      distance,
                      normal,
@@ -466,26 +452,12 @@ class IPLineBucket {
         this.e1 = this.e2;
         this.e2 = this.e3;
 
-        // There is a maximum "distance along the line" that we can store in the buffers.
-        // When we get close to the distance, reset it to zero and add the vertex again with
-        // a distance of zero. The max distance is determined by the number of bits we allocate
-        // to `linesofar`.
         if (distance > MAX_LINE_DISTANCE / 2 && !distancesForScaling) {
             this.distance = 0;
             this.addCurrentVertex(currentVertex, this.distance, normal, endLeft, endRight, round, segment);
         }
     }
 
-    /**
-     * Add a single new vertex and a triangle using two previous vertices.
-     * This adds a pie slice triangle near a join to simulate round joins
-     *
-     * @param currentVertex the line vertex to add buffer vertices for
-     * @param distance the distance from the beginning of the line to the vertex
-     * @param extrude the offset of the new vertex from the currentVertex
-     * @param lineTurnsLeft whether the line is turning left or right at this angle
-     * @private
-     */
     addPieSliceVertex(currentVertex,
                       distance,
                       extrude,
@@ -513,33 +485,10 @@ class IPLineBucket {
     }
 }
 
-/**
- * Knowing the ratio of the full linestring covered by this tiled feature, as well
- * as the total distance (in tile units) of this tiled feature, and the distance
- * (in tile units) of the current vertex, we can determine the relative distance
- * of this vertex along the full linestring feature and scale it to [0, 2^15)
- *
- * @param {number} tileDistance the distance from the beginning of the tiled line to this vertex
- * @param {Object} stats
- * @param {number} stats.start the ratio (0-1) along a full original linestring feature of the start of this tiled line feature
- * @param {number} stats.end the ratio (0-1) along a full original linestring feature of the end of this tiled line feature
- * @param {number} stats.tileTotal the total distance, in tile units, of this tiled line feature
- *
- * @private
- */
 function scaleDistance(tileDistance, stats) {
     return ((tileDistance / stats.tileTotal) * (stats.end - stats.start) + stats.start) * (MAX_LINE_DISTANCE - 1);
 }
 
-/**
- * Calculate the total distance, in tile units, of this tiled line feature
- *
- * @param {Array<Point>} vertices the full geometry of this tiled line feature
- * @param {number} first the index in the vertices array representing the first vertex we should consider
- * @param {number} len the count of vertices we should consider from `first`
- *
- * @private
- */
 function calculateFullDistance(vertices, first, len) {
     let currentVertex, nextVertex;
     let total = 0;

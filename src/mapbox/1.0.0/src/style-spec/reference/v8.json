@@ -750,6 +750,131 @@
     }
   },
   "layout_ipfill-extrusion": {
+    "ipfill-extrusion-outline-cap": {
+      "type": "enum",
+      "values": {
+        "butt": {
+          "doc": "A cap with a squared-off end which is drawn to the exact endpoint of the line."
+        },
+        "round": {
+          "doc": "A cap with a rounded end which is drawn beyond the endpoint of the line at a radius of one-half of the line's width and centered on the endpoint of the line."
+        },
+        "square": {
+          "doc": "A cap with a squared-off end which is drawn beyond the endpoint of the line at a distance of one-half of the line's width."
+        }
+      },
+      "default": "butt",
+      "doc": "The display of line endings.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "ipfill-extrusion-outline-join": {
+      "type": "enum",
+      "values": {
+        "bevel": {
+          "doc": "A join with a squared-off end which is drawn beyond the endpoint of the line at a distance of one-half of the line's width."
+        },
+        "round": {
+          "doc": "A join with a rounded end which is drawn beyond the endpoint of the line at a radius of one-half of the line's width and centered on the endpoint of the line."
+        },
+        "miter": {
+          "doc": "A join with a sharp, angled corner which is drawn with the outer sides beyond the endpoint of the path until they meet."
+        }
+      },
+      "default": "miter",
+      "doc": "The display of lines when joining.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.40.0",
+          "android": "5.2.0",
+          "ios": "3.7.0",
+          "macos": "0.6.0"
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom",
+          "feature"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-miter-limit": {
+      "type": "number",
+      "default": 2,
+      "doc": "Used to automatically convert miter joins to bevel joins for sharp angles.",
+      "requires": [
+        {
+          "ipfill-extrusion-outline-join": "miter"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "ipfill-extrusion-outline-round-limit": {
+      "type": "number",
+      "default": 1.05,
+      "doc": "Used to automatically convert round joins to miter joins for shallow angles.",
+      "requires": [
+        {
+          "ipfill-extrusion-outline-join": "round"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
     "visibility": {
       "type": "enum",
       "values": {
@@ -4137,6 +4262,380 @@
     }
   },
   "paint_ipfill-extrusion": {
+    "ipfill-extrusion-outline-height": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "units": "meters",
+      "doc": "Line Height",
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-opacity": {
+      "type": "number",
+      "doc": "The opacity at which the line will be drawn.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0",
+          "android": "5.0.0",
+          "ios": "3.5.0",
+          "macos": "0.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-color": {
+      "type": "color",
+      "doc": "The color with which the line will be drawn.",
+      "default": "#000000",
+      "transition": true,
+      "requires": [
+        {
+          "!": "ipfill-extrusion-outline-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.23.0",
+          "android": "5.0.0",
+          "ios": "3.5.0",
+          "macos": "0.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "transition": true,
+      "units": "pixels",
+      "doc": "The geometry's offset. Values are [x, y] where negatives indicate left and up, respectively.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "ipfill-extrusion-outline-translate-anchor": {
+      "type": "enum",
+      "values": {
+        "map": {
+          "doc": "The line is translated relative to the map."
+        },
+        "viewport": {
+          "doc": "The line is translated relative to the viewport."
+        }
+      },
+      "doc": "Controls the frame of reference for `line-translate`.",
+      "default": "map",
+      "requires": [
+        "ipfill-extrusion-outline-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "ipfill-extrusion-outline-width": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "transition": true,
+      "units": "pixels",
+      "doc": "Stroke thickness.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.39.0",
+          "android": "5.2.0",
+          "ios": "3.7.0",
+          "macos": "0.6.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-gap-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "doc": "Draws a line casing outside of a line's actual path. Value indicates the width of the inner gap.",
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0",
+          "android": "5.0.0",
+          "ios": "3.5.0",
+          "macos": "0.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-offset": {
+      "type": "number",
+      "default": 0,
+      "doc": "The line's offset. For linear features, a positive value offsets the line to the right, relative to the direction of the line, and a negative value to the left. For polygon features, a positive value results in an inset, and a negative value results in an outset.",
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.12.1",
+          "android": "3.0.0",
+          "ios": "3.1.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0",
+          "android": "5.0.0",
+          "ios": "3.5.0",
+          "macos": "0.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "transition": true,
+      "units": "pixels",
+      "doc": "Blur applied to the line, in pixels.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.29.0",
+          "android": "5.0.0",
+          "ios": "3.5.0",
+          "macos": "0.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "ipfill-extrusion-outline-dasharray": {
+      "type": "array",
+      "value": "number",
+      "doc": "Specifies the lengths of the alternating dashes and gaps that form the dash pattern. The lengths are later scaled by the line width. To convert a dash length to pixels, multiply the length by the current line width. Note that GeoJSON sources with `lineMetrics: true` specified won't render dashed lines to the expected scale. Also note that zoom-dependent expressions will be evaluated only at integer zoom levels.",
+      "minimum": 0,
+      "transition": true,
+      "units": "line widths",
+      "requires": [
+        {
+          "!": "ipfill-extrusion-outline-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "cross-faded"
+    },
+    "ipfill-extrusion-outline-pattern": {
+      "type": "string",
+      "transition": true,
+      "doc": "Name of image in sprite to use for drawing image lines. For seamless patterns, image width must be a factor of two (2, 4, 8, ..., 512). Note that zoom-dependent expressions will be evaluated only at integer zoom levels.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.10.0",
+          "android": "2.0.1",
+          "ios": "2.0.0",
+          "macos": "0.1.0"
+        },
+        "data-driven styling": {
+          "js": "0.49.0",
+          "android": "6.5.0",
+          "macos": "0.11.0",
+          "ios": "4.4.0"
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom",
+          "feature"
+        ]
+      },
+      "property-type": "cross-faded-data-driven"
+    },
+    "ipfill-extrusion-outline-gradient": {
+      "type": "color",
+      "doc": "Defines a gradient with which to color a line feature. Can only be used with GeoJSON sources that specify `\"lineMetrics\": true`.",
+      "transition": false,
+      "requires": [
+        {
+          "!": "ipfill-extrusion-outline-dasharray"
+        },
+        {
+          "!": "ipfill-extrusion-outline-pattern"
+        },
+        {
+          "source": "geojson",
+          "has": {
+            "lineMetrics": true
+          }
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.45.0",
+          "android": "6.5.0",
+          "ios": "4.4.0",
+          "macos": "0.11.0"
+        },
+        "data-driven styling": {
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "line-progress"
+        ]
+      },
+      "property-type": "color-ramp"
+    },
     "ipfill-extrusion-opacity": {
       "type": "number",
       "default": 1,

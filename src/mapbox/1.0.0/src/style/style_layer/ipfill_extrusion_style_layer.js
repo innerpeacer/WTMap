@@ -3,17 +3,106 @@
 import StyleLayer from '../style_layer';
 
 import IPFillExtrusionBucket from '../../data/bucket/ipfill_extrusion_bucket';
-import {polygonIntersectsPolygon, polygonIntersectsMultiPolygon} from '../../util/intersection_tests';
-import {translateDistance, translate} from '../query_utils';
+// import IPLineBucket from '../../data/bucket/ipline_bucket';
+
+import {
+    polygonIntersectsPolygon,
+    polygonIntersectsMultiPolygon,
+    polygonIntersectsBufferedMultiLine
+} from '../../util/intersection_tests';
+import {getMaximumPaintValue, translateDistance, translate} from '../query_utils';
 import properties from './ipfill_extrusion_style_layer_properties';
-import {Transitionable, Transitioning, PossiblyEvaluated} from '../properties';
+import {Transitionable, Transitioning, Layout, PossiblyEvaluated, DataDrivenProperty} from '../properties';
 import {vec4} from 'gl-matrix';
 import Point from '@mapbox/point-geometry';
+
+import {RGBAImage} from '../../util/image';
+import {extend} from '../../util/util';
+import EvaluationParameters from '../evaluation_parameters';
+import renderColorRamp from '../../util/color_ramp';
+
+class LineFloorwidthProperty extends DataDrivenProperty {
+    // useIntegerZoom: true;
+
+    possiblyEvaluate(value, parameters) {
+        parameters = new EvaluationParameters(Math.floor(parameters.zoom), {
+            now: parameters.now,
+            fadeDuration: parameters.fadeDuration,
+            zoomHistory: parameters.zoomHistory,
+            transition: parameters.transition
+        });
+        return super.possiblyEvaluate(value, parameters);
+    }
+
+    evaluate(value, globals, feature, featureState) {
+        globals = extend({}, globals, {zoom: Math.floor(globals.zoom)});
+        return super.evaluate(value, globals, feature, featureState);
+    }
+}
+
+const lineFloorwidthProperty = new LineFloorwidthProperty(properties.paint.properties['ipfill-extrusion-outline-width'].specification);
+lineFloorwidthProperty.useIntegerZoom = true;
 
 class IPFillExtrusionStyleLayer extends StyleLayer {
     constructor(layer) {
         super(layer, properties);
     }
+
+    // ==========================================
+    _handleSpecialPaintPropertyUpdate(name) {
+        if (name === 'ipfill-extrusion-outline-gradient') {
+            this._updateGradient();
+        }
+    }
+
+    _updateGradient() {
+        const expression = this._transitionablePaint._values['ipfill-extrusion-outline-gradient'].value.expression;
+        this.gradient = renderColorRamp(expression, 'lineProgress');
+        this.gradientTexture = null;
+    }
+
+    recalculate(parameters) {
+        super.recalculate(parameters);
+
+        (this.paint._values)['line-floorwidth'] =
+            lineFloorwidthProperty.possiblyEvaluate(this._transitioningPaint._values['ipfill-extrusion-outline-width'].value, parameters);
+    }
+
+    queryRadius(bucket) {
+        const lineBucket = (bucket);
+        const width = getLineWidth(
+            getMaximumPaintValue('ipfill-extrusion-outline-width', this, lineBucket),
+            getMaximumPaintValue('ipfill-extrusion-outline-gap-width', this, lineBucket));
+        const offset = getMaximumPaintValue('ipfill-extrusion-outline-offset', this, lineBucket);
+        return width / 2 + Math.abs(offset) + translateDistance(this.paint.get('ipfill-extrusion-outline-translate'));
+    }
+
+    queryIntersectsFeature(queryGeometry,
+                           feature,
+                           featureState,
+                           geometry,
+                           zoom,
+                           transform,
+                           pixelsToTileUnits) {
+        const translatedPolygon = translate(queryGeometry,
+            this.paint.get('ipfill-extrusion-outline-translate'),
+            this.paint.get('ipfill-extrusion-outline-translate-anchor'),
+            transform.angle, pixelsToTileUnits);
+        const halfWidth = pixelsToTileUnits / 2 * getLineWidth(
+            this.paint.get('ipfill-extrusion-outline-width').evaluate(feature, featureState),
+            this.paint.get('ipfill-extrusion-outline-gap-width').evaluate(feature, featureState));
+        const lineOffset = this.paint.get('ipfill-extrusion-outline-offset').evaluate(feature, featureState);
+        if (lineOffset) {
+            geometry = offsetLine(geometry, lineOffset * pixelsToTileUnits);
+        }
+        return polygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth);
+    }
+
+    isTileClipped() {
+        return true;
+    }
+
+    // ==========================================
 
     createBucket(parameters) {
         return new IPFillExtrusionBucket(parameters);
@@ -192,6 +281,38 @@ function projectQueryGeometry(queryGeometry, pixelPosMatrix, transform, z) {
         projectedQueryGeometry.push(new Point(v[0] / v[3], v[1] / v[3]));
     }
     return projectedQueryGeometry;
+}
+
+function getLineWidth(lineWidth, lineGapWidth) {
+    if (lineGapWidth > 0) {
+        return lineGapWidth + 2 * lineWidth;
+    } else {
+        return lineWidth;
+    }
+}
+
+function offsetLine(rings, offset) {
+    const newRings = [];
+    const zero = new Point(0, 0);
+    for (let k = 0; k < rings.length; k++) {
+        const ring = rings[k];
+        const newRing = [];
+        for (let i = 0; i < ring.length; i++) {
+            const a = ring[i - 1];
+            const b = ring[i];
+            const c = ring[i + 1];
+            const aToB = i === 0 ? zero : b.sub(a)._unit()._perp();
+            const bToC = i === ring.length - 1 ? zero : c.sub(b)._unit()._perp();
+            const extrude = aToB._add(bToC)._unit();
+
+            const cosHalfAngle = extrude.x * bToC.x + extrude.y * bToC.y;
+            extrude._mult(1 / cosHalfAngle);
+
+            newRing.push(extrude._mult(offset)._add(b));
+        }
+        newRings.push(newRing);
+    }
+    return newRings;
 }
 
 export default IPFillExtrusionStyleLayer;

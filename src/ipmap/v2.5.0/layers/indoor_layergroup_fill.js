@@ -53,7 +53,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             };
 
             let testIpLine = true;
-            // testIpLine = false;
+            testIpLine = false;
             if (testIpLine) {
                 outlineLayer = {
                     'id': outlineLayerID,

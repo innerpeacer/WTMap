@@ -35,7 +35,8 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
             };
 
             var useIpExtrusion = false;
-            // useIpExtrusion = true;
+            useIpExtrusion = true;
+            let random = Math.random() * 10;
             if (useIpExtrusion) {
                 extrusionLayer = {
                     'id': extrusionLayerID,
@@ -45,20 +46,26 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                     'source': this.sourceID,
                     "source-layer": this.sourceLayer,
                     'layout': {
-                        // "ipfill-extrusion-outline-join": "round",
-                        // "ipfill-extrusion-outline-cap": "round",
+                        "ipfill-extrusion-outline-join": "round",
+                        "ipfill-extrusion-outline-cap": "round",
                     },
                     'paint': {
-                        // 'ipfill-extrusion-color': symbol.fillColor,
-                        'ipfill-extrusion-color': 'red',
+                        'ipfill-extrusion-color': symbol.fillColor,
+                        // 'ipfill-extrusion-color': 'red',
                         'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
-                        'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
-                        'ipfill-extrusion-opacity': symbol.fillOpacity,
+                        // 'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
+                        // 'ipfill-extrusion-height': ["+", ["/", ["get", 'extrusion-height'], 10], random],
+                        'ipfill-extrusion-height': random,
+                        // 'ipfill-extrusion-opacity': symbol.fillOpacity,
+                        'ipfill-extrusion-opacity': Math.random() * 0.5 + 0.5,
 
                         // "ipfill-extrusion-outline-color": symbol.outlineColor,
+                        "ipfill-extrusion-outline-color": "blue",
                         // 'ipfill-extrusion-outline-opacity': symbol.outlineOpacity,
+                        'ipfill-extrusion-outline-opacity': 1,
                         // "ipfill-extrusion-outline-width": symbol.outlineWidth,
-                        // "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
+                        "ipfill-extrusion-outline-width": 2,
+                        "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
                     },
                     "filter": ["all",
                         ["has", "extrusion"],

@@ -34,6 +34,8 @@ import fillExtrusionFrag from './fill_extrusion.fragment.glsl';
 import fillExtrusionVert from './fill_extrusion.vertex.glsl';
 import ipfillExtrusionFrag from './ipfill_extrusion.fragment.glsl';
 import ipfillExtrusionVert from './ipfill_extrusion.vertex.glsl';
+import ipfillExtrusionOutlineFrag from './ipfill_extrusion_outline.fragment.glsl';
+import ipfillExtrusionOutlineVert from './ipfill_extrusion_outline.vertex.glsl';
 import fillExtrusionPatternFrag from './fill_extrusion_pattern.fragment.glsl';
 import fillExtrusionPatternVert from './fill_extrusion_pattern.vertex.glsl';
 import hillshadePrepareFrag from './hillshade_prepare.fragment.glsl';
@@ -73,6 +75,7 @@ export const fillOutlinePattern = compile(fillOutlinePatternFrag, fillOutlinePat
 export const fillPattern = compile(fillPatternFrag, fillPatternVert);
 export const fillExtrusion = compile(fillExtrusionFrag, fillExtrusionVert);
 export const ipfillExtrusion = compile(ipfillExtrusionFrag, ipfillExtrusionVert);
+export const ipfillExtrusionOutline = compile(ipfillExtrusionOutlineFrag, ipfillExtrusionOutlineVert);
 export const fillExtrusionPattern = compile(fillExtrusionPatternFrag, fillExtrusionPatternVert);
 export const hillshadePrepare = compile(hillshadePrepareFrag, hillshadePrepareVert);
 export const hillshade = compile(hillshadeFrag, hillshadeVert);
