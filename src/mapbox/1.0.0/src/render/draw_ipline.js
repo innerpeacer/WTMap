@@ -7,6 +7,7 @@ import {
     iplineSDFUniformValues,
     iplineGradientUniformValues
 } from './program/ipline_program';
+import StencilMode from "../gl/stencil_mode";
 
 export default function drawLine(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
@@ -75,11 +76,14 @@ export default function drawLine(painter, sourceCache, layer, coords) {
             programConfiguration.updatePatternPaintBuffers(crossfade);
         }
 
+        // program.draw(context, gl.TRIANGLES, depthMode,
+        //     painter.stencilModeForClipping(coord), colorMode, CullFaceMode.disabled, uniformValues,
+        //     layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
+        //     layer.paint, painter.transform.zoom, programConfiguration);
         program.draw(context, gl.TRIANGLES, depthMode,
-            painter.stencilModeForClipping(coord), colorMode, CullFaceMode.disabled, uniformValues,
+            StencilMode.disabled, colorMode, CullFaceMode.disabled, uniformValues,
             layer.id, bucket.layoutVertexBuffer, bucket.indexBuffer, bucket.segments,
             layer.paint, painter.transform.zoom, programConfiguration);
-
         firstTile = false;
     }
 }
