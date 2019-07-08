@@ -53,7 +53,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                         'ipfill-extrusion-color': symbol.fillColor,
                         'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
                         'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
-                        'ipfill-extrusion-opacity': Math.random() * 0.5 + 0.5,
+                        'ipfill-extrusion-opacity': symbol.fillOpacity,
                         "ipfill-extrusion-outline-color": symbol.outlineColor,
                         'ipfill-extrusion-outline-opacity': symbol.outlineOpacity,
                         "ipfill-extrusion-outline-width": symbol.outlineWidth,

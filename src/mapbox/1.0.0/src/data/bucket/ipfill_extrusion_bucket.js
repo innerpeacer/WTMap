@@ -102,8 +102,8 @@ class IPFillExtrusionBucket {
             if (this.hasPattern) {
                 this.features.push(addPatternDependencies('ipfill-extrusion', this.layers, patternFeature, this.zoom, options));
             } else {
-                this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
                 this.addFillExtrusionFeature(patternFeature, geometry, index, {});
+                this.addExtrusionOutlineFeature(patternFeature, geometry, index, {});
             }
 
             options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index, true);
@@ -113,8 +113,8 @@ class IPFillExtrusionBucket {
     addFeatures(options, imagePositions) {
         for (const feature of this.features) {
             const {geometry} = feature;
-            this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
             this.addFillExtrusionFeature(feature, geometry, feature.index, imagePositions);
+            this.addExtrusionOutlineFeature(feature, geometry, feature.index, imagePositions);
         }
     }
 
@@ -266,9 +266,40 @@ class IPFillExtrusionBucket {
         const miterLimit = layout.get('ipfill-extrusion-outline-miter-limit');
         const roundLimit = layout.get('ipfill-extrusion-outline-round-limit');
 
-        for (const line of geometry) {
+        let processedGeometry = this._removeEdge(geometry);
+        for (const line of processedGeometry) {
+        // for (const line of geometry) {
             this.addLine(line, feature, join, cap, miterLimit, roundLimit, index, imagePositions);
         }
+    }
+
+    _removeEdgeForSimpleLine(line) {
+        if (line.length < 2) return [];
+
+        let res = [];
+        let seg = [];
+        for (let i = 0; i < line.length; ++i) {
+            if (i > 0) {
+                if (isOnOrOutBoundaryEdge(line[i], line[i - 1])) {
+                    if (seg.length > 1) res.push(seg);
+                    seg = [];
+                }
+            }
+            seg.push(line[i]);
+        }
+
+        if (seg.length > 1) res.push(seg);
+        return res;
+    }
+
+    _removeEdge(geometry) {
+        let result = [];
+        for (const line of geometry) {
+            if (line.length > 1) {
+                result = result.concat(this._removeEdgeForSimpleLine(line));
+            }
+        }
+        return result;
     }
 
     addCurrentVertex(currentVertex, distance, normal, endLeft, endRight, round, segment, distancesForScaling) {
@@ -341,7 +372,9 @@ class IPFillExtrusionBucket {
             };
         }
 
-        const isPolygon = vectorTileFeatureTypes[feature.type] === 'Polygon';
+        let isPolygon = vectorTileFeatureTypes[feature.type] === 'Polygon';
+        // if (vertices.length==2) isPolygon = false;
+
         let len = vertices.length;
         while (len >= 2 && vertices[len - 1].equals(vertices[len - 2])) {
             len--;
@@ -351,8 +384,8 @@ class IPFillExtrusionBucket {
             first++;
         }
 
-        if (len < (isPolygon ? 3 : 2)) return;
-
+        // if (len < (isPolygon ? 3 : 2)) return;
+        if (len < 2) return;
         if (lineDistances) {
             lineDistances.tileTotal = calculateFullDistance(vertices, first, len);
         }
@@ -378,13 +411,13 @@ class IPFillExtrusionBucket {
 
         this.e1 = this.e2 = this.e3 = -1;
 
-        if (isPolygon) {
+        if (isPolygon && vertices.length > 2) {
             currentVertex = vertices[len - 2];
             nextNormal = firstVertex.sub(currentVertex)._unit()._perp();
         }
 
         for (let i = first; i < len; i++) {
-            nextVertex = isPolygon && i === len - 1 ?
+            nextVertex = (isPolygon && vertices.length > 2) && i === len - 1 ?
                 vertices[first + 1] : // if the line is closed, we treat the last vertex like the first
                 vertices[i + 1]; // just the next vertex
 
@@ -534,6 +567,11 @@ export default IPFillExtrusionBucket;
 function isBoundaryEdge(p1, p2) {
     return (p1.x === p2.x && (p1.x < 0 || p1.x > EXTENT)) ||
         (p1.y === p2.y && (p1.y < 0 || p1.y > EXTENT));
+}
+
+function isOnOrOutBoundaryEdge(p1, p2) {
+    return (p1.x === p2.x && (p1.x <= 0 || p1.x >= EXTENT)) ||
+        (p1.y === p2.y && (p1.y <= 0 || p1.y >= EXTENT));
 }
 
 function isEntirelyOutside(ring) {

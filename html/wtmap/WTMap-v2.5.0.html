@@ -3,7 +3,6 @@
     <meta charset='utf-8'/>
     <title>WTMap-2.5.0</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
-
     <script src="js/config-dev-2.5.0.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
 
@@ -42,10 +41,13 @@
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
-    map.showTileBoundaries = true;
+    // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
     var isEnglish = false;
+    // var ttt = {z: 20, x: 857589, y: 430552};
+    // var ttt = {z: 20, x: 857589, y: 430552};
+    var ttt;
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
         console.log(evt.lngLat);
@@ -56,6 +58,8 @@
         } else {
             map.switchLanguage({lang: "cn"});
         }
+
+        // ttt.y += 1;
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -75,6 +79,11 @@
             floorSwitch.selectedIndex = map.building.initFloorIndex;
         });
 
+    });
+
+    map.on("floorend", function () {
+        // map.setZoom(20);
+        // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
 
     map.on("wheel", function () {
