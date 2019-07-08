@@ -173,10 +173,6 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
             ]);
         }
     }
-
-    _getLayerIDs() {
-        return Object.keys(this.styleLayers);
-    }
 }
 
 export default indoor_layergroup_icon_text

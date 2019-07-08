@@ -65,6 +65,10 @@ class indoor_layer_base {
             this.map.removeLayer(layerID);
         }
     }
+
+    _getLayerIDs() {
+        return Object.keys(this.styleLayers);
+    }
 }
 
 export default indoor_layer_base

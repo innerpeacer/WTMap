@@ -46,8 +46,10 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 "source-layer": "fill",
                 "paint": {
                     "line-color": symbol.outlineColor,
+                    // "line-color": "blue",
                     'line-opacity': symbol.outlineOpacity,
                     "line-width": symbol.outlineWidth
+                    // "line-width": 5
                 },
                 "filter": ["all"]
             };
@@ -116,10 +118,6 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 ["==", "symbolID", layers[layerID].symbolID]
             ]);
         }
-    }
-
-    _getLayerIDs() {
-        return Object.keys(this.styleLayers);
     }
 }
 
