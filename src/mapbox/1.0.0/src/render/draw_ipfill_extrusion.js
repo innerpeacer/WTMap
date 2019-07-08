@@ -18,6 +18,8 @@ import {
 // export default draw;
 // export default drawIPLine;
 import {flagOutline} from "../debug_flag";
+import {tile_debug} from "../debug/tile_debug";
+
 export default (flagOutline ? drawIPLine : draw);
 
 function draw(painter, source, layer, coords) {
@@ -96,6 +98,9 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
     const opacity = layer.paint.get('ipfill-extrusion-opacity');
 
     for (const coord of coords) {
+        if (source.map.__debug_draw) {
+            if (!tile_debug.filterCoord(source, coord)) continue;
+        }
         const tile = source.getTile(coord);
         const bucket = (tile.getBucket(layer));
         if (!bucket) continue;

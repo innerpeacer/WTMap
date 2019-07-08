@@ -12,7 +12,8 @@ import {
     Turf,
     MapInfo,
     LocalPoint,
-    LngLatPoint
+    LngLatPoint,
+    TileCoord
 } from '../../../ipmap/v2.5.0/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
@@ -44,6 +45,7 @@ const exported = {
     MapInfo,
     LocalPoint,
     LngLatPoint,
+    TileCoord,
 
     NavigationControl,
     GeolocateControl,

@@ -5,5 +5,6 @@ import Turf from "../utils/ip_turf"
 import MapInfo from "../entity/mapinfo"
 import {local_point as LocalPoint} from "../entity/local_point"
 import {lnglat_point as LngLatPoint} from "../entity/lnglat_point"
+import {ip_tile_coord as TileCoord} from "../utils/ip_tile_coord";
 
-export {version, WTMap, CoordProjection, Turf, MapInfo, LocalPoint, LngLatPoint}
+export {version, WTMap, CoordProjection, Turf, MapInfo, LocalPoint, LngLatPoint, TileCoord}

@@ -61,35 +61,19 @@
             map.switchLanguage({lang: "cn"});
         }
 
-        let transform = map.transform;
-        console.log(transform);
-        console.log(transform.pointCoordinate(evt.point));
-        map.__targetTile.y += 1;
-        console.log(wtmap.TileCoord.lngLatToTile(evt.lngLat.lng, evt.lngLat.lat, map.getZoom()));
+        var pickedTile = wtmap.TileCoord.lngLatToTile(evt.lngLat.lng, evt.lngLat.lat, map.getZoom());
+        map.__targetTile = pickedTile;
 
         // let propList = ["round", "bevel", "miter"];
-        // // let layerIDs = map.getLayerIDs("room");
         // let layerIDs = map.getLayerIDs("extrusion");
         // testIndex++;
         // if (testIndex == propList.length) testIndex = 0;
         // for (let i = 0; i < layerIDs.length; ++i) {
         //     let layerID = layerIDs[i];
-        //     console.log(layerID);
-        //     if (layerID.indexOf("room-fill") == 0) continue;
-        //     // map.setLayoutProperty(layerID, "line-join", propList[testIndex]);
-        //     map.setLayoutProperty(layerID, "line-join", propList[testIndex]);
+        //     // console.log(layerID);
+        //     if (layerID.indexOf("room-fill") != -1) continue;
+        //     map.setLayoutProperty(layerID, "ipfill-extrusion-outline-join", propList[testIndex]);
         // }
-
-        let propList = ["round", "bevel", "miter"];
-        let layerIDs = map.getLayerIDs("extrusion");
-        testIndex++;
-        if (testIndex == propList.length) testIndex = 0;
-        for (let i = 0; i < layerIDs.length; ++i) {
-            let layerID = layerIDs[i];
-            // console.log(layerID);
-            if (layerID.indexOf("room-fill") != -1) continue;
-            map.setLayoutProperty(layerID, "ipfill-extrusion-outline-join", propList[testIndex]);
-        }
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
