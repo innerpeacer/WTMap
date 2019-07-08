@@ -262,13 +262,14 @@ class IPFillExtrusionBucket {
     addExtrusionOutlineFeature(feature, geometry, index, imagePositions) {
         const layout = this.layers[0].layout;
         const join = layout.get('ipfill-extrusion-outline-join').evaluate(feature, {});
-        const cap = layout.get('ipfill-extrusion-outline-cap');
+        // const cap = layout.get('ipfill-extrusion-outline-cap');
+        const cap = "butt";
         const miterLimit = layout.get('ipfill-extrusion-outline-miter-limit');
         const roundLimit = layout.get('ipfill-extrusion-outline-round-limit');
 
         let processedGeometry = this._removeEdge(geometry);
         for (const line of processedGeometry) {
-        // for (const line of geometry) {
+            // for (const line of geometry) {
             this.addLine(line, feature, join, cap, miterLimit, roundLimit, index, imagePositions);
         }
     }
@@ -372,7 +373,9 @@ class IPFillExtrusionBucket {
             };
         }
 
-        let isPolygon = vectorTileFeatureTypes[feature.type] === 'Polygon';
+        // Extrusion outline always be polygon
+        let isPolygon = true;
+        // let isPolygon = vectorTileFeatureTypes[feature.type] === 'Polygon';
         // if (vertices.length==2) isPolygon = false;
 
         let len = vertices.length;
@@ -398,8 +401,7 @@ class IPFillExtrusionBucket {
 
         this.distance = 0;
 
-        const beginCap = cap,
-            endCap = isPolygon ? 'butt' : cap;
+        const beginCap = cap, endCap = cap;
         let startOfLine = true;
         let currentVertex;
         let prevVertex = ((undefined));

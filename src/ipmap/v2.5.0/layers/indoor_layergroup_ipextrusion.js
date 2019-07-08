@@ -47,7 +47,6 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                     "source-layer": this.sourceLayer,
                     'layout': {
                         "ipfill-extrusion-outline-join": "round",
-                        "ipfill-extrusion-outline-cap": "round",
                     },
                     'paint': {
                         'ipfill-extrusion-color': symbol.fillColor,

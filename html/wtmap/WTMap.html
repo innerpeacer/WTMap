@@ -1,11 +1,10 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title></title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
-
-    <script src="js/config-dev-2.3.0.js"></script>
-    <link rel="stylesheet" type="text/css" href="./css/floor-switch.css">
+    <title>WTMap-2.5.0</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src="js/config-dev-2.5.0.js"></script>
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -21,18 +20,76 @@
 </div>
 
 <script>
-    console.log(wtmap);
+    console.log(wtmap.version);
+    var buildingID = "00270003";
+    var use3D = true;
+    // use3D = false;
+
+    var style = {};
 
     var map = new wtmap.WTMap({
         container: 'map',
-        buildingID: "00270005",
-//        use3D: false,
+        buildingID: buildingID,
+        use3D: use3D,
+        _disableCache: true,
+        _dataVersion: "v5",
+        // localIdeographFontFamily: true,
+        // brtStyle: "http://47.97.173.242:8080/WTMapResource/style/2.3.0/wt-style.json"
+        // brtStyle: style,
+        // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/WTMapSprite",
+        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
+        // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
+        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
     map.showTileBoundaries = true;
+    // map.showCollisionBoxes = true;
+
+    var isEnglish = false;
+    var targetTile = {z: 20, x: 857589, y: 430552};
+    map.__targetTile = targetTile;
+    map.__debug_draw = true;
+    // var targetTile = {z: 20, x: 857589, y: 430552};
+    var testIndex = 0;
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
-//        console.log("Bounds: "+  map.getBounds());
-        console.log(evt.lngLat.lat);
+        console.log(evt.lngLat);
+
+        isEnglish = !isEnglish;
+        if (isEnglish) {
+            map.switchLanguage({lang: "en", font: "Arial"});
+        } else {
+            map.switchLanguage({lang: "cn"});
+        }
+
+        let transform = map.transform;
+        console.log(transform);
+        console.log(transform.pointCoordinate(evt.point));
+        map.__targetTile.y += 1;
+        console.log(wtmap.TileCoord.lngLatToTile(evt.lngLat.lng, evt.lngLat.lat, map.getZoom()));
+
+        // let propList = ["round", "bevel", "miter"];
+        // // let layerIDs = map.getLayerIDs("room");
+        // let layerIDs = map.getLayerIDs("extrusion");
+        // testIndex++;
+        // if (testIndex == propList.length) testIndex = 0;
+        // for (let i = 0; i < layerIDs.length; ++i) {
+        //     let layerID = layerIDs[i];
+        //     console.log(layerID);
+        //     if (layerID.indexOf("room-fill") == 0) continue;
+        //     // map.setLayoutProperty(layerID, "line-join", propList[testIndex]);
+        //     map.setLayoutProperty(layerID, "line-join", propList[testIndex]);
+        // }
+
+        let propList = ["round", "bevel", "miter"];
+        let layerIDs = map.getLayerIDs("extrusion");
+        testIndex++;
+        if (testIndex == propList.length) testIndex = 0;
+        for (let i = 0; i < layerIDs.length; ++i) {
+            let layerID = layerIDs[i];
+            // console.log(layerID);
+            if (layerID.indexOf("room-fill") != -1) continue;
+            map.setLayoutProperty(layerID, "ipfill-extrusion-outline-join", propList[testIndex]);
+        }
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -42,12 +99,21 @@
 
     map.on("mapready", function (evt) {
         console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
+
         map.mapInfoArray.forEach(function (mapInfo) {
             var floorButton = document.createElement('option');
             floorButton.value = mapInfo.floorName;
             floorButton.text = mapInfo.floorName;
             floorSwitch.appendChild(floorButton);
+            floorSwitch.selectedIndex = map.building.initFloorIndex;
         });
+
+    });
+
+    map.on("floorend", function () {
+        // map.setZoom(20);
+        // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
 
     map.on("wheel", function () {
