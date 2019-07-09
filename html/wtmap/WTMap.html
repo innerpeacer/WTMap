@@ -47,7 +47,7 @@
     var isEnglish = false;
     var targetTile = {z: 20, x: 857589, y: 430552};
     map.__targetTile = targetTile;
-    map.__debug_draw = true;
+    // map.__debug_draw = true;
     // var targetTile = {z: 20, x: 857589, y: 430552};
     var testIndex = 0;
     map.on("click", function (evt) {
@@ -74,6 +74,9 @@
         //     if (layerID.indexOf("room-fill") != -1) continue;
         //     map.setLayoutProperty(layerID, "ipfill-extrusion-outline-join", propList[testIndex]);
         // }
+        console.log(evt);
+        var features = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs("extrusion")});
+        console.log(features);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');

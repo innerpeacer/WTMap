@@ -1,13 +1,5 @@
-// @flow
-
-import type SourceCache from './source_cache';
-import type StyleLayer from '../style/style_layer';
-import type CollisionIndex from '../symbol/collision_index';
-import type Transform from '../geo/transform';
-import type { RetainedQueryData } from '../symbol/placement';
-import type {FilterSpecification} from '../style-spec/types';
 import assert from 'assert';
-import { mat4 } from 'gl-matrix';
+import {mat4} from 'gl-matrix';
 
 /*
  * Returns a matrix that can be used to convert from tile coordinates to viewport pixel coordinates.
@@ -19,18 +11,18 @@ function getPixelPosMatrix(transform, tileID) {
     return mat4.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
 }
 
-function queryIncludes3DLayer(layers?: Array<string>, styleLayers: {[string]: StyleLayer}, sourceID: string) {
+function queryIncludes3DLayer(layers, styleLayers, sourceID) {
     if (layers) {
         for (const layerID of layers) {
             const layer = styleLayers[layerID];
-            if (layer && layer.source === sourceID && layer.type === 'fill-extrusion') {
+            if (layer && layer.source === sourceID && (layer.type === 'fill-extrusion' || layer.type === "ipfill-extrusion")) {
                 return true;
             }
         }
     } else {
         for (const key in styleLayers) {
             const layer = styleLayers[key];
-            if (layer.source === sourceID && layer.type === 'fill-extrusion') {
+            if (layer.source === sourceID && (layer.type === 'fill-extrusion' || layer.type === "ipfill-extrusion")) {
                 return true;
             }
         }
@@ -38,12 +30,7 @@ function queryIncludes3DLayer(layers?: Array<string>, styleLayers: {[string]: St
     return false;
 }
 
-export function queryRenderedFeatures(sourceCache: SourceCache,
-                            styleLayers: {[string]: StyleLayer},
-                            queryGeometry: Array<Point>,
-                            params: { filter: FilterSpecification, layers: Array<string> },
-                            transform: Transform) {
-
+export function queryRenderedFeatures(sourceCache, styleLayers, queryGeometry, params, transform) {
     const has3DLayer = queryIncludes3DLayer(params && params.layers, styleLayers, sourceCache.id);
 
     const maxPitchScaleFactor = transform.maxPitchScaleFactor();
@@ -85,12 +72,7 @@ export function queryRenderedFeatures(sourceCache: SourceCache,
     return result;
 }
 
-export function queryRenderedSymbols(styleLayers: {[string]: StyleLayer},
-                            sourceCaches: {[string]: SourceCache},
-                            queryGeometry: Array<Point>,
-                            params: { filter: FilterSpecification, layers: Array<string> },
-                            collisionIndex: CollisionIndex,
-                            retainedQueryData: {[number]: RetainedQueryData}) {
+export function queryRenderedSymbols(styleLayers, sourceCaches, queryGeometry, params, collisionIndex, retainedQueryData) {
     const result = {};
     const renderedSymbols = collisionIndex.queryRenderedSymbols(queryGeometry);
     const bucketQueryData = [];
@@ -101,12 +83,12 @@ export function queryRenderedSymbols(styleLayers: {[string]: StyleLayer},
 
     for (const queryData of bucketQueryData) {
         const bucketSymbols = queryData.featureIndex.lookupSymbolFeatures(
-                renderedSymbols[queryData.bucketInstanceId],
-                queryData.bucketIndex,
-                queryData.sourceLayerIndex,
-                params.filter,
-                params.layers,
-                styleLayers);
+            renderedSymbols[queryData.bucketInstanceId],
+            queryData.bucketIndex,
+            queryData.sourceLayerIndex,
+            params.filter,
+            params.layers,
+            styleLayers);
 
         for (const layerID in bucketSymbols) {
             const resultFeatures = result[layerID] = result[layerID] || [];
@@ -154,7 +136,7 @@ export function queryRenderedSymbols(styleLayers: {[string]: StyleLayer},
     return result;
 }
 
-export function querySourceFeatures(sourceCache: SourceCache, params: any) {
+export function querySourceFeatures(sourceCache, params) {
     const tiles = sourceCache.getRenderableIds().map((id) => {
         return sourceCache.getTileByID(id);
     });

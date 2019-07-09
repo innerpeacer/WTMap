@@ -3,8 +3,6 @@
 import StyleLayer from '../style_layer';
 
 import IPFillExtrusionBucket from '../../data/bucket/ipfill_extrusion_bucket';
-// import IPLineBucket from '../../data/bucket/ipline_bucket';
-
 import {
     polygonIntersectsPolygon,
     polygonIntersectsMultiPolygon,
@@ -67,41 +65,6 @@ class IPFillExtrusionStyleLayer extends StyleLayer {
         (this.paint._values)['line-floorwidth'] =
             lineFloorwidthProperty.possiblyEvaluate(this._transitioningPaint._values['ipfill-extrusion-outline-width'].value, parameters);
     }
-
-    queryRadius(bucket) {
-        const lineBucket = (bucket);
-        const width = getLineWidth(
-            getMaximumPaintValue('ipfill-extrusion-outline-width', this, lineBucket),
-            getMaximumPaintValue('ipfill-extrusion-outline-gap-width', this, lineBucket));
-        const offset = getMaximumPaintValue('ipfill-extrusion-outline-offset', this, lineBucket);
-        return width / 2 + Math.abs(offset) + translateDistance(this.paint.get('ipfill-extrusion-outline-translate'));
-    }
-
-    queryIntersectsFeature(queryGeometry,
-                           feature,
-                           featureState,
-                           geometry,
-                           zoom,
-                           transform,
-                           pixelsToTileUnits) {
-        const translatedPolygon = translate(queryGeometry,
-            this.paint.get('ipfill-extrusion-outline-translate'),
-            this.paint.get('ipfill-extrusion-outline-translate-anchor'),
-            transform.angle, pixelsToTileUnits);
-        const halfWidth = pixelsToTileUnits / 2 * getLineWidth(
-            this.paint.get('ipfill-extrusion-outline-width').evaluate(feature, featureState),
-            this.paint.get('ipfill-extrusion-outline-gap-width').evaluate(feature, featureState));
-        const lineOffset = this.paint.get('ipfill-extrusion-outline-offset').evaluate(feature, featureState);
-        if (lineOffset) {
-            geometry = offsetLine(geometry, lineOffset * pixelsToTileUnits);
-        }
-        return polygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth);
-    }
-
-    isTileClipped() {
-        return true;
-    }
-
     // ==========================================
 
     createBucket(parameters) {

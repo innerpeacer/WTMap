@@ -41,25 +41,12 @@
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
-    // map.showTileBoundaries = true;
-    // map.showCollisionBoxes = true;
 
     var isEnglish = false;
-    // var ttt = {z: 20, x: 857589, y: 430552};
-    // var ttt = {z: 20, x: 857589, y: 430552};
     var ttt;
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
         console.log(evt.lngLat);
-
-        isEnglish = !isEnglish;
-        if (isEnglish) {
-            map.switchLanguage({lang: "en", font: "Arial"});
-        } else {
-            map.switchLanguage({lang: "cn"});
-        }
-
-        // ttt.y += 1;
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
