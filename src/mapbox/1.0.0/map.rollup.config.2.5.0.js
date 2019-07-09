@@ -1,7 +1,6 @@
 import fs from 'fs';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import {plugins} from './build/rollup_plugins';
-import banner from './build/banner';
 
 const ip_version = "v2.5.0";
 
@@ -48,7 +47,7 @@ export default [{
         sourcemap: production ? true : 'inline',
         indent: false,
         intro: fs.readFileSync(require.resolve('./rollup/bundle_prelude.js'), 'utf8'),
-        banner
+        // banner
     },
     treeshake: false,
     plugins: [
