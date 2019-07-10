@@ -54,7 +54,7 @@ class IPMap extends BoxMap {
         if (options.maxZoom == null) options.maxZoom = 22;
         if (options._useFile == null) options._useFile = true;
         if (options.use3D == null) options.use3D = true;
-        if (options.usePbf == null) options.usePbf = false;
+        if (options.usePbf == null) options.usePbf = true;
 
         let dataVersion = null;
         let disableCache = false;
