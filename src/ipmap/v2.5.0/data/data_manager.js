@@ -1,5 +1,6 @@
 import {Evented} from "../utils/ip_evented"
 import IPHttpRequest from "../utils/http_request"
+import {t_y_cbm_parser as CBMParser} from "../pbf-parse/t_y_cbm_parser";
 
 let getCBMJson = function (bID, options) {
     if (options._useFile) {
@@ -7,6 +8,10 @@ let getCBMJson = function (bID, options) {
     } else {
         return `${options._apiHost}/${options._apiPath}/web/GetCBM?buildingID=${bID}`;
     }
+};
+
+let getCBMPbf = function (bID, options) {
+    return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf`;
 };
 
 // let getPoiPbf = function (bID, options) {
@@ -42,6 +47,22 @@ class data_manager extends Evented {
             } else {
                 that.fire("cbm-error", data);
             }
+        });
+
+        request.on('http-error', function (error) {
+            that.fire("cbm-error", error);
+        });
+    }
+
+    getCBMPbf() {
+        let request = new IPHttpRequest();
+        let that = this;
+
+        request.requestBlob(getCBMPbf(this.buildingID, this._options));
+        request.on("http-result", function (data) {
+            let byteArray = new Uint8Array(data.bytes);
+            let parser = new CBMParser(byteArray);
+            that.fire("cbm-ready", parser.getData());
         });
 
         request.on('http-error', function (error) {

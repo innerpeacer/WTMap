@@ -54,6 +54,7 @@ class IPMap extends BoxMap {
         if (options.maxZoom == null) options.maxZoom = 22;
         if (options._useFile == null) options._useFile = true;
         if (options.use3D == null) options.use3D = true;
+        if (options.usePbf == null) options.usePbf = false;
 
         let dataVersion = null;
         let disableCache = false;
@@ -217,7 +218,11 @@ class IPMap extends BoxMap {
 
     _requestCBM() {
         // console.log("requestCBM");
-        this._dataManager.getCBM();
+        if (this._options.usePbf) {
+            this._dataManager.getCBMPbf();
+        } else {
+            this._dataManager.getCBM();
+        }
     }
 
     __cbmReady(data) {

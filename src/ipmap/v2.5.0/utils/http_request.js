@@ -11,12 +11,12 @@ class http_request extends Evented {
         httpRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    var json = JSON.parse(httpRequest.responseText);
+                    let json = JSON.parse(httpRequest.responseText);
                     if (callback) {
                         callback(json);
                     }
                 } else {
-                    var error = {};
+                    let error = {};
                     error.status = httpRequest.status;
                     error.statusText = httpRequest.statusText;
                     if (errorCallback) {
@@ -35,8 +35,26 @@ class http_request extends Evented {
         httpRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    var json = JSON.parse(httpRequest.responseText);
+                    let json = JSON.parse(httpRequest.responseText);
                     that.fire("http-result", json);
+                } else {
+                    that.fire("http-error", {status: httpRequest.status, statusText: httpRequest.statusText});
+                }
+            }
+        };
+        httpRequest.send();
+    }
+
+    requestBlob(url) {
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.open("GET", url, true);
+        httpRequest.responseType = "arraybuffer";
+        let that = this;
+        httpRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    let bytes = httpRequest.response;
+                    that.fire("http-result", {bytes: bytes});
                 } else {
                     that.fire("http-error", {status: httpRequest.status, statusText: httpRequest.statusText});
                 }

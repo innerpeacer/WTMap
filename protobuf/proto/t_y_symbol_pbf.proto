@@ -1,0 +1,51 @@
+syntax = "proto2";
+
+package cn.platalk.map.vectortile.cbm.pbf.proto;
+
+message FillSymbolPbf {
+    required uint32 UID = 1;
+    required uint32 symbolID = 2;
+    required string fillColor = 3;
+    required string outlineColor = 4;
+    required double outlineWidth = 5;
+    required double levelMin = 6;
+    required double levelMax = 7;
+}
+
+message IconTextSymbolPbf {
+    required uint32 UID = 1;
+    required uint32 symbolID = 2;
+    required bool iconVisible = 3;
+    required double iconSize = 4;
+    required double iconRotate = 5;
+    required double iconOffsetX = 6;
+    required double iconOffsetY = 7;
+
+    required bool textVisible = 10;
+    required double textSize = 11;
+    required double textRotate = 12;
+    required string textFont = 13;
+    required string textColor = 14;
+    required double textOffsetX = 15;
+    required double textOffsetY = 16;
+
+    required double levelMin = 21;
+    required double levelMax = 22;
+    required uint32 priority = 23;
+
+    optional string otherPaint = 30;
+    optional string otherLayout = 31;
+}
+
+//message SymbolListPbf {
+//    repeated uint32 symbols = 1;
+//}
+
+message SymbolCollectionPbf {
+    repeated uint32 floor = 1;
+    repeated uint32 room = 2;
+    repeated uint32 asset = 3;
+    repeated uint32 facility = 4;
+    repeated uint32 label = 5;
+    repeated uint32 extrusion = 6;
+}

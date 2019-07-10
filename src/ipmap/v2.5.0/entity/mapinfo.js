@@ -26,7 +26,7 @@ class mapinfo {
         this.mapSize = new map_size(obj.size_x, obj.size_y);
         this.mapExtent = new map_extent(obj.xmin, obj.ymin, obj.xmax, obj.ymax);
         this.floorName = obj.floorName;
-        this.floorNumber = obj.floorIndex;
+        this.floorNumber = obj.floorIndex || obj.floorNumber;
         this.mapID = obj.mapID;
         this.buildingID = obj.buildingID;
         this.cityID = obj.cityID;
