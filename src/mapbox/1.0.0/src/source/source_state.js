@@ -1,11 +1,11 @@
 // @flow
 
-import { extend } from '../util/util';
-import Tile from './tile';
-import type {FeatureState} from '../style-spec/expression';
+import {extend} from '../util/util';
+// import Tile from './tile';
+// import type {FeatureState} from '../style-spec/expression';
 
-export type FeatureStates = {[feature_id: string]: FeatureState};
-export type LayerFeatureStates = {[layer: string]: FeatureStates};
+// export type FeatureStates = {[feature_id: string]: FeatureState};
+// export type LayerFeatureStates = {[layer: string]: FeatureStates};
 
 /**
  * SourceFeatureState manages the state and pending changes
@@ -15,11 +15,11 @@ export type LayerFeatureStates = {[layer: string]: FeatureStates};
  * list of changes, such that coalesce() can apply the proper state changes while agnostic to the order of operations.
  * In deletedStates, all null's denote complete removal of state at that scope
  * @private
-*/
+ */
 class SourceFeatureState {
-    state: LayerFeatureStates;
-    stateChanges: LayerFeatureStates;
-    deletedStates: {};
+    // state: LayerFeatureStates;
+    // stateChanges: LayerFeatureStates;
+    // deletedStates: {};
 
     constructor() {
         this.state = {};
@@ -27,7 +27,7 @@ class SourceFeatureState {
         this.deletedStates = {};
     }
 
-    updateState(sourceLayer: string, featureId: number, newState: Object) {
+    updateState(sourceLayer, featureId, newState) {
         const feature = String(featureId);
         this.stateChanges[sourceLayer] = this.stateChanges[sourceLayer] || {};
         this.stateChanges[sourceLayer][feature] = this.stateChanges[sourceLayer][feature] || {};
@@ -54,7 +54,7 @@ class SourceFeatureState {
         }
     }
 
-    removeFeatureState(sourceLayer: string, featureId?: number, key?: string) {
+    removeFeatureState(sourceLayer, featureId, key) {
         const sourceLayerDeleted = this.deletedStates[sourceLayer] === null;
         if (sourceLayerDeleted) return;
 
@@ -82,7 +82,7 @@ class SourceFeatureState {
 
     }
 
-    getState(sourceLayer: string, featureId: number) {
+    getState(sourceLayer, featureId) {
         const feature = String(featureId);
         const base = this.state[sourceLayer] || {};
         const changes = this.stateChanges[sourceLayer] || {};
@@ -99,16 +99,16 @@ class SourceFeatureState {
         return reconciledState;
     }
 
-    initializeTileState(tile: Tile, painter: any) {
+    initializeTileState(tile, painter) {
         tile.setFeatureState(this.state, painter);
     }
 
-    coalesceChanges(tiles: {[any]: Tile}, painter: any) {
+    coalesceChanges(tiles, painter) {
         //track changes with full state objects, but only for features that got modified
-        const featuresChanged: LayerFeatureStates = {};
+        const featuresChanged = {};
 
         for (const sourceLayer in this.stateChanges) {
-            this.state[sourceLayer]  = this.state[sourceLayer] || {};
+            this.state[sourceLayer] = this.state[sourceLayer] || {};
             const layerStates = {};
             for (const feature in this.stateChanges[sourceLayer]) {
                 if (!this.state[sourceLayer][feature]) this.state[sourceLayer][feature] = {};
@@ -119,7 +119,7 @@ class SourceFeatureState {
         }
 
         for (const sourceLayer in this.deletedStates) {
-            this.state[sourceLayer]  = this.state[sourceLayer] || {};
+            this.state[sourceLayer] = this.state[sourceLayer] || {};
             const layerStates = {};
 
             if (this.deletedStates[sourceLayer] === null) {
