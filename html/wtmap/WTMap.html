@@ -45,39 +45,9 @@
     map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
-    var isEnglish = false;
-    var targetTile = {z: 20, x: 857589, y: 430552};
-    map.__targetTile = targetTile;
-    // map.__debug_draw = true;
-    // var targetTile = {z: 20, x: 857589, y: 430552};
-    var testIndex = 0;
     map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
-        console.log(evt.lngLat);
-
-        isEnglish = !isEnglish;
-        if (isEnglish) {
-            map.switchLanguage({lang: "en", font: "Arial"});
-        } else {
-            map.switchLanguage({lang: "cn"});
-        }
-
-        var pickedTile = wtmap.TileCoord.lngLatToTile(evt.lngLat.lng, evt.lngLat.lat, map.getZoom());
-        map.__targetTile = pickedTile;
-
-        // let propList = ["round", "bevel", "miter"];
-        // let layerIDs = map.getLayerIDs("extrusion");
-        // testIndex++;
-        // if (testIndex == propList.length) testIndex = 0;
-        // for (let i = 0; i < layerIDs.length; ++i) {
-        //     let layerID = layerIDs[i];
-        //     // console.log(layerID);
-        //     if (layerID.indexOf("room-fill") != -1) continue;
-        //     map.setLayoutProperty(layerID, "ipfill-extrusion-outline-join", propList[testIndex]);
-        // }
-        console.log(evt);
-        var features = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs("extrusion")});
-        console.log(features);
+        // console.log("Zoom: " + map.getZoom());
+        // console.log(evt.lngLat);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -86,8 +56,8 @@
     };
 
     map.on("mapready", function (evt) {
-        console.log("mapready");
-        console.log("BaseZoom: " + map.getBaseZoom());
+        // console.log("mapready");
+        // console.log("BaseZoom: " + map.getBaseZoom());
 
         map.mapInfoArray.forEach(function (mapInfo) {
             var floorButton = document.createElement('option');
