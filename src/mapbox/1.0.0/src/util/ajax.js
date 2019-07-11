@@ -1,13 +1,9 @@
 // @flow
 
 import window from './window';
-import { extend } from './util';
-import { isMapboxHTTPURL } from './mapbox';
+import {extend} from './util';
 import config from './config';
 import assert from 'assert';
-
-import type { Callback } from '../types/callback';
-import type { Cancelable } from '../types/cancelable';
 
 /**
  * The type of a resource.
@@ -25,7 +21,7 @@ const ResourceType = {
     SpriteJSON: 'SpriteJSON',
     Image: 'Image'
 };
-export { ResourceType };
+export {ResourceType};
 
 if (typeof Object.freeze == 'function') {
     Object.freeze(ResourceType);
@@ -38,25 +34,22 @@ if (typeof Object.freeze == 'function') {
  * @property {Object} headers The headers to be sent with the request.
  * @property {string} credentials `'same-origin'|'include'` Use 'include' to send cookies with cross-origin requests.
  */
-export type RequestParameters = {
-    url: string,
-    headers?: Object,
-    method?: 'GET' | 'POST' | 'PUT',
-    body?: string,
-    type?: 'string' | 'json' | 'arrayBuffer',
-    credentials?: 'same-origin' | 'include',
-    collectResourceTiming?: boolean
-};
+// export type RequestParameters = {
+//     url: string,
+//     headers?: Object,
+//     method?: 'GET' | 'POST' | 'PUT',
+//     body?: string,
+//     type?: 'string' | 'json' | 'arrayBuffer',
+//     credentials?: 'same-origin' | 'include',
+//     collectResourceTiming?: boolean
+// };
 
-export type ResponseCallback<T> = (error: ?Error, data: ?T, cacheControl: ?string, expires: ?string) => void;
+// export type ResponseCallback<T> = (error: ?Error, data: ?T, cacheControl: ?string, expires: ?string) => void;
 
 class AJAXError extends Error {
-    status: number;
-    url: string;
-    constructor(message: string, status: number, url: string) {
-        if (status === 401 && isMapboxHTTPURL(url)) {
-            message += ': you may have provided an invalid Mapbox access token. See https://www.mapbox.com/api-documentation/#access-tokens-and-token-scopes';
-        }
+    // status: number;
+    // url: string;
+    constructor(message, status, url) {
         super(message);
         this.status = status;
         this.url = url;
@@ -73,7 +66,7 @@ class AJAXError extends Error {
 
 function isWorker() {
     return typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' &&
-           self instanceof WorkerGlobalScope;
+        self instanceof WorkerGlobalScope;
 }
 
 // Ensure that we're sending the correct referrer from blob URL worker bundles.
@@ -90,7 +83,7 @@ export const getReferrer = isWorker() ?
         }
     };
 
-function makeFetchRequest(requestParameters: RequestParameters, callback: ResponseCallback<any>): Cancelable {
+function makeFetchRequest(requestParameters, callback) {
     const controller = new window.AbortController();
     const request = new window.Request(requestParameters.url, {
         method: requestParameters.method || 'GET',
@@ -121,11 +114,11 @@ function makeFetchRequest(requestParameters: RequestParameters, callback: Respon
         callback(new Error(error.message));
     });
 
-    return { cancel: () => controller.abort() };
+    return {cancel: () => controller.abort()};
 }
 
-function makeXMLHttpRequest(requestParameters: RequestParameters, callback: ResponseCallback<any>): Cancelable {
-    const xhr: XMLHttpRequest = new window.XMLHttpRequest();
+function makeXMLHttpRequest(requestParameters, callback) {
+    const xhr = new window.XMLHttpRequest();
 
     xhr.open(requestParameters.method || 'GET', requestParameters.url, true);
     if (requestParameters.type === 'arrayBuffer') {
@@ -143,7 +136,7 @@ function makeXMLHttpRequest(requestParameters: RequestParameters, callback: Resp
     };
     xhr.onload = () => {
         if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) && xhr.response !== null) {
-            let data: mixed = xhr.response;
+            let data = xhr.response;
             if (requestParameters.type === 'json') {
                 // We're manually parsing JSON here to get better error messages.
                 try {
@@ -158,10 +151,10 @@ function makeXMLHttpRequest(requestParameters: RequestParameters, callback: Resp
         }
     };
     xhr.send(requestParameters.body);
-    return { cancel: () => xhr.abort() };
+    return {cancel: () => xhr.abort()};
 }
 
-export const makeRequest = function(requestParameters: RequestParameters, callback: ResponseCallback<any>): Cancelable {
+export const makeRequest = function (requestParameters, callback) {
     // We're trying to use the Fetch API if possible. However, in some situations we can't use it:
     // - IE11 doesn't support it at all. In this case, we dispatch the request to the main thread so
     //   that we can get an accruate referrer header.
@@ -180,20 +173,20 @@ export const makeRequest = function(requestParameters: RequestParameters, callba
     return makeXMLHttpRequest(requestParameters, callback);
 };
 
-export const getJSON = function(requestParameters: RequestParameters, callback: ResponseCallback<Object>): Cancelable {
-    return makeRequest(extend(requestParameters, { type: 'json' }), callback);
+export const getJSON = function (requestParameters, callback) {
+    return makeRequest(extend(requestParameters, {type: 'json'}), callback);
 };
 
-export const getArrayBuffer = function(requestParameters: RequestParameters, callback: ResponseCallback<ArrayBuffer>): Cancelable {
-    return makeRequest(extend(requestParameters, { type: 'arrayBuffer' }), callback);
+export const getArrayBuffer = function (requestParameters, callback) {
+    return makeRequest(extend(requestParameters, {type: 'arrayBuffer'}), callback);
 };
 
-export const postData = function(requestParameters: RequestParameters, callback: ResponseCallback<string>): Cancelable {
-    return makeRequest(extend(requestParameters, { method: 'POST' }), callback);
+export const postData = function (requestParameters, callback) {
+    return makeRequest(extend(requestParameters, {method: 'POST'}), callback);
 };
 
 function sameOrigin(url) {
-    const a: HTMLAnchorElement = window.document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url;
     return a.protocol === window.document.location.protocol && a.host === window.document.location.host;
 }
@@ -207,14 +200,16 @@ export const resetImageRequestQueue = () => {
 };
 resetImageRequestQueue();
 
-export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>): Cancelable {
+export const getImage = function (requestParameters, callback) {
     // limit concurrent image loads to help with raster sources performance on big screens
     if (numImageRequests >= config.MAX_PARALLEL_IMAGE_REQUESTS) {
         const queued = {
             requestParameters,
             callback,
             cancelled: false,
-            cancel() { this.cancelled = true; }
+            cancel() {
+                this.cancelled = true;
+            }
         };
         imageQueue.push(queued);
         return queued;
@@ -238,23 +233,23 @@ export const getImage = function(requestParameters: RequestParameters, callback:
 
     // request the image with XHR to work around caching issues
     // see https://github.com/mapbox/mapbox-gl-js/issues/1470
-    const request = getArrayBuffer(requestParameters, (err: ?Error, data: ?ArrayBuffer, cacheControl: ?string, expires: ?string) => {
+    const request = getArrayBuffer(requestParameters, (err, data, cacheControl, expires) => {
 
         advanceImageRequestQueue();
 
         if (err) {
             callback(err);
         } else if (data) {
-            const img: HTMLImageElement = new window.Image();
+            const img = new window.Image();
             const URL = window.URL || window.webkitURL;
             img.onload = () => {
                 callback(null, img);
                 URL.revokeObjectURL(img.src);
             };
             img.onerror = () => callback(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
-            const blob: Blob = new window.Blob([new Uint8Array(data)], { type: 'image/png' });
-            (img: any).cacheControl = cacheControl;
-            (img: any).expires = expires;
+            const blob = new window.Blob([new Uint8Array(data)], {type: 'image/png'});
+            (img).cacheControl = cacheControl;
+            (img).expires = expires;
             img.src = data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
         }
     });
@@ -267,19 +262,22 @@ export const getImage = function(requestParameters: RequestParameters, callback:
     };
 };
 
-export const getVideo = function(urls: Array<string>, callback: Callback<HTMLVideoElement>): Cancelable {
-    const video: HTMLVideoElement = window.document.createElement('video');
+export const getVideo = function (urls, callback) {
+    const video = window.document.createElement('video');
     video.muted = true;
-    video.onloadstart = function() {
+    video.onloadstart = function () {
         callback(null, video);
     };
     for (let i = 0; i < urls.length; i++) {
-        const s: HTMLSourceElement = window.document.createElement('source');
+        const s = window.document.createElement('source');
         if (!sameOrigin(urls[i])) {
             video.crossOrigin = 'Anonymous';
         }
         s.src = urls[i];
         video.appendChild(s);
     }
-    return { cancel: () => {} };
+    return {
+        cancel: () => {
+        }
+    };
 };
