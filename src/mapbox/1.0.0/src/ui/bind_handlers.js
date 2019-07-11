@@ -10,6 +10,7 @@ import dragPan from './handler/drag_pan';
 import keyboard from './handler/keyboard';
 import doubleClickZoom from './handler/dblclick_zoom';
 import touchZoomRotate from './handler/touch_zoom_rotate';
+import oneFingerZoom from './handler/one_finger_zoom';
 
 const handlers = {
     scrollZoom,
@@ -17,7 +18,8 @@ const handlers = {
     dragRotate,
     dragPan,
     keyboard,
-    doubleClickZoom,
+    // doubleClickZoom,
+    oneFingerZoom,
     touchZoomRotate
 };
 
@@ -28,7 +30,7 @@ export default function bindHandlers(map, options) {
     let startPos = null;
 
     for (const name in handlers) {
-        (map)[name] = new handlers[name](map, options);
+        map[name] = new handlers[name](map, options);
         if (options.interactive && options[name]) {
             (map)[name].enable(options[name]);
         }
@@ -66,7 +68,9 @@ export default function bindHandlers(map, options) {
             return;
         }
 
-        if (options.interactive && !map.doubleClickZoom.isActive()) {
+        // if (options.interactive && !map.doubleClickZoom.isActive()) {
+        if (options.interactive && !map.oneFingerZoom.isActive()) {
+            // console.log("I blame for the stop")
             map.stop();
         }
 
@@ -135,7 +139,8 @@ export default function bindHandlers(map, options) {
         }
 
         map.touchZoomRotate.onStart(e);
-        map.doubleClickZoom.onTouchStart(mapEvent);
+        map.oneFingerZoom.onTouchStart(e);
+        // map.doubleClickZoom.onTouchStart(mapEvent);
     }
 
     function onTouchMove(e) {
@@ -165,7 +170,8 @@ export default function bindHandlers(map, options) {
             return;
         }
 
-        map.doubleClickZoom.onDblClick(mapEvent);
+        // map.doubleClickZoom.onDblClick(mapEvent);
+        map.oneFingerZoom.onDblClick(mapEvent);
     }
 
     function onContextMenu(e) {

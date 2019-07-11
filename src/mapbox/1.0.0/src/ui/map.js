@@ -51,6 +51,7 @@ import type {
     LightSpecification,
     SourceSpecification
 } from '../style-spec/types';
+import oneFingerZoom from "./handler/one_finger_zoom";
 
 type ControlPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 /* eslint-disable no-use-before-define */
@@ -112,6 +113,7 @@ const defaultOptions = {
     dragPan: true,
     keyboard: true,
     doubleClickZoom: true,
+    oneFingerZoom: true,
     touchZoomRotate: true,
 
     bearingSnap: 7,
