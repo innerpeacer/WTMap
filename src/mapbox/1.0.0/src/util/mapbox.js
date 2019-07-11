@@ -18,7 +18,6 @@ import config from './config';
 import browser from './browser';
 import window from './window';
 import webpSupported from './webp_supported';
-import { createSkuToken, SKU_ID } from './sku_token';
 import { version as sdkVersion } from '../../package.json';
 import { uuid, validateUuid, storageAvailable, b64DecodeUnicode, b64EncodeUnicode, warnOnce, extend } from './util';
 import { postData, ResourceType } from './ajax';
@@ -38,23 +37,10 @@ type UrlObject = {|
 |};
 
 export class RequestManager {
-    _skuToken: string;
-    _skuTokenExpiresAt: number;
     _transformRequestFn: ?RequestTransformFunction;
 
     constructor(transformRequestFn?: RequestTransformFunction) {
         this._transformRequestFn = transformRequestFn;
-        this._createSkuToken();
-    }
-
-    _createSkuToken() {
-        const skuToken = createSkuToken();
-        this._skuToken = skuToken.token;
-        this._skuTokenExpiresAt = skuToken.tokenExpiresAt;
-    }
-
-    _isSkuTokenExpired(): boolean {
-        return Date.now() > this._skuTokenExpiresAt;
     }
 
     transformRequest(url: string, type: ResourceTypeEnum) {
@@ -82,11 +68,7 @@ export class RequestManager {
     }
 
     normalizeTileURL(tileURL: string, sourceURL?: ?string, tileSize?: ?number): string {
-        if (this._isSkuTokenExpired()) {
-            this._createSkuToken();
-        }
-
-        return normalizeTileURL(tileURL, sourceURL, tileSize, this._skuToken);
+        return normalizeTileURL(tileURL, sourceURL, tileSize);
     }
 
     canonicalizeTileURL(url: string) {
@@ -166,7 +148,7 @@ const normalizeSpriteURL = function(url: string, format: string, extension: stri
 
 const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/;
 
-const normalizeTileURL = function(tileURL: string, sourceURL?: ?string, tileSize?: ?number, skuToken?: string): string {
+const normalizeTileURL = function(tileURL: string, sourceURL?: ?string, tileSize?: ?number): string {
     if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL;
 
     const urlObject = parseUrl(tileURL);
@@ -178,10 +160,6 @@ const normalizeTileURL = function(tileURL: string, sourceURL?: ?string, tileSize
     const extension = webpSupported.supported ? '.webp' : '$1';
     urlObject.path = urlObject.path.replace(imageExtensionRe, `${suffix}${extension}`);
     urlObject.path = `/v4${urlObject.path}`;
-
-    if (config.REQUIRE_ACCESS_TOKEN && config.ACCESS_TOKEN && skuToken) {
-        urlObject.params.push(`sku=${skuToken}`);
-    }
 
     return makeAPIURL(urlObject);
 };
@@ -345,7 +323,6 @@ class TelemetryEvent {
             created: new Date(timestamp).toISOString(),
             sdkIdentifier: 'mapbox-gl-js',
             sdkVersion,
-            skuId: SKU_ID,
             userId: this.anonId
         };
 
@@ -374,19 +351,13 @@ class TelemetryEvent {
 
 export class MapLoadEvent extends TelemetryEvent {
     +success: {[number]: boolean};
-    skuToken: string;
 
     constructor() {
         super('map.load');
         this.success = {};
-        this.skuToken = '';
     }
 
-    postMapLoadEvent(tileUrls: Array<string>, mapId: number, skuToken: string) {
-        //Enabled only when Mapbox Access Token is set and a source uses
-        // mapbox tiles.
-        this.skuToken = skuToken;
-
+    postMapLoadEvent(tileUrls: Array<string>, mapId: number) {
         if (config.EVENTS_URL &&
             config.ACCESS_TOKEN &&
             Array.isArray(tileUrls) &&
@@ -410,7 +381,7 @@ export class MapLoadEvent extends TelemetryEvent {
             this.anonId = uuid();
         }
 
-        this.postEvent(timestamp, {skuToken: this.skuToken}, (err) => {
+        this.postEvent(timestamp, {}, (err) => {
             if (!err) {
                 if (id) this.success[id] = true;
             }
