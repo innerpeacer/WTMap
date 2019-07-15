@@ -3,8 +3,8 @@ import Parser from "./pbf-parse/t_y_beacon_parser";
 import {local_point as LocalPoint} from "../entity/local_point";
 import LocatingBeacon from "./locating_beacon";
 import ScannedBeacon from "./scanned_beacon";
-// import CoordProjection from "../utils/coord_projection";
-// import GeojsonUtils from "../utils/geojson_utils";
+import CoordProjection from "../utils/coord_projection";
+import GeojsonUtils from "../utils/geojson_utils";
 
 class locator extends Evented {
     constructor(buildingID, options) {
@@ -63,6 +63,36 @@ class locator extends Evented {
         this._ready = true;
         this.fire("ready");
         this.fire("inner-locator-ready");
+    }
+
+    __getLocatingBeaconArray() {
+        let BeaconDict = this._locatingBeaconDict;
+        if (this.__locatingBeaconArray == null) {
+            let beacons = [];
+            BeaconDict.forEach(function (lb) {
+                beacons.push(lb);
+            });
+            this.__locatingBeaconArray = beacons;
+        }
+        return this.__locatingBeaconArray;
+    }
+
+    _getLocatingBeaconGeojson() {
+        let BeaconDict = this._locatingBeaconDict;
+        if (this._locatingGeojson == null) {
+            let beacons = [];
+            BeaconDict.forEach(function (lb) {
+                let b = CoordProjection.mercatorToLngLat(lb.location.x, lb.location.y);
+                b.properties = {
+                    floor: lb.location.floor,
+                    major: lb.major,
+                    minor: lb.minor
+                };
+                beacons.push(b);
+            });
+            this._locatingGeojson = GeojsonUtils.createPointFeatureCollection(beacons);
+        }
+        return this._locatingGeojson;
     }
 
     _didRangeBeacons(beacons, options) {

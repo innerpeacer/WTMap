@@ -3,7 +3,7 @@ class geojson_utils {
 }
 
 function createPointFeature(lon, lat, props) {
-    var feature = {
+    let feature = {
         "type": "Feature",
         "geometry": {
             "type": "Point",
@@ -16,7 +16,7 @@ function createPointFeature(lon, lat, props) {
 
 geojson_utils.createPointFeatureCollection = function (points) {
     // console.log("geojson_utils.createPointFeatureCollection");
-    var pointData = {
+    let pointData = {
         "type": "FeatureCollection",
         "features": [{
             "type": "Feature",
@@ -28,9 +28,9 @@ geojson_utils.createPointFeatureCollection = function (points) {
         }]
     };
 
-    var features = [];
-    for (var i = 0; i < points.length; ++i) {
-        var p = points[i];
+    let features = [];
+    for (let i = 0; i < points.length; ++i) {
+        let p = points[i];
         features.push(createPointFeature(p.lng, p.lat, p.properties));
     }
     pointData.features = features;
