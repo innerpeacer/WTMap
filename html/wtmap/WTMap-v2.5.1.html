@@ -33,7 +33,6 @@
         use3D: use3D,
         _disableCache: true,
         _dataVersion: "v5",
-        usePbf: true,
         // localIdeographFontFamily: true,
         // brtStyle: "http://47.97.173.242:8080/WTMapResource/style/2.3.0/wt-style.json"
         // brtStyle: style,
@@ -42,12 +41,12 @@
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
-    map.showTileBoundaries = true;
-    // map.showCollisionBoxes = true;
 
+    var isEnglish = false;
+    var ttt;
     map.on("click", function (evt) {
-        // console.log("Zoom: " + map.getZoom());
-        // console.log(evt.lngLat);
+        console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -56,8 +55,8 @@
     };
 
     map.on("mapready", function (evt) {
-        // console.log("mapready");
-        // console.log("BaseZoom: " + map.getBaseZoom());
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
 
         map.mapInfoArray.forEach(function (mapInfo) {
             var floorButton = document.createElement('option');
