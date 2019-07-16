@@ -142,6 +142,7 @@ class IPMap extends BoxMap {
             if (map._debugBeacon) {
                 map._debugBeaconLayer = new DebugBeaconLayer(map, map._locator).addToMap();
                 map._debugBeaconLayer._setLocatingBeaconData(map._locator._getLocatingBeaconGeojson());
+                map._debugBeaconLayer._moveLayer();
             }
             map.fire("locator-ready");
         });
@@ -150,6 +151,29 @@ class IPMap extends BoxMap {
             map.fire("locator-failed", error);
         });
     }
+
+    showLocation(location, options) {
+        // console.log("indoor_layer.showLocation");
+        let loc = {};
+        if (location.lng && location.lat) {
+            loc = {lng: location.lng, lat: location.lat};
+        } else if (location.x && location.y) {
+            loc = CoordProjection.mercatorToLngLat(location.x, location.y);
+        } else {
+            return;
+        }
+        loc.properties = {
+            floor: location.floor
+        };
+        let map = this;
+        this.location = loc;
+        this._layerGroup._showLocation(this.location, options);
+        if (options && options.center) {
+            map._setFloorNumber(map.location.properties.floor, function () {
+                map.easeTo({center: map.location});
+            });
+        }
+    };
 
     didRangeBeacons(beacons, options) {
         return this._locator._didRangeBeacons(beacons, options);
@@ -277,7 +301,7 @@ class IPMap extends BoxMap {
             "bounds": initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        if (map._debugBeacon) map._debugBeaconLayer._moveLayer();
+        if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._moveLayer();
         map.fire("mapready");
 
         if (this._targetFloorID != null) {
@@ -320,24 +344,25 @@ class IPMap extends BoxMap {
         this.setPaintProperty("background", 'background-color', color);
     }
 
+    _setFloorNumber(floor, outerCallback) {
+        let map = this;
+        map._outerFloorCallback = outerCallback;
+
+        let targetInfo = this._getInfoByFloorNumber(floor);
+        if (targetInfo == null) {
+            map.fire("error", {"description": "Floor not exist: " + floor});
+            return;
+        }
+        map._loadFloorData({mapInfo: targetInfo}, {rezoom: false});
+    }
+
     setFloor(floorID, outerCallback) {
         // console.log("setFloor: " + floorID);
         let map = this;
         map._targetFloorID = floorID;
         map._outerFloorCallback = outerCallback;
 
-        let infoArray = map.mapInfoArray;
-        let targetInfo = null;
-        if (floorID != null) {
-            for (let i = 0; i < infoArray.length; ++i) {
-                let mapInfo = infoArray[i];
-                if (mapInfo.mapID === floorID) {
-                    targetInfo = mapInfo;
-                    break;
-                }
-            }
-        }
-
+        let targetInfo = this._getInfoByFloorID(floorID);
         if (targetInfo == null) {
             map.fire("error", {"description": "FloorID not exist: " + floorID});
             return;
@@ -346,7 +371,7 @@ class IPMap extends BoxMap {
         map._loadFloorData({mapInfo: targetInfo});
     }
 
-    _loadFloorData(result) {
+    _loadFloorData(result, options) {
         // console.log("_loadFloorData");
         let map = this;
         map.fire("floorstart", {});
@@ -354,7 +379,7 @@ class IPMap extends BoxMap {
         map.currentMapInfo = result.mapInfo;
 
         map._layerGroup._updateMapInfo(result.mapInfo);
-        if (map._debugBeacon) map._debugBeaconLayer._setMapInfo(result.mapInfo);
+        if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._setMapInfo(result.mapInfo);
 
         requestAnimationFrame(function () {
             let c = map.currentMapInfo.getCenter();
@@ -366,7 +391,7 @@ class IPMap extends BoxMap {
             map.setMaxBounds(maxBounds);
 
             map.setCenter([lngLat.lng, lngLat.lat]);
-            map.setZoom(10);
+            if (options && options.rezoom) map.setZoom(10);
 
             if (map._firstLoad) {
                 map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
@@ -396,6 +421,24 @@ class IPMap extends BoxMap {
 
     getLayerIDs(subLayer) {
         return this._layerGroup.getLayerIDs(subLayer);
+    }
+
+    _getInfoByFloorID(floorID) {
+        let infoArray = this.mapInfoArray;
+        for (let i = 0; i < infoArray.length; ++i) {
+            let mapInfo = infoArray[i];
+            if (mapInfo.mapID === floorID) return mapInfo;
+        }
+        return null;
+    }
+
+    _getInfoByFloorNumber(floor) {
+        let infoArray = this.mapInfoArray;
+        for (let i = 0; i < infoArray.length; ++i) {
+            let mapInfo = infoArray[i];
+            if (mapInfo.floorNumber == floor) return mapInfo;
+        }
+        return null;
     }
 }
 

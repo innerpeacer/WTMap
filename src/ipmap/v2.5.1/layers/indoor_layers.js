@@ -4,6 +4,7 @@ import IconTextLayer from "./indoor_layergroup_icon_text"
 // import ExtrusionLayer from "./indoor_layergroup_extrusion"
 import ExtrusionLayer from "./indoor_layergroup_ipextrusion"
 import MultiStopRouteLayer from "./indoor_layergroup_multi_stop_route"
+import LocationLayer from "./indoor_layer_location"
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -11,6 +12,7 @@ class indoor_layers {
         this._baseLayerArray = [];
         this._3dLayerArray = [];
         this._labelIconLayerArray = [];
+        this._locationLayerArray = [];
 
         this._use3D = use3D;
         this._floorLayer = new FillLayer(map, "floor", 1).addToMap();
@@ -41,6 +43,10 @@ class indoor_layers {
 
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
+
+        this._locationLayer = new LocationLayer(map).addToMap();
+        this._baseLayerArray.push(this._locationLayer);
+        this._locationLayerArray.push(this._locationLayer);
 
         this._switch3D(this._use3D);
     }
@@ -140,6 +146,10 @@ class indoor_layers {
         this._baseLayerArray.forEach(function (layer, index) {
             layer._setMapInfo(mapInfo);
         });
+    }
+
+    _showLocation(location) {
+        this._locationLayer._showLocation(location);
     }
 
     getLayerIDs(subLayer) {

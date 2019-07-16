@@ -32,11 +32,11 @@
         _disableCache: true,
         _dataVersion: "v5",
         usePbf: true,
-        _debugBeacon: true,
-        // sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
-        sprite: "http://47.97.173.242:8080/WTMapResource/sprites/MilitaryGames",
-        glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf",
-        _apiHost: "http://47.97.173.242:8080"
+        // _debugBeacon: true,
+        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
+        // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/MilitaryGames",
+        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf",
+        // _apiHost: "http://47.97.173.242:8080"
     });
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
@@ -44,6 +44,24 @@
     map.on("click", function (evt) {
         // console.log("Zoom: " + map.getZoom());
         // console.log(evt.lngLat);
+        var beaconArray = map._locator.__getLocatingBeaconArray();
+        if (!beaconArray) return;
+        var length = beaconArray.length;
+        var beacon = beaconArray[parseInt(Math.random() * length)];
+
+        var beacons = [{
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10180,
+            "minor": beacon.minor,
+            // "minor": 30897,
+            "rssi": -70,
+            "accuracy": 1.4534
+        }];
+        var res = map.didRangeBeacons(beacons);
+        if (res == null) return;
+
+        var location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
+        map.showLocation(location, {center: true});
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -65,8 +83,15 @@
 
     });
 
-    map.on("floorend", function () {
-
+    map.on("floorend", function (evt) {
+        // console.log(evt.mapInfo);
+        for (var i = 0; i < map.mapInfoArray.length; ++i) {
+            var info = map.mapInfoArray[i];
+            if (info.floorNumber == evt.mapInfo.floorNumber) {
+                floorSwitch.selectedIndex = i;
+                return;
+            }
+        }
     });
 
     map.on("wheel", function () {
@@ -79,7 +104,7 @@
     });
 
     map.on("locator-ready", function () {
-        console.log("locator-ready");
+        // console.log("locator-ready");
     });
 
 </script>
