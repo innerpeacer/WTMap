@@ -18,7 +18,6 @@ import CoordProjection from "../utils/coord_projection"
 import CalculateZoomForMaxBounds from "../utils/ip_zoom_calc"
 
 import IndoorLocator from "../locator/locator"
-import DebugBeaconLayer from "../layers/debug_layers/indoor_layergroup_debug_beacon"
 
 import defaultStyle from "../config/default_style"
 
@@ -135,15 +134,10 @@ class IPMap extends BoxMap {
             map._requestCBM();
         });
 
-        this._debugBeacon = options._debugBeacon || false;
         this._locator = new IndoorLocator(this.buildingID);
         this._locator.on("inner-locator-ready", function () {
             // console.log("inner-locator-ready");
-            if (map._debugBeacon) {
-                map._debugBeaconLayer = new DebugBeaconLayer(map, map._locator).addToMap();
-                map._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe("_getLocatingBeaconGeojson"));
-                map._debugBeaconLayer._moveLayer();
-            }
+            if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
             map.fire("locator-ready");
         });
         this._locator.on("inner-locator-failed", function (error) {
@@ -301,7 +295,6 @@ class IPMap extends BoxMap {
             "bounds": initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._moveLayer();
         map.fire("mapready");
 
         if (this._targetFloorID != null) {

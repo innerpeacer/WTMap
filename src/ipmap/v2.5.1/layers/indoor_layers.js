@@ -5,6 +5,7 @@ import IconTextLayer from "./indoor_layergroup_icon_text"
 import ExtrusionLayer from "./indoor_layergroup_ipextrusion"
 import MultiStopRouteLayer from "./indoor_layergroup_multi_stop_route"
 import LocationLayer from "./indoor_layer_location"
+import DebugBeaconLayer from "./debug_layers/indoor_layergroup_debug_beacon"
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -44,6 +45,16 @@ class indoor_layers {
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID);
         this._map.moveLayer(this._routeLayer.routeStopObject.layerID2);
 
+        let options = map._options;
+        this._debugBeacon = options._debugBeacon || false;
+        if (this._debugBeacon) {
+            this._debugBeaconLayer = new DebugBeaconLayer(map, map._locator).addToMap();
+            // this._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe("_getLocatingBeaconGeojson"));
+            // this._debugBeaconLayer._moveLayer();
+            this._baseLayerArray.push(this._debugBeaconLayer);
+            this._updateLocator(this._map._locator);
+        }
+
         this._locationLayer = new LocationLayer(map).addToMap();
         this._baseLayerArray.push(this._locationLayer);
         this._locationLayerArray.push(this._locationLayer);
@@ -55,6 +66,12 @@ class indoor_layers {
         this._3dLayerArray.forEach(function (layer, index) {
             layer._switch3D(use3D);
         });
+    }
+
+    _updateLocator(locator) {
+        if (locator && this._debugBeacon) {
+            this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe("_getLocatingBeaconGeojson"));
+        }
     }
 
     switchLanguage(options) {
