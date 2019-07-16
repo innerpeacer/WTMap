@@ -8,6 +8,153 @@ import GeojsonUtils from "../utils/geojson_utils";
 
 let _locatorObject = {};
 
+function _loadBeacons(locator, data) {
+    for (let i = 0; i < data.length; ++i) {
+        let lb = data[i];
+        let locatingBeacon = new LocatingBeacon(lb.uuid, lb.major, lb.minor, lb.x, lb.y, lb.floor);
+        _locatorObject.locatingBeaconDict.set(locatingBeacon.key, locatingBeacon);
+    }
+    locator._ready = true;
+    locator.fire("ready");
+    locator.fire("inner-locator-ready");
+}
+
+function _updateBeaconPool(sbeacons) {
+    let beaconPool = _locatorObject.beaconPool;
+    let now = parseInt(new Date().getTime());
+
+    for (let i = 0; i < sbeacons.length; ++i) {
+        let sb = sbeacons[i];
+        beaconPool.set(sb.key, {beacon: sb, time: now});
+    }
+
+    beaconPool.forEach(function (b, key) {
+        if (Math.abs(b.time - now) > 5000) {
+            beaconPool.delete(key);
+        }
+    });
+}
+
+function _preprocessBeacons(locator, sbeacons) {
+    _locatorObject.scannedBeaconArray = [];
+    for (let i = 0; i < sbeacons.length; ++i) {
+        let sb = sbeacons[i];
+        if (sb.uuid !== locator._uuid) continue;
+        if (sb.rssi > -20) continue;
+
+        if (_locatorObject.locatingBeaconDict.has(sb.key)) {
+            _locatorObject.scannedBeaconArray.push(sb);
+        }
+    }
+}
+
+function _calculateLocation(options) {
+    let weightingArray = [];
+    let pointArray = [];
+
+    let beaconList = [];
+    _locatorObject.beaconPool.forEach(function (value) {
+        beaconList.push(value.beacon);
+    });
+
+    beaconList.sort(function (a, b) {
+        return b.rssi - a.rssi;
+    });
+
+    let totalWeighting = 0.0;
+    let totalWeightingX = 0.0;
+    let totalWeightingY = 0.0;
+
+    let maxRssi = -100;
+
+    let index = Math.min(9, beaconList.length);
+    let frequencyMap = new Map();
+
+    for (let i = 0; i < index; ++i) {
+        let sb = beaconList[i];
+        maxRssi = sb.rssi;
+        let location = _locatorObject.locatingBeaconDict.get(sb.key).location;
+
+        let weighting = 1.0 / Math.pow(sb.accuracy, 2);
+        totalWeighting += weighting;
+        weightingArray.push(weighting);
+        pointArray.push(location);
+
+        let floorWeight = 1;
+        if (i === 0 || i === 1) floorWeight = 2;
+
+        if (frequencyMap.has(location.floor)) {
+            frequencyMap.set(location.floor, frequencyMap.get(location.floor) + floorWeight);
+        } else {
+            frequencyMap.set(location.floor, floorWeight);
+        }
+    }
+
+    let maxCount = 0;
+    let maxFloor = 0;
+
+    frequencyMap.forEach(function (floorCount, floor) {
+        if (floorCount > maxCount) {
+            maxCount = floorCount;
+            maxFloor = floor;
+        }
+    });
+
+    for (let i = 0; i < weightingArray.length; ++i) {
+        totalWeightingX += weightingArray[i] * pointArray[i].x;
+        totalWeightingY += weightingArray[i] * pointArray[i].y;
+    }
+
+    let resultLocation = null;
+    if (totalWeighting === 0) {
+        resultLocation = null;
+    } else {
+        resultLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
+    }
+
+    let res = {
+        location: resultLocation,
+        maxRssi: maxRssi
+    };
+
+    if (options && options.debug) {
+        res.maxIndex = index;
+        res.totalWeighting = totalWeighting;
+        res.beaconList = beaconList.length;
+        res.beaconPool = _locatorObject.beaconPool.size;
+    }
+    return res;
+}
+
+function _getLocatingBeaconGeojson() {
+    let BeaconDict = _locatorObject.locatingBeaconDict;
+    if (_locatorObject._locatingGeojson == null) {
+        let beacons = [];
+        BeaconDict.forEach(function (lb) {
+            let lngLat = CoordProjection.mercatorToLngLat(lb.location.x, lb.location.y);
+            beacons.push({
+                lng: lngLat.lng,
+                lat: lngLat.lat,
+                properties: {floor: lb.location.floor, major: lb.major, minor: lb.minor}
+            });
+        });
+        _locatorObject._locatingGeojson = GeojsonUtils.createPointFeatureCollection(beacons);
+    }
+    return _locatorObject._locatingGeojson;
+}
+
+function _getLocatingBeaconArray() {
+    let BeaconDict = _locatorObject.locatingBeaconDict;
+    if (_locatorObject._locatingBeaconArray == null) {
+        let beacons = [];
+        BeaconDict.forEach(function (lb) {
+            beacons.push(lb);
+        });
+        _locatorObject._locatingBeaconArray = beacons;
+    }
+    return _locatorObject._locatingBeaconArray;
+}
+
 class locator extends Evented {
     constructor(buildingID, options) {
         super();
@@ -46,25 +193,13 @@ class locator extends Evented {
                     let byteArray = new Uint8Array(httpRequest.response);
                     let parser = new Parser(byteArray);
                     that._uuid = parser.getUuid();
-                    that._loadBeacons(parser.getBeaconList());
+                    _loadBeacons(that, parser.getBeaconList());
                 } else {
-                    // that.fire("error", {errorCode: 900, description: httpRequest.responseText});
                     that.fire("inner-locator-failed", {errorCode: 900, description: "Beacon Data error!"});
                 }
             }
         };
         httpRequest.send();
-    }
-
-    _loadBeacons(data) {
-        for (let i = 0; i < data.length; ++i) {
-            let lb = data[i];
-            let locatingBeacon = new LocatingBeacon(lb.uuid, lb.major, lb.minor, lb.x, lb.y, lb.floor);
-            _locatorObject.locatingBeaconDict.set(locatingBeacon.key, locatingBeacon);
-        }
-        this._ready = true;
-        this.fire("ready");
-        this.fire("inner-locator-ready");
     }
 
 
@@ -74,9 +209,6 @@ class locator extends Evented {
             return null;
         }
 
-        // alert("didRangeBeacons");
-        // alert("beacons: "+ beacons.length);
-
         let sbList = [];
         for (let i = 0; i < beacons.length; ++i) {
             let sb = beacons[i];
@@ -84,121 +216,10 @@ class locator extends Evented {
             sbList.push(scannedBeacon);
         }
 
-        // alert("sbList: "+ sbList.length);
-        this._preprocessBeacons(sbList);
-        this._updateBeaconPool(_locatorObject.scannedBeaconArray);
-        return this._calculateLocation(options);
-    }
-
-    _updateBeaconPool(sbeacons) {
-        // alert("updateBeaconPool");
-        // alert("sbeacons: " + sbeacons.length);
-        let beaconPool = _locatorObject.beaconPool;
-        let now = parseInt(new Date().getTime());
-
-        for (let i = 0; i < sbeacons.length; ++i) {
-            let sb = sbeacons[i];
-            beaconPool.set(sb.key, {beacon: sb, time: now});
-        }
-
-        beaconPool.forEach(function (b, key) {
-            if (Math.abs(b.time - now) > 5000) {
-                beaconPool.delete(key);
-            }
-        });
-    }
-
-    _preprocessBeacons(sbeacons) {
-        // alert("preprocessBeacons");
-        // alert("sbeacons: "+ sbeacons.length);
-        _locatorObject.scannedBeaconArray = [];
-        // alert(sbeacons[0]);
-        for (let i = 0; i < sbeacons.length; ++i) {
-            let sb = sbeacons[i];
-            if (sb.uuid !== this._uuid) continue;
-            if (sb.rssi > -20) continue;
-
-            if (_locatorObject.locatingBeaconDict.has(sb.key)) {
-                _locatorObject.scannedBeaconArray.push(sb);
-            }
-        }
-    }
-
-    _calculateLocation(options) {
-        let weightingArray = [];
-        let pointArray = [];
-
-        let beaconList = [];
-        _locatorObject.beaconPool.forEach(function (value) {
-            beaconList.push(value.beacon);
-        });
-
-        beaconList.sort(function (a, b) {
-            return b.rssi - a.rssi;
-        });
-
-        let totalWeighting = 0.0;
-        let totalWeightingX = 0.0;
-        let totalWeightingY = 0.0;
-
-        let maxRssi = -100;
-
-        let index = Math.min(9, beaconList.length);
-        let frequencyMap = new Map();
-
-        for (let i = 0; i < index; ++i) {
-            let sb = beaconList[i];
-            maxRssi = sb.rssi;
-            let location = _locatorObject.locatingBeaconDict.get(sb.key).location;
-
-            let weighting = 1.0 / Math.pow(sb.accuracy, 2);
-            totalWeighting += weighting;
-            weightingArray.push(weighting);
-            pointArray.push(location);
-
-            let floorWeight = 1;
-            if (i === 0 || i === 1) floorWeight = 2;
-
-            if (frequencyMap.has(location.floor)) {
-                frequencyMap.set(location.floor, frequencyMap.get(location.floor) + floorWeight);
-            } else {
-                frequencyMap.set(location.floor, floorWeight);
-            }
-        }
-
-        let maxCount = 0;
-        let maxFloor = 0;
-
-        frequencyMap.forEach(function (floorCount, floor) {
-            if (floorCount > maxCount) {
-                maxCount = floorCount;
-                maxFloor = floor;
-            }
-        });
-
-        for (let i = 0; i < weightingArray.length; ++i) {
-            totalWeightingX += weightingArray[i] * pointArray[i].x;
-            totalWeightingY += weightingArray[i] * pointArray[i].y;
-        }
-
-        if (totalWeighting === 0) {
-            this.currentLocation = null;
-        } else {
-            this.currentLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
-        }
-        // return this.currentLocation;
-
-        let res = {
-            location: this.currentLocation,
-            maxRssi: maxRssi
-        };
-
-        if (options && options.debug) {
-            res.maxIndex = index;
-            res.totalWeighting = totalWeighting;
-            res.beaconList = beaconList.length;
-            res.beaconPool = _locatorObject.beaconPool.size;
-        }
+        _preprocessBeacons(this, sbList);
+        _updateBeaconPool(_locatorObject.scannedBeaconArray);
+        let res = _calculateLocation(options);
+        this.currentLocation = res.location;
         return res;
     }
 
@@ -206,47 +227,15 @@ class locator extends Evented {
         return this.currentLocation;
     }
 
-    getLocatingBeacons() {
-        return this._getLocatingBeaconGeojson();
-    }
-
-    _getLocatingBeaconGeojson() {
-        let BeaconDict = _locatorObject.locatingBeaconDict;
-        if (_locatorObject._locatingGeojson == null) {
-            let beacons = [];
-            BeaconDict.forEach(function (lb) {
-                let lngLat = CoordProjection.mercatorToLngLat(lb.location.x, lb.location.y);
-                beacons.push({
-                    lng: lngLat.lng,
-                    lat: lngLat.lat,
-                    properties: {floor: lb.location.floor, major: lb.major, minor: lb.minor}
-                });
-            });
-            _locatorObject._locatingGeojson = GeojsonUtils.createPointFeatureCollection(beacons);
+    _biteMe(methodName, params) {
+        if ("_getLocatingBeaconGeojson" === methodName) {
+            return _getLocatingBeaconGeojson();
+        } else if ("getLocatingBeacons" === methodName) {
+            return _getLocatingBeaconGeojson();
+        } else if ("_getLocatingBeaconArray" === methodName) {
+            return _getLocatingBeaconArray();
         }
-        return _locatorObject._locatingGeojson;
-    }
-
-    __getLocatingBeaconArray() {
-        // let BeaconDict = this._locatingBeaconDict;
-        // if (this.__locatingBeaconArray == null) {
-        //     let beacons = [];
-        //     BeaconDict.forEach(function (lb) {
-        //         beacons.push(lb);
-        //     });
-        //     this.__locatingBeaconArray = beacons;
-        // }
-        // return this.__locatingBeaconArray;
-
-        let BeaconDict = _locatorObject.locatingBeaconDict;
-        if (_locatorObject._locatingBeaconArray == null) {
-            let beacons = [];
-            BeaconDict.forEach(function (lb) {
-                beacons.push(lb);
-            });
-            _locatorObject._locatingBeaconArray = beacons;
-        }
-        return _locatorObject._locatingBeaconArray;
+        console.log("OK, as you wish!")
     }
 
     // getScannedBeacons() {

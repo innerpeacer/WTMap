@@ -32,7 +32,7 @@
         _disableCache: true,
         _dataVersion: "v5",
         usePbf: true,
-        // _debugBeacon: true,
+        _debugBeacon: true,
         sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
         // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/MilitaryGames",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf",
@@ -44,10 +44,10 @@
     map.on("click", function (evt) {
         // console.log("Zoom: " + map.getZoom());
         // console.log(evt.lngLat);
-        var beaconArray = map._locator.__getLocatingBeaconArray();
+        var beaconArray = map._locator._biteMe("_getLocatingBeaconArray");
         if (!beaconArray) return;
         var length = beaconArray.length;
-        var beacon = beaconArray[parseInt(Math.random() * length)];
+        var beacon = beaconArray[parseInt(Math.random() * (length - 1))];
 
         var beacons = [{
             "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",

@@ -141,7 +141,7 @@ class IPMap extends BoxMap {
             // console.log("inner-locator-ready");
             if (map._debugBeacon) {
                 map._debugBeaconLayer = new DebugBeaconLayer(map, map._locator).addToMap();
-                map._debugBeaconLayer._setLocatingBeaconData(map._locator._getLocatingBeaconGeojson());
+                map._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe("_getLocatingBeaconGeojson"));
                 map._debugBeaconLayer._moveLayer();
             }
             map.fire("locator-ready");
