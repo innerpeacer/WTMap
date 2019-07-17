@@ -1,6 +1,6 @@
-import CoordProjection from "../utils/coord_projection"
-import {local_point as TYLocalPoint} from "./local_point"
-import {lnglat_point as TYLngLatPoint} from "./lnglat_point"
+import CoordProjection from '../utils/coord_projection'
+import {local_point as TYLocalPoint} from './local_point'
+import {lnglat_point as TYLngLatPoint} from './lnglat_point'
 
 class entity_utils {
     constructor() {

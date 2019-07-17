@@ -81,7 +81,6 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             let layer = {id: layerID, source: scannedBeaconSourceID};
             extend(layer, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#ff00ff';
-            // layer.paint['text-color'] = '#ffff00';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor']], {'font-scale': 1.2},
                 '\n', {},
@@ -136,14 +135,8 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             let layer = {id: layerID, source: locationSourceID};
             extend(layer, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#253494';
-            // layer.layout['text-field'] = ['format',
-            //     ['concat', ['get', 'minor'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
-            //     '\n', {},
-            //     ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
-            // ];
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'maxRssi'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
-                // ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
             ];
             layer.layout['text-field'] = ['format', ['get', 'text'], {'font-scale': 1.2}];
             layer.layout['text-offset'] = [0, 0.7];

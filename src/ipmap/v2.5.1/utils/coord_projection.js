@@ -24,9 +24,9 @@ coord_projection.lngLatToMercator = function (lng, lat) {
     // let x = lon * 20037508.342789 / 180;
     // let y = Math.log(Math.tan((90 + lat) * DEG_TO_RAD / 2)) / (DEG_TO_RAD);
     // y = y * 20037508.34789 / 180;
-    // return {"x": x, "y": y}
+    // return {'x': x, 'y': y}
     let xy = lngLatCoordToMercatorCoord([lng, lat]);
-    return {"x": xy[0], "y": xy[1]};
+    return {'x': xy[0], 'y': xy[1]};
 };
 
 coord_projection.mercatorToLngLat = function (x, y) {

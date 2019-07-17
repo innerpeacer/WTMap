@@ -1,16 +1,16 @@
-import IndoorGroupLayer from "./indoor_layer_base"
-import GeojsonUtils from "../utils/geojson_utils"
+import IndoorGroupLayer from './indoor_layer_base'
+import GeojsonUtils from '../utils/geojson_utils'
 
 class indoor_layer_location extends IndoorGroupLayer {
     constructor(map) {
         super(map);
 
-        let subLayerName = "indoor_location";
+        let subLayerName = 'indoor_location';
         this.styleLayers = {};
         this.sourceID = subLayerName;
 
         let emptySource = {
-            'type': 'geojson', 'data': {"type": "FeatureCollection", "features": []}
+            'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
         };
 
         this.map.addSource(this.sourceID, emptySource);
@@ -20,11 +20,11 @@ class indoor_layer_location extends IndoorGroupLayer {
                 'id': layerID,
                 'type': 'symbol',
                 'source': this.sourceID,
-                "paint": {},
-                "layout": {
-                    "icon-image": "icon_location",
-                    "icon-size": 1,
-                    "icon-allow-overlap": true
+                'paint': {},
+                'layout': {
+                    'icon-image': 'icon_location',
+                    'icon-size': 1,
+                    'icon-allow-overlap': true
                 }
             };
             this.styleLayers[layerID] = layer;
@@ -39,7 +39,7 @@ class indoor_layer_location extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ["all", ["==", "floor", mapInfo.floorNumber]]);
+            this.map.setFilter(layerID, ['all', ['==', 'floor', mapInfo.floorNumber]]);
         }
     }
 }

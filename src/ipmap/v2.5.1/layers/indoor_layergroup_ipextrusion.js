@@ -1,11 +1,11 @@
-import IndoorGroupLayer from "./indoor_layer_base"
+import IndoorGroupLayer from './indoor_layer_base'
 
 class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
     constructor(map, name) {
         super(map);
         let subLayerName = name;
         this.styleLayers = {};
-        this.sourceLayer = "fill";
+        this.sourceLayer = 'fill';
 
         let baseZoom = map.getBaseZoom();
         let symbolUIDArray = map._layerSymbolMap[subLayerName];
@@ -21,16 +21,16 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                 // 'symbolID': symbol.symbolID,
                 // 'type': 'fill-extrusion',
                 // 'source': this.sourceID,
-                // "source-layer": this.sourceLayer,
+                // 'source-layer': this.sourceLayer,
                 // 'paint': {
                 //     'fill-extrusion-color': symbol.fillColor,
-                //     'fill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
-                //     'fill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
+                //     'fill-extrusion-base': ['/', ['get', 'extrusion-base'], 10],
+                //     'fill-extrusion-height': ['/', ['get', 'extrusion-height'], 10],
                 //     'fill-extrusion-opacity': symbol.fillOpacity,
                 // },
-                // "filter": ["all",
-                //     ["has", "extrusion"],
-                //     ["==", "extrusion", true],
+                // 'filter': ['all',
+                //     ['has', 'extrusion'],
+                //     ['==', 'extrusion', true],
                 // ]
             };
 
@@ -44,23 +44,23 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                     'symbolID': symbol.symbolID,
                     'type': 'ipfill-extrusion',
                     'source': this.sourceID,
-                    "source-layer": this.sourceLayer,
+                    'source-layer': this.sourceLayer,
                     'layout': {
-                        "ipfill-extrusion-outline-join": "round",
+                        'ipfill-extrusion-outline-join': 'round',
                     },
                     'paint': {
                         'ipfill-extrusion-color': symbol.fillColor,
-                        'ipfill-extrusion-base': ["/", ["get", 'extrusion-base'], 10],
-                        'ipfill-extrusion-height': ["/", ["get", 'extrusion-height'], 10],
+                        'ipfill-extrusion-base': ['/', ['get', 'extrusion-base'], 10],
+                        'ipfill-extrusion-height': ['/', ['get', 'extrusion-height'], 10],
                         'ipfill-extrusion-opacity': symbol.fillOpacity,
-                        "ipfill-extrusion-outline-color": symbol.outlineColor,
+                        'ipfill-extrusion-outline-color': symbol.outlineColor,
                         'ipfill-extrusion-outline-opacity': symbol.outlineOpacity,
-                        "ipfill-extrusion-outline-width": symbol.outlineWidth,
-                        "ipfill-extrusion-outline-height": ["/", ["get", 'extrusion-height'], 10],
+                        'ipfill-extrusion-outline-width': symbol.outlineWidth,
+                        'ipfill-extrusion-outline-height': ['/', ['get', 'extrusion-height'], 10],
                     },
-                    "filter": ["all",
-                        ["has", "extrusion"],
-                        ["==", "extrusion", true],
+                    'filter': ['all',
+                        ['has', 'extrusion'],
+                        ['==', 'extrusion', true],
                     ]
                 };
             }
@@ -76,17 +76,17 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
 
             this.styleLayers[extrusionLayerID] = extrusionLayer;
         }
-        // console.log(subLayerName + " Layer: " + symbolUIDArray.length);
+        // console.log(subLayerName + ' Layer: ' + symbolUIDArray.length);
     }
 
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ["all",
-                ["has", "extrusion"],
-                ["==", "extrusion", true],
-                ["==", "floor", mapInfo.floorNumber],
-                ["==", "symbolID", layers[layerID].symbolID]
+            this.map.setFilter(layerID, ['all',
+                ['has', 'extrusion'],
+                ['==', 'extrusion', true],
+                ['==', 'floor', mapInfo.floorNumber],
+                ['==', 'symbolID', layers[layerID].symbolID]
             ]);
         }
     }

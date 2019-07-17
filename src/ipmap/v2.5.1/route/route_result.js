@@ -1,4 +1,4 @@
-import ipTurf from "../utils/ip_turf"
+import ipTurf from '../utils/ip_turf'
 
 let Point = ipTurf.point;
 let Bearing = ipTurf.bearing;
@@ -14,8 +14,8 @@ function sliceLength(zoom) {
     console.log(scale);
 
     let length = defaultLength * scale;
-    console.log("zoom: " + zoom);
-    console.log("length: " + length);
+    console.log('zoom: ' + zoom);
+    console.log('length: ' + length);
     return length;
 }
 
@@ -36,10 +36,10 @@ class route_result {
             let rp = routePartArray[i];
             let floor = rp.mapInfo.floorNumber;
             features.push(rp.getGeometry());
-            if (typeof this._allFloorRoutePartDict[floor + ""] === "undefined") {
-                this._allFloorRoutePartDict[floor + ""] = [];
+            if (typeof this._allFloorRoutePartDict[floor + ''] === 'undefined') {
+                this._allFloorRoutePartDict[floor + ''] = [];
             }
-            let floorArray = this._allFloorRoutePartDict[floor + ""];
+            let floorArray = this._allFloorRoutePartDict[floor + ''];
             floorArray.push(rp);
         }
         this.data = FeatureCollection(features);
@@ -89,7 +89,7 @@ class route_result {
                 // let line = LineString(rp.route);
                 let line = rp.getGeometry();
                 let p = Point([location.x, location.y]);
-                let npOnLine = ipTurf.pointOnLine(line, p, "meters");
+                let npOnLine = ipTurf.pointOnLine(line, p, 'meters');
 
                 if (npOnLine.properties.dist < minDistance) {
                     minDistance = npOnLine.properties.dist;

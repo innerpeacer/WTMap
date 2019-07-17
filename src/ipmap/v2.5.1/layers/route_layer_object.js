@@ -1,5 +1,5 @@
 let emptySource = {
-    'type': 'geojson', 'data': {"type": "FeatureCollection", "features": []}
+    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
 };
 
 class layer_object {
@@ -57,7 +57,7 @@ class layer_object {
 class route_layer_object {
     constructor(name) {
         this.name = name;
-        // console.log("route_layer_object.constructor");
+        // console.log('route_layer_object.constructor');
         // console.log(this.name);
         {
             let wholeRouteSourceID = `whole-${this.name}-source`;
@@ -65,29 +65,29 @@ class route_layer_object {
             let wholeRouteLayer2ID = `whole-${this.name}-layer2`;
             this.wholeRouteObject = new layer_object(wholeRouteSourceID, wholeRouteLayer1ID, wholeRouteLayer2ID);
             this.wholeRouteObject.layer = {
-                "id": wholeRouteLayer1ID,
-                "type": "line",
-                "source": wholeRouteSourceID,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round"
+                'id': wholeRouteLayer1ID,
+                'type': 'line',
+                'source': wholeRouteSourceID,
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
-                "paint": {
-                    "line-color": "#ffffff",
-                    "line-width": 8
+                'paint': {
+                    'line-color': '#ffffff',
+                    'line-width': 8
                 }
             };
             this.wholeRouteObject.layer2 = {
-                "id": wholeRouteLayer2ID,
-                "type": "line",
-                "source": wholeRouteSourceID,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round"
+                'id': wholeRouteLayer2ID,
+                'type': 'line',
+                'source': wholeRouteSourceID,
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
-                "paint": {
-                    "line-color": "#00ff00",
-                    "line-width": 6
+                'paint': {
+                    'line-color': '#00ff00',
+                    'line-width': 6
                 }
             };
 
@@ -99,14 +99,14 @@ class route_layer_object {
                 'type': 'symbol',
                 'source': wholeRouteArrowSourceID,
                 'layout': {
-                    "icon-image": "icon_route_arrow",
-                    "icon-size": 1,
-                    "icon-allow-overlap": true,
-                    "icon-rotate": {
+                    'icon-image': 'icon_route_arrow',
+                    'icon-size': 1,
+                    'icon-allow-overlap': true,
+                    'icon-rotate': {
                         'type': 'identity',
                         'property': 'angle'
                     },
-                    "icon-rotation-alignment": "map",
+                    'icon-rotation-alignment': 'map',
                 },
             };
         }
@@ -118,29 +118,29 @@ class route_layer_object {
             let segmentRouteLayer2ID = `segment-${this.name}-layer2`;
             this.segmentRouteObject = new layer_object(segmentRouteSourceID, segmentRouteLayer1ID, segmentRouteLayer2ID);
             this.segmentRouteObject.layer = {
-                "id": segmentRouteLayer1ID,
-                "type": "line",
-                "source": segmentRouteSourceID,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round"
+                'id': segmentRouteLayer1ID,
+                'type': 'line',
+                'source': segmentRouteSourceID,
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
-                "paint": {
-                    "line-color": "#ffffff",
-                    "line-width": 8
+                'paint': {
+                    'line-color': '#ffffff',
+                    'line-width': 8
                 }
             };
             this.segmentRouteObject.layer2 = {
-                "id": segmentRouteLayer2ID,
-                "type": "line",
-                "source": segmentRouteSourceID,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round"
+                'id': segmentRouteLayer2ID,
+                'type': 'line',
+                'source': segmentRouteSourceID,
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
-                "paint": {
-                    "line-color": "#ff5959",
-                    "line-width": 6
+                'paint': {
+                    'line-color': '#ff5959',
+                    'line-width': 6
                 },
             };
 
@@ -148,16 +148,16 @@ class route_layer_object {
             let passedSegmentRouteLayerID = `passed-segment-${this.name}-layer`;
             this.passedSegmentRouteObject = new layer_object(passedSegmentRouteSourceID, passedSegmentRouteLayerID);
             this.passedSegmentRouteObject.layer = {
-                "id": passedSegmentRouteLayerID,
-                "type": "line",
-                "source": passedSegmentRouteSourceID,
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round"
+                'id': passedSegmentRouteLayerID,
+                'type': 'line',
+                'source': passedSegmentRouteSourceID,
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
-                "paint": {
-                    "line-color": "#888888",
-                    "line-width": 6
+                'paint': {
+                    'line-color': '#888888',
+                    'line-width': 6
                 },
             };
 
@@ -169,14 +169,14 @@ class route_layer_object {
                 'type': 'symbol',
                 'source': segmentArrowSourceID,
                 'layout': {
-                    "icon-image": "icon_route_arrow",
-                    "icon-size": 1,
-                    "icon-allow-overlap": true,
-                    "icon-rotate": {
+                    'icon-image': 'icon_route_arrow',
+                    'icon-size': 1,
+                    'icon-allow-overlap': true,
+                    'icon-rotate': {
                         'type': 'identity',
                         'property': 'angle'
                     },
-                    "icon-rotation-alignment": "map",
+                    'icon-rotation-alignment': 'map',
                 },
             };
         }
@@ -187,70 +187,70 @@ class route_layer_object {
             let routeStopLayer2ID = `${this.name}-stop-layer2`;
             this.routeStopObject = new layer_object(routeStopSourceID, routeStopLayer1ID, routeStopLayer2ID);
             this.routeStopObject.layer = {
-                "id": routeStopLayer1ID,
-                "type": "circle",
-                "source": routeStopSourceID,
-                "paint": {
-                    "circle-radius": 10,
-                    "circle-color": {
+                'id': routeStopLayer1ID,
+                'type': 'circle',
+                'source': routeStopSourceID,
+                'paint': {
+                    'circle-radius': 10,
+                    'circle-color': {
                         'type': 'identity',
                         'property': 'color'
                     },
-                    "circle-opacity": 1.0,
-                    "circle-stroke-color": "#fff",
-                    "circle-stroke-width": 2
+                    'circle-opacity': 1.0,
+                    'circle-stroke-color': '#fff',
+                    'circle-stroke-width': 2
                 }
             };
             this.routeStopObject.layer2 = {
-                "id": routeStopLayer2ID,
-                "type": "symbol",
-                "source": routeStopSourceID,
-                "paint": {
-                    "text-color": "#fff",
+                'id': routeStopLayer2ID,
+                'type': 'symbol',
+                'source': routeStopSourceID,
+                'paint': {
+                    'text-color': '#fff',
                 },
                 'layout': {
-                    "text-field": "{NAME}",
-                    "text-size": 15,
-                    "text-font": ["simhei"],
-                    "text-anchor": "center",
-                    "text-padding": 0,
-                    "text-offset": [0, 0.2]
+                    'text-field': '{NAME}',
+                    'text-size': 15,
+                    'text-font': ['simhei'],
+                    'text-anchor': 'center',
+                    'text-padding': 0,
+                    'text-offset': [0, 0.2]
                 }
             };
 
 
             // this.routeStopObject1 = new layer_object(routeStopSourceID, routeStopLayer1ID);
             // this.routeStopObject1.layer = {
-            //     "id": routeStopLayer1ID,
-            //     "type": "circle",
-            //     "source": routeStopSourceID,
-            //     "paint": {
-            //         "circle-radius": 10,
-            //         "circle-color": {
+            //     'id': routeStopLayer1ID,
+            //     'type': 'circle',
+            //     'source': routeStopSourceID,
+            //     'paint': {
+            //         'circle-radius': 10,
+            //         'circle-color': {
             //             'type': 'identity',
             //             'property': 'color'
             //         },
-            //         "circle-opacity": 1.0,
-            //         "circle-stroke-color": "#fff",
-            //         "circle-stroke-width": 2
+            //         'circle-opacity': 1.0,
+            //         'circle-stroke-color': '#fff',
+            //         'circle-stroke-width': 2
             //     }
             // };
             //
             // this.routeStopObject2 = new layer_object(routeStopSourceID, routeStopLayer2ID);
             // this.routeStopObject2.layer = {
-            //     "id": routeStopLayer2ID,
-            //     "type": "symbol",
-            //     "source": routeStopSourceID,
-            //     "paint": {
-            //         "text-color": "#fff",
+            //     'id': routeStopLayer2ID,
+            //     'type': 'symbol',
+            //     'source': routeStopSourceID,
+            //     'paint': {
+            //         'text-color': '#fff',
             //     },
             //     'layout': {
-            //         "text-field": "{NAME}",
-            //         "text-size": 15,
-            //         "text-font": ["simhei"],
-            //         "text-anchor": "center",
-            //         "text-padding": 0,
-            //         "text-offset": [0, 0.2]
+            //         'text-field': '{NAME}',
+            //         'text-size': 15,
+            //         'text-font': ['simhei'],
+            //         'text-anchor': 'center',
+            //         'text-padding': 0,
+            //         'text-offset': [0, 0.2]
             //     }
             // };
         }

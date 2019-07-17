@@ -1,8 +1,8 @@
-import Pbf from "pbf";
-import BeaconPbf from "../pbf/t_y_beacon_pbf";
-let LocatingBeaconListPbf = BeaconPbf.TYLocatingBeaconListPbf;
+import Pbf from 'pbf';
+import BeaconPbf from '../pbf/t_y_beacon_pbf';
+import BeaconUtils from './pbf_to_beacon_utils';
 
-import BeaconUtils from "./pbf_to_beacon_utils";
+let LocatingBeaconListPbf = BeaconPbf.TYLocatingBeaconListPbf;
 let bUtils = new BeaconUtils();
 
 class t_y_beacon_parser {
@@ -20,7 +20,6 @@ class t_y_beacon_parser {
     }
 
     getBeaconList() {
-        // console.log("getBeaconList");
         return this._beacons;
     }
 

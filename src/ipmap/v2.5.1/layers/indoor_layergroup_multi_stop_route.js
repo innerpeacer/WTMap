@@ -1,10 +1,10 @@
-import ipTurf from "../utils/ip_turf"
-import CoordProjection from "../utils/coord_projection"
-import RouteLayerObject from "./route_layer_object"
-import AnimationObject from "../utils/route_animation_object"
+import ipTurf from '../utils/ip_turf'
+import CoordProjection from '../utils/coord_projection'
+import RouteLayerObject from './route_layer_object'
+import AnimationObject from '../utils/route_animation_object'
 
 let emptySource = {
-    'type': 'geojson', 'data': {"type": "FeatureCollection", "features": []}
+    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
 };
 
 let routeAnimationObject = new AnimationObject();
@@ -51,9 +51,9 @@ function showAnimatedArrows(time) {
 
 class indoor_layergroup_multi_stop_route {
     constructor(map) {
-        // console.log("indoor_layergroup_multi_stop_route.constructor");
+        // console.log('indoor_layergroup_multi_stop_route.constructor');
         this.map = map;
-        let name = "route";
+        let name = 'route';
 
         let obj = new RouteLayerObject(name);
         this.wholeRouteObject = obj.wholeRouteObject;
@@ -69,7 +69,7 @@ class indoor_layergroup_multi_stop_route {
     }
 
     hideRoute() {
-        // console.log("hideRoute");
+        // console.log('hideRoute');
         this._isRouteHidden = true;
 
         cancelAnimationFrame(routeAnimationObject.globalAnimationID);
@@ -85,8 +85,8 @@ class indoor_layergroup_multi_stop_route {
         // this.clearSource();
         var that = this;
         if (!location) this.clearSource();
-        // console.log("showRoute");
-        // console.log("segment: " + segment);
+        // console.log('showRoute');
+        // console.log('segment: ' + segment);
 
         this._isRouteHidden = false;
 
@@ -160,20 +160,20 @@ class indoor_layergroup_multi_stop_route {
 
     _setRouteColor(color1, color2, color3) {
         if (color1 != null) {
-            this.map.setPaintProperty(this.segmentRouteObject.layerID2, "line-color", color1);
+            this.map.setPaintProperty(this.segmentRouteObject.layerID2, 'line-color', color1);
         }
         if (color2 != null) {
-            this.map.setPaintProperty(this.passedSegmentRouteObject.layerID, "line-color", color2);
+            this.map.setPaintProperty(this.passedSegmentRouteObject.layerID, 'line-color', color2);
         }
         if (color3 != null) {
-            this.map.setPaintProperty(this.wholeRouteObject.layerID2, "line-color", color3);
+            this.map.setPaintProperty(this.wholeRouteObject.layerID2, 'line-color', color3);
         }
     }
 
-    _setMapInfo(mapInfo){
+    _setMapInfo(mapInfo) {
         this._floorIndex = mapInfo.floorNumber;
         let map = this.map;
-        let filter = ["==", "floor", this._floorIndex];
+        let filter = ['==', 'floor', this._floorIndex];
         this._layerObjects.forEach(function (obj) {
             obj.setFilter(map, filter);
         });
@@ -182,7 +182,7 @@ class indoor_layergroup_multi_stop_route {
     // _updateMapInfo(mapInfo) {
     //     this._floorIndex = mapInfo.floorNumber;
     //     let map = this.map;
-    //     let filter = ["==", "floor", this._floorIndex];
+    //     let filter = ['==', 'floor', this._floorIndex];
     //     this._layerObjects.forEach(function (obj) {
     //         obj.setFilter(map, filter);
     //     });

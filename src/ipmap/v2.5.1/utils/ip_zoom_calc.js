@@ -47,7 +47,6 @@ function calculateZoomForMaxBounds(maxBounds, width, height) {
 }
 
 function calculateZoom(bounds, width, height) {
-    // console.log("calculate zoom");
     let lng1 = bounds[0];
     let lat1 = bounds[1];
     let lng2 = bounds[2];

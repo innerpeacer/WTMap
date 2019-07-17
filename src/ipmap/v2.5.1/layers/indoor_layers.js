@@ -1,11 +1,11 @@
-import FillLayer from "./indoor_layergroup_fill"
-import IconTextLayer from "./indoor_layergroup_icon_text"
+import FillLayer from './indoor_layergroup_fill'
+import IconTextLayer from './indoor_layergroup_icon_text'
 
-// import ExtrusionLayer from "./indoor_layergroup_extrusion"
-import ExtrusionLayer from "./indoor_layergroup_ipextrusion"
-import MultiStopRouteLayer from "./indoor_layergroup_multi_stop_route"
-import LocationLayer from "./indoor_layer_location"
-import DebugBeaconLayer from "./debug_layers/indoor_layergroup_debug_beacon"
+// import ExtrusionLayer from './indoor_layergroup_extrusion'
+import ExtrusionLayer from './indoor_layergroup_ipextrusion'
+import MultiStopRouteLayer from './indoor_layergroup_multi_stop_route'
+import LocationLayer from './indoor_layer_location'
+import DebugBeaconLayer from './debug_layers/indoor_layergroup_debug_beacon'
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -16,10 +16,10 @@ class indoor_layers {
         this._locationLayerArray = [];
 
         this._use3D = use3D;
-        this._floorLayer = new FillLayer(map, "floor", 1).addToMap();
+        this._floorLayer = new FillLayer(map, 'floor', 1).addToMap();
         this._baseLayerArray.push(this._floorLayer);
 
-        this._roomLayer = new FillLayer(map, "room", 2).addToMap();
+        this._roomLayer = new FillLayer(map, 'room', 2).addToMap();
         this._baseLayerArray.push(this._roomLayer);
 
         this._assetLayer = new FillLayer(map, 'asset', 3).addToMap();
@@ -28,16 +28,16 @@ class indoor_layers {
         this._routeLayer = new MultiStopRouteLayer(map).addToMap();
         this._baseLayerArray.push(this._routeLayer);
 
-        this._extrusionLayer = new ExtrusionLayer(map, "extrusion").addToMap();
+        this._extrusionLayer = new ExtrusionLayer(map, 'extrusion').addToMap();
         this._baseLayerArray.push(this._extrusionLayer);
         this._3dLayerArray.push(this._extrusionLayer);
 
-        this._facilityLayer = new IconTextLayer(map, "facility").addToMap();
+        this._facilityLayer = new IconTextLayer(map, 'facility').addToMap();
         this._baseLayerArray.push(this._facilityLayer);
         this._3dLayerArray.push(this._facilityLayer);
         this._labelIconLayerArray.push(this._facilityLayer);
 
-        this._labelLayer = new IconTextLayer(map, "label").addToMap();
+        this._labelLayer = new IconTextLayer(map, 'label').addToMap();
         this._baseLayerArray.push(this._labelLayer);
         this._3dLayerArray.push(this._labelLayer);
         this._labelIconLayerArray.push(this._labelLayer);
@@ -49,7 +49,7 @@ class indoor_layers {
         this._debugBeacon = options._debugBeacon || false;
         if (this._debugBeacon) {
             this._debugBeaconLayer = new DebugBeaconLayer(map, map._locator).addToMap();
-            // this._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe("_getLocatingBeaconGeojson"));
+            // this._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe('_getLocatingBeaconGeojson'));
             // this._debugBeaconLayer._moveLayer();
             this._baseLayerArray.push(this._debugBeaconLayer);
         }
@@ -69,7 +69,7 @@ class indoor_layers {
 
     _updateLocator(locator) {
         if (locator && locator._ready && this._debugBeacon) {
-            this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe("_getLocatingBeaconGeojson"));
+            this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe('_getLocatingBeaconGeojson'));
         }
     }
 
@@ -176,12 +176,12 @@ class indoor_layers {
     }
 
     getLayerIDs(subLayer) {
-        if (subLayer === "floor") return this._floorLayer._getLayerIDs();
-        if (subLayer === "room") return this._roomLayer._getLayerIDs();
-        if (subLayer === "asset") return this._assetLayer._getLayerIDs();
-        if (subLayer === "facility") return this._facilityLayer._getLayerIDs();
-        if (subLayer === "label") return this._labelLayer._getLayerIDs();
-        if (subLayer === "extrusion") return this._extrusionLayer._getLayerIDs();
+        if (subLayer === 'floor') return this._floorLayer._getLayerIDs();
+        if (subLayer === 'room') return this._roomLayer._getLayerIDs();
+        if (subLayer === 'asset') return this._assetLayer._getLayerIDs();
+        if (subLayer === 'facility') return this._facilityLayer._getLayerIDs();
+        if (subLayer === 'label') return this._labelLayer._getLayerIDs();
+        if (subLayer === 'extrusion') return this._extrusionLayer._getLayerIDs();
     }
 }
 

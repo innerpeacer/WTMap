@@ -1,26 +1,26 @@
-import {Evented} from "../utils/ip_evented"
-import ipTurf from "../utils/ip_turf"
+import {Evented} from '../utils/ip_evented'
+import ipTurf from '../utils/ip_turf'
 
 let Point = ipTurf.point;
 let FeatureCollection = ipTurf.featureCollection;
 
-import IPRoutePart from "./route_part"
-import IPRouteResult from "./route_result"
-import IPMutliRouteResult from "./multi_stop_route_result"
-import IPHttpRequest from "../utils/http_request"
-import CoordProjection from "../utils/coord_projection"
-import EntityUtils from "../entity/entity_utils"
-import {local_point as IPLocalPoint} from "../entity/local_point"
+import IPRoutePart from './route_part'
+import IPRouteResult from './route_result'
+import IPMutliRouteResult from './multi_stop_route_result'
+import IPHttpRequest from '../utils/http_request'
+import CoordProjection from '../utils/coord_projection'
+import EntityUtils from '../entity/entity_utils'
+import {local_point as IPLocalPoint} from '../entity/local_point'
 
 // let getRoutePath = function (bID, options, start, end, stops, params) {
-//     // console.log("getRoutePath: ");
+//     // console.log('getRoutePath: ');
 //     let rearrange = true;
 //     if (params && !params.rearrangeStops) {
 //         // console.log(params.rearrangeStops);
-//         // console.log("no");
+//         // console.log('no');
 //         rearrange = false;
 //     } else {
-//         // console.log("yes");
+//         // console.log('yes');
 //     }
 //
 //
@@ -45,14 +45,14 @@ import {local_point as IPLocalPoint} from "../entity/local_point"
 // };
 
 let getRoutePath = function (bID, options, start, end, stops, params) {
-    // console.log("getRoutePath: ");
+    // console.log('getRoutePath: ');
     // console.log(params);
     let rearrange = true;
     if (params && !params.rearrangeStops) {
         rearrange = false;
     }
 
-    // let routeVersion = "V3";
+    // let routeVersion = 'V3';
     // if (params && params.version) {
     //     routeVersion = params.version;
     // }
@@ -87,9 +87,9 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
     }
 
     if (ignoreList.length > 0) {
-        var ignoreStr = "";
+        var ignoreStr = '';
         for (let i = 0; i < ignoreList.length; ++i) {
-            if (i != 0) ignoreStr += ",";
+            if (i != 0) ignoreStr += ',';
             ignoreStr += ignoreList[i];
         }
         url += `&ignore=${ignoreStr}`;
@@ -183,11 +183,11 @@ function checkMultiStopResult(msr) {
 }
 
 let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPoint, endPoint, stopPoints, callback, errorCallback) {
-    // console.log("parseMultiStopRouteResult");
+    // console.log('parseMultiStopRouteResult');
 
     if (!checkMultiStopResult(multiStopResult)) {
         if (errorCallback != null) {
-            errorCallback({statusText: "没有找到路径"});
+            errorCallback({statusText: '没有找到路径'});
         }
         return;
     }
@@ -215,9 +215,9 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
 
     result.indices = multiStopResult.indices;
 
-    // let color = "#EEEE00";
-    // let color = "#000";
-    let color = "#00f";
+    // let color = '#EEEE00';
+    // let color = '#000';
+    let color = '#00f';
     let rearrangedStopArray = multiStopResult.rearrangedStop;
     let rearrangedStopFeatures = [];
     let rearrangedStops = [];
@@ -225,8 +225,8 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
         for (let i = 0; i < rearrangedStopArray.length; ++i) {
             let rp = convertPoint(rearrangedStopArray[i]);
             rearrangedStops.push(rp);
-            rearrangedStopFeatures.push(Point([rp.lng, rp.lat], {"NAME": i + 1, "color": color, "floor": rp.floor}));
-            // rearrangedStopFeatures.push(Point([rp.lng, rp.lat], {"NAME": "经", "color": color, "floor": rp.floor}));
+            rearrangedStopFeatures.push(Point([rp.lng, rp.lat], {'NAME': i + 1, 'color': color, 'floor': rp.floor}));
+            // rearrangedStopFeatures.push(Point([rp.lng, rp.lat], {'NAME': '经', 'color': color, 'floor': rp.floor}));
         }
     }
     result.rearrangedPoints = rearrangedStops;
@@ -244,7 +244,7 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
 class multi_stop_route_manager extends Evented {
     constructor(options) {
         super();
-        // console.log("multi_stop_route_manager.constructor");
+        // console.log('multi_stop_route_manager.constructor');
         this._options = options;
     }
 
@@ -254,7 +254,7 @@ class multi_stop_route_manager extends Evented {
     }
 
     getRouteData(startLngLat, endLngLat, stopsLngLat, callback, errorCallback, params) {
-        // console.log("getRouteData");
+        // console.log('getRouteData');
         let start = EntityUtils.lngLatPoint2LocalPoint(startLngLat);
         let end = EntityUtils.lngLatPoint2LocalPoint(endLngLat);
         let stops = [];
@@ -269,16 +269,16 @@ class multi_stop_route_manager extends Evented {
         let that = this;
 
         request.request(getRoutePath(that.building.buildingID, that._options, start, end, stops, params));
-        request.on("http-result", function (data) {
+        request.on('http-result', function (data) {
             if (data.success) {
                 let result = parseMultiStopRouteResult(data, that.allMapInfos, start, end, stops, callback, errorCallback);
-                that.fire("route-result", result);
+                that.fire('route-result', result);
             } else {
-                that.fire("route-error", {statusText: "没有找到路径"});
+                that.fire('route-error', {statusText: '没有找到路径'});
             }
         });
-        request.on("http-error", function (error) {
-            that.fire("route-error", error);
+        request.on('http-error', function (error) {
+            that.fire('route-error', error);
         });
     }
 }

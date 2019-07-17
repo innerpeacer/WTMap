@@ -1,4 +1,4 @@
-import CoordProjection from "../utils/coord_projection"
+import CoordProjection from '../utils/coord_projection'
 
 class map_extent {
     constructor(xmin, ymin, xmax, ymax) {
@@ -9,7 +9,7 @@ class map_extent {
     }
 
     getCenter() {
-        return {"x": (this.xmin + this.xmax) * 0.5, "y": (this.ymin + this.ymax) * 0.5};
+        return {'x': (this.xmin + this.xmax) * 0.5, 'y': (this.ymin + this.ymax) * 0.5};
     }
 }
 

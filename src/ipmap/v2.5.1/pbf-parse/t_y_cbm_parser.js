@@ -1,5 +1,5 @@
 import Pbf from 'pbf';
-import TYCBMPbf from "../pbf/t_y_cbm_pbf";
+import TYCBMPbf from '../pbf/t_y_cbm_pbf';
 
 let CBMPbf = TYCBMPbf.CBMPbf;
 

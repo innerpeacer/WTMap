@@ -1,4 +1,4 @@
-import IPColorUtils from "../utils/ip_color_utils"
+import IPColorUtils from '../utils/ip_color_utils'
 
 class icon_text_symbol {
     constructor(obj) {

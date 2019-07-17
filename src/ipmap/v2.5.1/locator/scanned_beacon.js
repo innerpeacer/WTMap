@@ -1,4 +1,4 @@
-import Beacon from "./beacon"
+import Beacon from './beacon'
 
 class scanned_beacon extends Beacon {
     constructor(uuid, major, minor, rssi, accuracy) {

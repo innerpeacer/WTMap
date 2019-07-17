@@ -7,19 +7,19 @@ class local_point {
     }
 
     toStartParameter() {
-        return "startX=" + this.x + "&startY=" + this.y + "&startF=" + this.floor;
+        return 'startX=' + this.x + '&startY=' + this.y + '&startF=' + this.floor;
     }
 
     toStartParameter2() {
-        return "start=" + this.x + "," + this.y + "," + this.floor;
+        return 'start=' + this.x + ',' + this.y + ',' + this.floor;
     }
 
     toEndParameter() {
-        return "endX=" + this.x + "&endY=" + this.y + "&endF=" + this.floor;
+        return 'endX=' + this.x + '&endY=' + this.y + '&endF=' + this.floor;
     }
 
     toEndParameter2() {
-        return "end=" + this.x + "," + this.y + "," + this.floor;
+        return 'end=' + this.x + ',' + this.y + ',' + this.floor;
     }
 
     toString() {
@@ -28,13 +28,13 @@ class local_point {
 }
 
 local_point.toStopParams = function (stops) {
-    let str = "stops=";
+    let str = 'stops=';
     for (let i = 0; i < stops.length; ++i) {
         let sp = stops[i];
         if (i != 0) {
-            str += ",";
+            str += ',';
         }
-        str += (sp.x + "," + sp.y + "," + sp.floor);
+        str += (sp.x + ',' + sp.y + ',' + sp.floor);
     }
     return str;
 };

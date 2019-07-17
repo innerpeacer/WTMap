@@ -1,4 +1,4 @@
-import IndoorGroupLayer from "./indoor_layer_base"
+import IndoorGroupLayer from './indoor_layer_base'
 
 class indoor_layergroup_fill extends IndoorGroupLayer {
     constructor(map, name, layerNumber) {
@@ -24,34 +24,34 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 'symbolID': symbolID,
                 'type': 'fill',
                 'source': this.sourceID,
-                "source-layer": "fill",
+                'source-layer': 'fill',
                 'layout': {},
                 'paint': {
                     'fill-color': symbol.fillColor,
                     'fill-opacity': symbol.fillOpacity,
                 },
-                "filter": ["all"]
+                'filter': ['all']
             };
 
             let outlineLayerID = `${subLayerName}-outline-${symbolID}`;
             let outlineLayer = {
                 'id': outlineLayerID,
                 'symbolID': symbolID,
-                "type": "line",
-                "layout": {
-                    "line-join": "round",
-                    "line-cap": "round",
+                'type': 'line',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round',
                 },
                 'source': this.sourceID,
-                "source-layer": "fill",
-                "paint": {
-                    "line-color": symbol.outlineColor,
-                    // "line-color": "blue",
+                'source-layer': 'fill',
+                'paint': {
+                    'line-color': symbol.outlineColor,
+                    // 'line-color': 'blue',
                     'line-opacity': symbol.outlineOpacity,
-                    "line-width": symbol.outlineWidth
-                    // "line-width": 5
+                    'line-width': symbol.outlineWidth
+                    // 'line-width': 5
                 },
-                "filter": ["all"]
+                'filter': ['all']
             };
 
             let testIpLine = true;
@@ -60,23 +60,23 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 outlineLayer = {
                     'id': outlineLayerID,
                     'symbolID': symbolID,
-                    "type": "ipline",
-                    "layout": {
-                        "ipline-join": "round",
-                        "ipline-cap": "round",
+                    'type': 'ipline',
+                    'layout': {
+                        'ipline-join': 'round',
+                        'ipline-cap': 'round',
                     },
                     'source': this.sourceID,
-                    "source-layer": "fill",
-                    "paint": {
-                        // "ipline-color": symbol.outlineColor,
-                        "ipline-color": "green",
+                    'source-layer': 'fill',
+                    'paint': {
+                        // 'ipline-color': symbol.outlineColor,
+                        'ipline-color': 'green',
                         'ipline-opacity': symbol.outlineOpacity,
-                        // "ipline-width": symbol.outlineWidth
-                        "ipline-height": ["/", ["get", 'extrusion-height'], 10],
-                        // "ipline-height": 10,
-                        "ipline-width": 1
+                        // 'ipline-width': symbol.outlineWidth
+                        'ipline-height': ['/', ['get', 'extrusion-height'], 10],
+                        // 'ipline-height': 10,
+                        'ipline-width': 1
                     },
-                    "filter": ["all"]
+                    'filter': ['all']
                 };
             }
 
@@ -93,9 +93,6 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
 
             _fillArray[layerID] = layer;
             _outlineArray[outlineLayerID] = outlineLayer;
-
-            // this.styleLayers[layerID] = layer;
-            // this.styleLayers[outlineLayerID] = outlineLayer;
         }
 
         for (let layerID in _fillArray) {
@@ -106,16 +103,16 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             this.styleLayers[layerID] = _outlineArray[layerID];
         }
 
-        // console.log(subLayerName + " Layer: " + symbolIDArray.length);
+        // console.log(subLayerName + ' Layer: ' + symbolIDArray.length);
     }
 
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ["all",
-                ["==", "floor", mapInfo.floorNumber],
-                ["==", "layer", this._layerNumber],
-                ["==", "symbolID", layers[layerID].symbolID]
+            this.map.setFilter(layerID, ['all',
+                ['==', 'floor', mapInfo.floorNumber],
+                ['==', 'layer', this._layerNumber],
+                ['==', 'symbolID', layers[layerID].symbolID]
             ]);
         }
     }

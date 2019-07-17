@@ -3,7 +3,7 @@ class beacon {
         this.uuid = uuid.toUpperCase();
         this.major = major;
         this.minor = minor;
-        this.key = this.major + "-" + this.minor;
+        this.key = this.major + '-' + this.minor;
     }
 }
 

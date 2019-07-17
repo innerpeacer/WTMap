@@ -1,4 +1,4 @@
-import IPColorUtils from "../utils/ip_color_utils"
+import IPColorUtils from '../utils/ip_color_utils'
 
 class fill_symbol {
     constructor(obj) {
