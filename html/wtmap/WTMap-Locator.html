@@ -5,7 +5,7 @@
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
     <script src="js/config-dev-2.5.1.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
-
+    <script src="vconsole.min.js"></script>
 </head>
 <body>
 
@@ -20,6 +20,7 @@
 </div>
 
 <script>
+    new VConsole();
     console.log(wtmap.version);
     var host = "http://" + window.location.host;
     var buildingID = "00270003";
@@ -44,30 +45,6 @@
     map.on("click", function (evt) {
         // console.log("Zoom: " + map.getZoom());
         // console.log(evt.lngLat);
-        var beaconArray = map._locator._biteMe("_getLocatingBeaconArray");
-        // console.log(beaconArray);
-        if (!beaconArray) return;
-        var length = beaconArray.length;
-        var beacon = beaconArray[parseInt(Math.random() * (length - 1))];
-        // console.log(beacon);
-        if (!beacon) return;
-
-        var beacons = [{
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10180,
-            "minor": beacon.minor,
-            // "minor": 30897,
-            "rssi": -70,
-            "accuracy": 1.4534
-        }];
-
-        var res = map.didRangeBeacons(beacons);
-        if (res == null) return;
-
-        var location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
-        map.setZoom(19);
-        map.showLocation(location, {center: true});
-        // console.log(res);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -77,8 +54,6 @@
 
     map.on("mapready", function (evt) {
         // console.log("mapready");
-        // console.log("BaseZoom: " + map.getBaseZoom());
-
         map.mapInfoArray.forEach(function (mapInfo) {
             var floorButton = document.createElement('option');
             floorButton.value = mapInfo.floorName;
@@ -94,7 +69,6 @@
             var info = map.mapInfoArray[i];
             if (info.floorNumber == evt.mapInfo.floorNumber) {
                 floorSwitch.selectedIndex = i;
-                map.fire('click');
                 return;
             }
         }
@@ -112,6 +86,34 @@
     map.on("locator-ready", function () {
         // console.log("locator-ready");
     });
+
+    // ------ reactive with native ------------
+    function nativeToJs() {
+        console.log("nativeToJs called");
+        map.panBy([50, 50]);
+        return "nativeToJs called";
+    }
+
+    function jsToNative(obj) {
+        if (window.webkit) {
+            window.webkit.messageHandlers.jsToNative.postMessage(obj);
+        }
+    }
+
+    function scan(data) {
+        console.log("scan called");
+        console.log(data);
+
+        var res = map.didRangeBeacons(data);
+        if (res && res.location) {
+            var location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
+            console.log(location);
+            map.showLocation(location, {center: map.currentMapInfo.floorNumber !== location.floor});
+            return res;
+        }
+        console.log("no location");
+        return "no location";
+    }
 
 </script>
 
