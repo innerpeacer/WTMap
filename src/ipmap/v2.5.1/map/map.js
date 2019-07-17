@@ -55,6 +55,8 @@ class IPMap extends BoxMap {
         if (options._useFile == null) options._useFile = true;
         if (options.use3D == null) options.use3D = true;
         if (options.usePbf == null) options.usePbf = true;
+        if (options._debugBeacon == null) options._debugBeacon = false;
+        this._debugBeacon = options._debugBeacon;
 
         let dataVersion = null;
         let disableCache = false;
@@ -134,7 +136,7 @@ class IPMap extends BoxMap {
             map._requestCBM();
         });
 
-        this._locator = new IndoorLocator(this.buildingID);
+        this._locator = new IndoorLocator(this.buildingID, options);
         this._locator.on("inner-locator-ready", function () {
             // console.log("inner-locator-ready");
             if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
@@ -160,17 +162,35 @@ class IPMap extends BoxMap {
             floor: location.floor
         };
         let map = this;
+        let targetFloor = location.floor;
         this.location = loc;
         this._layerGroup._showLocation(this.location, options);
         if (options && options.center) {
-            map._setFloorNumber(map.location.properties.floor, function () {
+            if (targetFloor && targetFloor !== map.currentMapInfo.floorNumber) {
+                map._setFloorNumber(map.location.properties.floor, function () {
+                    map.easeTo({center: map.location});
+                });
+            } else {
                 map.easeTo({center: map.location});
-            });
+            }
         }
     };
 
-    didRangeBeacons(beacons, options) {
-        return this._locator._didRangeBeacons(beacons, options);
+    didRangeBeacons(beacons) {
+        let data = this._locator._didRangeBeacons(beacons);
+        let result = {
+            location: data.location,
+            maxRssi: data.maxRssi,
+        };
+
+        if (this._debugBeacon) {
+            result.maxIndex = data.maxIndex;
+            result.totalWeighting = data.totalWeighting;
+            result.beaconList = data.beaconList;
+            result.beaconPool = data.beaconPool;
+            this._layerGroup._updateDebugBeacon(data.debugData);
+        }
+        return result;
     }
 
     getLocation() {
@@ -295,6 +315,7 @@ class IPMap extends BoxMap {
             "bounds": initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
+        map._layerGroup._updateLocator(map._locator);
         map.fire("mapready");
 
         if (this._targetFloorID != null) {

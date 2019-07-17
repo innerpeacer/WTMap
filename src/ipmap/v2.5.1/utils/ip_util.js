@@ -6,3 +6,21 @@ export function extend(dest, ...sources) {
     }
     return dest;
 }
+
+export function mapObject(input, iterator, context) {
+    const output = {};
+    for (const key in input) {
+        output[key] = iterator.call(context || this, input[key], key, input);
+    }
+    return output;
+}
+
+export function clone(input) {
+    if (Array.isArray(input)) {
+        return input.map(clone);
+    } else if (typeof input === 'object' && input) {
+        return ((mapObject(input, clone)));
+    } else {
+        return input;
+    }
+}

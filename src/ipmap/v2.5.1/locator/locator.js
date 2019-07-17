@@ -14,9 +14,6 @@ function _loadBeacons(locator, data) {
         let locatingBeacon = new LocatingBeacon(lb.uuid, lb.major, lb.minor, lb.x, lb.y, lb.floor);
         _locatorObject.locatingBeaconDict.set(locatingBeacon.key, locatingBeacon);
     }
-    locator._ready = true;
-    locator.fire("ready");
-    locator.fire("inner-locator-ready");
 }
 
 function _updateBeaconPool(sbeacons) {
@@ -70,6 +67,7 @@ function _calculateLocation(options) {
     let index = Math.min(9, beaconList.length);
     let frequencyMap = new Map();
 
+    let debugArray = [];
     for (let i = 0; i < index; ++i) {
         let sb = beaconList[i];
         maxRssi = sb.rssi;
@@ -79,6 +77,22 @@ function _calculateLocation(options) {
         totalWeighting += weighting;
         weightingArray.push(weighting);
         pointArray.push(location);
+
+        let lnglat = CoordProjection.mercatorToLngLat(location.x, location.y);
+        debugArray.push({
+            lng: lnglat.lng,
+            lat: lnglat.lat,
+            properties: {
+                major: sb.major,
+                minor: sb.minor,
+                x: location.x,
+                y: location.y,
+                floor: location.floor,
+                rssi: sb.rssi,
+                accuracy: parseInt(sb.accuracy * 100) / 100,
+                weighting: parseInt(weighting * 100) / 100
+            }
+        });
 
         let floorWeight = 1;
         if (i === 0 || i === 1) floorWeight = 2;
@@ -122,6 +136,7 @@ function _calculateLocation(options) {
         res.totalWeighting = totalWeighting;
         res.beaconList = beaconList.length;
         res.beaconPool = _locatorObject.beaconPool.size;
+        res.debugData = GeojsonUtils.createPointFeatureCollection(debugArray);
     }
     return res;
 }
@@ -164,6 +179,7 @@ class locator extends Evented {
         if (options != null && options.url != null) {
             this._url = options.url;
         }
+        this._debugBeacon = !!(options && options._debugBeacon);
 
         _locatorObject.locatingBeaconDict = new Map();
         _locatorObject.scannedBeaconArray = [];
@@ -194,6 +210,9 @@ class locator extends Evented {
                     let parser = new Parser(byteArray);
                     that._uuid = parser.getUuid();
                     _loadBeacons(that, parser.getBeaconList());
+                    that._ready = true;
+                    that.fire("ready");
+                    that.fire("inner-locator-ready");
                 } else {
                     that.fire("inner-locator-failed", {errorCode: 900, description: "Beacon Data error!"});
                 }
@@ -203,7 +222,7 @@ class locator extends Evented {
     }
 
 
-    _didRangeBeacons(beacons, options) {
+    _didRangeBeacons(beacons) {
         if (!this._ready) {
             console.log("Not ready yet");
             return null;
@@ -218,7 +237,7 @@ class locator extends Evented {
 
         _preprocessBeacons(this, sbList);
         _updateBeaconPool(_locatorObject.scannedBeaconArray);
-        let res = _calculateLocation(options);
+        let res = _calculateLocation({debug: this._debugBeacon});
         this.currentLocation = res.location;
         return res;
     }

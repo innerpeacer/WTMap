@@ -52,7 +52,6 @@ class indoor_layers {
             // this._debugBeaconLayer._setLocatingBeaconData(map._locator._biteMe("_getLocatingBeaconGeojson"));
             // this._debugBeaconLayer._moveLayer();
             this._baseLayerArray.push(this._debugBeaconLayer);
-            this._updateLocator(this._map._locator);
         }
 
         this._locationLayer = new LocationLayer(map).addToMap();
@@ -69,8 +68,14 @@ class indoor_layers {
     }
 
     _updateLocator(locator) {
-        if (locator && this._debugBeacon) {
+        if (locator && locator._ready && this._debugBeacon) {
             this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe("_getLocatingBeaconGeojson"));
+        }
+    }
+
+    _updateDebugBeacon(array) {
+        if (this._debugBeacon) {
+            this._debugBeaconLayer._setScannedBeaconData(array);
         }
     }
 

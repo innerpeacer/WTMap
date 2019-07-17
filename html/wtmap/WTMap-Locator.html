@@ -21,6 +21,7 @@
 
 <script>
     console.log(wtmap.version);
+    var host = "http://" + window.location.host;
     var buildingID = "00270003";
     var use3D = true;
     use3D = false;
@@ -33,35 +34,71 @@
         _dataVersion: "v5",
         usePbf: true,
         _debugBeacon: true,
-        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
-        // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/MilitaryGames",
-        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf",
-        // _apiHost: "http://47.97.173.242:8080"
+        sprite: host + "/WTMapResource/sprites/MilitaryGames",
+        glyphs: host + "/WTMapResource/glyphs/{fontstack}/{range}.pbf",
+        _apiHost: host
     });
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
     map.on("click", function (evt) {
-        // console.log("Zoom: " + map.getZoom());
-        // console.log(evt.lngLat);
+        console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
         var beaconArray = map._locator._biteMe("_getLocatingBeaconArray");
+        // console.log(beaconArray);
         if (!beaconArray) return;
         var length = beaconArray.length;
         var beacon = beaconArray[parseInt(Math.random() * (length - 1))];
+        // console.log(beacon);
+        if (!beacon) return;
 
-        var beacons = [{
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10180,
-            "minor": beacon.minor,
-            // "minor": 30897,
-            "rssi": -70,
-            "accuracy": 1.4534
-        }];
+        // var beacons = [{
+        //     "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+        //     "major": 10180,
+        //     "minor": beacon.minor,
+        //     // "minor": 30897,
+        //     "rssi": -70,
+        //     "accuracy": 1.4534
+        // }];
+
+        var beacons = [
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10180,
+                "minor": 30874,
+                "rssi": -70,
+                "accuracy": 1.4534
+            },
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10180,
+                "minor": 30868,
+                "rssi": -70,
+                "accuracy": 1.4534
+            },
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10180,
+                "minor": 30875,
+                "rssi": -70,
+                "accuracy": 1.4534
+            },
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10180,
+                "minor": 32438,
+                "rssi": -70,
+                "accuracy": 1.4534
+            }
+
+        ];
         var res = map.didRangeBeacons(beacons);
         if (res == null) return;
 
         var location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
+        map.setZoom(19);
         map.showLocation(location, {center: true});
+        // console.log(res);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -80,7 +117,6 @@
             floorSwitch.appendChild(floorButton);
             floorSwitch.selectedIndex = map.building.initFloorIndex;
         });
-
     });
 
     map.on("floorend", function (evt) {
@@ -89,6 +125,7 @@
             var info = map.mapInfoArray[i];
             if (info.floorNumber == evt.mapInfo.floorNumber) {
                 floorSwitch.selectedIndex = i;
+                map.fire('click');
                 return;
             }
         }
