@@ -73,9 +73,10 @@ class indoor_layers {
         }
     }
 
-    _updateDebugBeacon(array) {
+    _updateDebugBeacon(data) {
         if (this._debugBeacon) {
-            this._debugBeaconLayer._setScannedBeaconData(array);
+            this._debugBeaconLayer._setScannedBeaconData(data.debugData);
+            this._debugBeaconLayer._setLocationData(data.debugLocation);
         }
     }
 

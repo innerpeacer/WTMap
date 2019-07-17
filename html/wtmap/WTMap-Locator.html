@@ -42,8 +42,8 @@
     // map.showCollisionBoxes = true;
 
     map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
-        console.log(evt.lngLat);
+        // console.log("Zoom: " + map.getZoom());
+        // console.log(evt.lngLat);
         var beaconArray = map._locator._biteMe("_getLocatingBeaconArray");
         // console.log(beaconArray);
         if (!beaconArray) return;
@@ -52,46 +52,15 @@
         // console.log(beacon);
         if (!beacon) return;
 
-        // var beacons = [{
-        //     "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-        //     "major": 10180,
-        //     "minor": beacon.minor,
-        //     // "minor": 30897,
-        //     "rssi": -70,
-        //     "accuracy": 1.4534
-        // }];
+        var beacons = [{
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10180,
+            "minor": beacon.minor,
+            // "minor": 30897,
+            "rssi": -70,
+            "accuracy": 1.4534
+        }];
 
-        var beacons = [
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10180,
-                "minor": 30874,
-                "rssi": -70,
-                "accuracy": 1.4534
-            },
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10180,
-                "minor": 30868,
-                "rssi": -70,
-                "accuracy": 1.4534
-            },
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10180,
-                "minor": 30875,
-                "rssi": -70,
-                "accuracy": 1.4534
-            },
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10180,
-                "minor": 32438,
-                "rssi": -70,
-                "accuracy": 1.4534
-            }
-
-        ];
         var res = map.didRangeBeacons(beacons);
         if (res == null) return;
 

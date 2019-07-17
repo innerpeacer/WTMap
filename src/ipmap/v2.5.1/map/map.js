@@ -178,6 +178,8 @@ class IPMap extends BoxMap {
 
     didRangeBeacons(beacons) {
         let data = this._locator._didRangeBeacons(beacons);
+        if (data == null) return data;
+
         let result = {
             location: data.location,
             maxRssi: data.maxRssi,
@@ -188,7 +190,7 @@ class IPMap extends BoxMap {
             result.totalWeighting = data.totalWeighting;
             result.beaconList = data.beaconList;
             result.beaconPool = data.beaconPool;
-            this._layerGroup._updateDebugBeacon(data.debugData);
+            this._layerGroup._updateDebugBeacon(data);
         }
         return result;
     }

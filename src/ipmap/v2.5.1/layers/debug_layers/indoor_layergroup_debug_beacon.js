@@ -23,6 +23,7 @@ let defaultTextSymbolLayer = {
         'text-font': ['simhei'],
         'text-offset': [0, 0.3],
         'text-anchor': 'top',
+        'text-max-width': 20,
         'text-size': 9,
     }
 };
@@ -36,13 +37,13 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         this.otherFloorLayers = {};
 
         // ---------- locating beacons ----------
-        let locatingLayerName = 'locating_beacon';
-        let locatingSourceID = locatingLayerName;
-        this.locatingSourceID = locatingSourceID;
-        this.map.addSource(locatingSourceID, emptySource);
+        let locatingBeaconLayerName = 'locating_beacon';
+        let locatingBeaconSourceID = locatingBeaconLayerName;
+        this.locatingBeaconSourceID = locatingBeaconSourceID;
+        this.map.addSource(locatingBeaconSourceID, emptySource);
         {
-            let layerID = `${locatingLayerName}-circle`;
-            let layer = {id: layerID, source: locatingSourceID};
+            let layerID = `${locatingBeaconLayerName}-circle`;
+            let layer = {id: layerID, source: locatingBeaconSourceID};
             extend(layer, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 2;
             layer.paint['circle-color'] = '#3bb2d0';
@@ -50,25 +51,25 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             this.currentFloorLayers[layerID] = layer;
         }
         {
-            let layerID = `${locatingLayerName}-symbol`;
-            let layer = {id: layerID, source: locatingSourceID};
+            let layerID = `${locatingBeaconLayerName}-symbol`;
+            let layer = {id: layerID, source: locatingBeaconSourceID};
             extend(layer, clone(defaultTextSymbolLayer));
-            layer.paint['text-color'] = '#4169E1';
+            layer.paint['text-color'] = '#8B8682';
             layer.layout['text-field'] = ['get', 'minor'];
             this.styleLayers[layerID] = layer;
             this.currentFloorLayers[layerID] = layer;
         }
 
         // ---------- scanned beacons ----------
-        let scannedLayerName = 'scanned_beacon';
-        let scannedSourceID = scannedLayerName;
-        this.scannedSourceID = scannedSourceID;
-        this.map.addSource(scannedSourceID, emptySource);
+        let scannedBeaconLayerName = 'scanned_beacon';
+        let scannedBeaconSourceID = scannedBeaconLayerName;
+        this.scannedBeaconSourceID = scannedBeaconSourceID;
+        this.map.addSource(scannedBeaconSourceID, emptySource);
 
         // ---------- current floor beacons ----------
         {
-            let layerID = `${scannedLayerName}-circle-1`;
-            let layer = {id: layerID, source: scannedSourceID};
+            let layerID = `${scannedBeaconLayerName}-circle-1`;
+            let layer = {id: layerID, source: scannedBeaconSourceID};
             extend(layer, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 3;
             layer.paint['circle-color'] = '#ff00ff';
@@ -76,15 +77,15 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             this.currentFloorLayers[layerID] = layer;
         }
         {
-            let layerID = `${scannedLayerName}-symbol-1`;
-            let layer = {id: layerID, source: scannedSourceID};
+            let layerID = `${scannedBeaconLayerName}-symbol-1`;
+            let layer = {id: layerID, source: scannedBeaconSourceID};
             extend(layer, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#ff00ff';
             // layer.paint['text-color'] = '#ffff00';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor']], {'font-scale': 1.2},
                 '\n', {},
-                ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
             ];
             layer.layout['text-allow-overlap'] = true;
             this.styleLayers[layerID] = layer;
@@ -93,8 +94,8 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
 
         // ---------- other floor beacons ----------
         {
-            let layerID = `${scannedLayerName}-circle-2`;
-            let layer = {id: layerID, source: scannedSourceID};
+            let layerID = `${scannedBeaconLayerName}-circle-2`;
+            let layer = {id: layerID, source: scannedBeaconSourceID};
             extend(layer, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 3;
             layer.paint['circle-color'] = '#bd0026';
@@ -102,26 +103,66 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             this.otherFloorLayers[layerID] = layer;
         }
         {
-            let layerID = `${scannedLayerName}-symbol-2`;
-            let layer = {id: layerID, source: scannedSourceID};
+            let layerID = `${scannedBeaconLayerName}-symbol-2`;
+            let layer = {id: layerID, source: scannedBeaconSourceID};
             extend(layer, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#bd0026';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
                 '\n', {},
-                ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
             ];
             this.styleLayers[layerID] = layer;
             this.otherFloorLayers[layerID] = layer;
         }
+
+        // ---------- location result ----------
+        let locationLayerName = 'debug_location';
+        let locationSourceID = locationLayerName;
+        this.locationSourceID = locationSourceID;
+        this.map.addSource(locationSourceID, emptySource);
+        {
+            // let layerID = `${locationLayerName}-circle`;
+            // let layer = {id: layerID, source: locationSourceID};
+            // extend(layer, clone(defaultCircleLayer));
+            // layer.paint['circle-radius'] = 15;
+            // layer.paint['circle-color'] = '#feb24c';
+            // this.styleLayers[layerID] = layer;
+            // this.currentFloorLayers[layerID] = layer;
+        }
+
+        {
+            let layerID = `${locationLayerName}-symbol`;
+            let layer = {id: layerID, source: locationSourceID};
+            extend(layer, clone(defaultTextSymbolLayer));
+            layer.paint['text-color'] = '#253494';
+            // layer.layout['text-field'] = ['format',
+            //     ['concat', ['get', 'minor'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
+            //     '\n', {},
+            //     ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+            // ];
+            layer.layout['text-field'] = ['format',
+                ['concat', ['get', 'maxRssi'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
+                // ['concat', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+            ];
+            layer.layout['text-field'] = ['format', ['get', 'text'], {'font-scale': 1.2}];
+            layer.layout['text-offset'] = [0, 0.7];
+            layer.layout['text-allow-overlap'] = true;
+            this.styleLayers[layerID] = layer;
+            this.currentFloorLayers[layerID] = layer;
+        }
+    }
+
+    _setLocationData(data) {
+        if (data) this.map.getSource(this.locationSourceID).setData(data);
     }
 
     _setLocatingBeaconData(data) {
-        this.map.getSource(this.locatingSourceID).setData(data);
+        if (data) this.map.getSource(this.locatingBeaconSourceID).setData(data);
     }
 
     _setScannedBeaconData(data) {
-        this.map.getSource(this.scannedSourceID).setData(data);
+        if (data) this.map.getSource(this.scannedBeaconSourceID).setData(data);
     }
 
     _setMapInfo(mapInfo) {

@@ -79,6 +79,9 @@ function _calculateLocation(options) {
         pointArray.push(location);
 
         let lnglat = CoordProjection.mercatorToLngLat(location.x, location.y);
+        let desc = '';
+        if (i == 0) desc = "First";
+        if (i == 1) desc = "Second";
         debugArray.push({
             lng: lnglat.lng,
             lat: lnglat.lat,
@@ -90,7 +93,8 @@ function _calculateLocation(options) {
                 floor: location.floor,
                 rssi: sb.rssi,
                 accuracy: parseInt(sb.accuracy * 100) / 100,
-                weighting: parseInt(weighting * 100) / 100
+                weighting: parseInt(weighting * 100) / 100,
+                desc: desc
             }
         });
 
@@ -137,6 +141,29 @@ function _calculateLocation(options) {
         res.beaconList = beaconList.length;
         res.beaconPool = _locatorObject.beaconPool.size;
         res.debugData = GeojsonUtils.createPointFeatureCollection(debugArray);
+        if (resultLocation) {
+            let debugLocation = CoordProjection.mercatorToLngLat(resultLocation.x, resultLocation.y);
+            let text = "";
+            text += "maxIndex: " + index + "\n";
+            text += "maxRssi: " + maxRssi + "\n";
+            frequencyMap.forEach(function (floorCount, floor) {
+                text += "F" + floor;
+                if (floor == maxFloor) text += "(maxFloor)";
+                text += ": Count(" + floorCount + ")";
+                text += "\n";
+            });
+            debugLocation = {lng: debugLocation.lng, lat: debugLocation.lat};
+            debugLocation.properties = {
+                maxRssi: maxRssi,
+                maxIndex: index,
+                beaconPool: res.beaconPool,
+                beaconList: res.beaconList,
+                totalWeighting: res.totalWeighting,
+                floor: resultLocation.floor,
+                text: text,
+            };
+            res.debugLocation = GeojsonUtils.createPointFeatureCollection([debugLocation]);
+        }
     }
     return res;
 }
