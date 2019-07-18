@@ -1,3 +1,5 @@
+import {local_point as LocalPoint} from '../entity/local_point'
+
 class beacon {
     constructor(uuid, major, minor) {
         this.uuid = uuid.toUpperCase();
@@ -7,4 +9,19 @@ class beacon {
     }
 }
 
-export default beacon;
+class locating_beacon extends beacon {
+    constructor(uuid, major, minor, x, y, flooor) {
+        super(uuid, major, minor);
+        this.location = new LocalPoint(x, y, flooor);
+    }
+}
+
+class scanned_beacon extends beacon {
+    constructor(uuid, major, minor, rssi, accuracy) {
+        super(uuid, major, minor);
+        this.rssi = rssi;
+        this.accuracy = accuracy;
+    }
+}
+
+export {beacon, locating_beacon, scanned_beacon};
