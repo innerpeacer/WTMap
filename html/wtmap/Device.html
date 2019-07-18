@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>H5获取指南针方向</title>
+    <meta charset="UTF-8"/>
+</head>
+
+<style>
+    p {
+        font-size: 25px;
+    }
+</style>
+
+<body>
+<p>UserAgent：<span id="agent">0</span></p>
+<hr/>
+
+<p>Device Orientation</p>
+<p>Alpha：<span id="alpha">0</span></p>
+<p>Beta：<span id="beta">0</span></p>
+<p>Gamma：<span id="gamma">0</span></p>
+<p>Heading：<span id="heading">0</span>度</p>
+<p>InitAlpha：<span id="initAlpha">0</span>度</p>
+<!--<p>指北针精度：<span id="accuracy">0</span>度</p>-->
+<hr/>
+
+<p>Device Orientation Absolute</p>
+<p>Alpha：<span id="alpha2">0</span></p>
+<p>Beta：<span id="beta2">0</span></p>
+<p>Gamma：<span id="gamma2">0</span></p>
+<p>Heading：<span id="heading2">0</span>度</p>
+<p>Delta：<span id="delta">0</span>度</p>
+<p>InitHeading：<span id="initHeading">0</span>度</p>
+<!--<p>指北针精度：<span id="accuracy2">0</span>度</p>-->
+<hr/>
+
+<p id="hint"></p>
+<!--<p id="update">to be updated</p>-->
+<!--<p id="screen">screen to be updated</p>-->
+
+<script>
+    function round2(num) {
+        return Math.round(num * 100) / 100;
+    }
+</script>
+
+<script type="text/javascript">
+    var userAgent = window.navigator.userAgent.toLowerCase();
+    if (/android/.test(userAgent)) {
+        document.getElementById("agent").innerHTML = "Android";
+        window.addEventListener("deviceorientationabsolute", DeviceOrientationAbsoluteHandler, false);
+        window.addEventListener("deviceorientation", orientationHandler, false);
+    } else if (/(iphone|ipad|ipod|ios)/i.test(userAgent)) {
+        document.getElementById("agent").innerHTML = "iOS";
+        window.addEventListener("deviceorientation", orientationHandler, false);
+    } else {
+        document.getElementById("agent").innerHTML = "Browser";
+        window.addEventListener("deviceorientation", orientationHandler, false);
+    }
+
+    var lastOrientation;
+    var lastAbsoluteOrientation;
+    var initHeading = null;
+    var initAlpha = null;
+
+    function orientationHandler(event) {
+        if (!initAlpha) initAlpha = round2(event.alpha);
+
+        document.getElementById("alpha").innerHTML = round2(event.alpha);
+        document.getElementById("beta").innerHTML = round2(event.beta);
+        document.getElementById("gamma").innerHTML = round2(event.gamma);
+        if (event.webkitCompassHeading) {
+            document.getElementById("heading").innerHTML = round2(event.webkitCompassHeading);
+            // document.getElementById("accuracy").innerHTML = round2(event.webkitCompassAccuracy);
+        }
+        // document.getElementById("update").innerHTML = "update";
+        document.getElementById("initAlpha").innerHTML = initAlpha;
+
+        lastOrientation = event;
+    }
+
+    function DeviceOrientationAbsoluteHandler(event) {
+        if (!initHeading) initHeading = round2(360 - event.alpha);
+
+        document.getElementById("alpha2").innerHTML = round2(event.alpha);
+        document.getElementById("beta2").innerHTML = round2(event.beta);
+        document.getElementById("gamma2").innerHTML = round2(event.gamma);
+        document.getElementById("heading2").innerHTML = round2(360 - event.alpha);
+        // document.getElementById("accuracy2").innerHTML = round2(event.webkitCompassAccuracy);
+        // document.getElementById("update").innerHTML = "update";
+
+        // document.getElementById("delta").innerHTML = "a: " + round2(event.alpha - lastOrientation.alpha) + ", b: " + round2(event.beta - lastOrientation.beta) + ", g: " + round2(event.gamma - lastOrientation.gamma);
+        document.getElementById("delta").innerHTML = "Delta Alpah: " + round2(event.alpha - lastOrientation.alpha);
+        document.getElementById("initHeading").innerHTML = round2(initHeading);
+        lastAbsoluteOrientation = event;
+    }
+
+    var hint = "";
+
+    if (window.DeviceOrientationEvent) {
+        hint += "window.DeviceOrientationEvent<br>";
+    } else {
+        hint += "No window.DeviceOrientationEvent<br>";
+    }
+
+    if (window.DeviceOrientationEvent) {
+        hint += "window.ondeviceorientationabsolute<br>";
+    } else {
+        hint += "No window.ondeviceorientationabsolute<br>";
+    }
+    document.getElementById("hint").innerHTML = hint;
+</script>
+</body>
+</html>

@@ -11,8 +11,8 @@ const production = BUILD === 'production';
 //     !production ? 'dist/mapbox-gl-dev.js' :
 //     minified ? 'dist/mapbox-gl.js' : 'dist/mapbox-gl-unminified.js';
 const outputFile =
-    !production ? 'dist/wtmap-gl-dev.js' :
-        minified ? 'dist/wtmap-gl-' + ip_version + '.js' : 'dist/wtmap-gl-' + ip_version + '.js';
+    !production ? '../../../dist/wtmap-gl-dev.js' :
+        minified ? '../../../dist/wtmap-gl-' + ip_version + '.js' : '../../../dist/wtmap-gl-' + ip_version + '.js';
 
 export default [{
     // First, use code splitting to bundle GL JS into three "chunks":

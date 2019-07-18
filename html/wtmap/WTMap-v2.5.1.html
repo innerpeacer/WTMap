@@ -21,11 +21,10 @@
 
 <script>
     console.log(wtmap.version);
+    var host = window.location.protocol + "//" + window.location.host;
     var buildingID = "00270003";
     var use3D = true;
     // use3D = false;
-
-    var style = {};
 
     var map = new wtmap.WTMap({
         container: 'map',
@@ -33,13 +32,8 @@
         use3D: use3D,
         _disableCache: true,
         _dataVersion: "v5",
-        // localIdeographFontFamily: true,
-        // brtStyle: "http://47.97.173.242:8080/WTMapResource/style/2.3.0/wt-style.json"
-        // brtStyle: style,
-        // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/WTMapSprite",
-        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
-        // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
-        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
+        sprite: host + "/WTMapResource/sprites/MilitaryGames",
+        glyphs: host + "/WTMapResource/glyphs/{fontstack}/{range}.pbf",
     });
 
     var isEnglish = false;
