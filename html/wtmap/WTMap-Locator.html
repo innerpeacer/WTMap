@@ -22,7 +22,8 @@
 <script>
     new VConsole();
     console.log(wtmap.version);
-    var buildingID = "00270003";
+    var buildingID = getParameter("buildingID");
+    if (buildingID == null) buildingID = "00270003";
     var use3D = true;
     use3D = false;
 
@@ -81,6 +82,12 @@
 
     map.on("locator-ready", function () {
         // console.log("locator-ready");
+        let beaconInfo = map._locator._biteMe("_getBeaconInfo");
+        if (beaconInfo) {
+            console.log(beaconInfo.uuid);
+            console.log(beaconInfo.major);
+            console.log(beaconInfo.minor);
+        }
     });
 
     // ------ reactive with native ------------

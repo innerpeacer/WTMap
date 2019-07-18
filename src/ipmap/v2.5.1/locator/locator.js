@@ -1,7 +1,7 @@
 import {Evented} from '../utils/ip_evented'
 import Parser from './pbf-parse/t_y_beacon_parser';
 import {local_point as LocalPoint} from '../entity/local_point';
-import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from "./beacon";
+import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from './beacon';
 import CoordProjection from '../utils/coord_projection';
 import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 
@@ -12,6 +12,25 @@ function _loadBeacons(locator, data) {
         let lb = data[i];
         let locatingBeacon = new LocatingBeacon(lb.uuid, lb.major, lb.minor, lb.x, lb.y, lb.floor);
         _locatorObject.locatingBeaconDict.set(locatingBeacon.key, locatingBeacon);
+    }
+
+    if (locator._debugBeacon) {
+        let uuidSet = new Set();
+        let majorSet = new Set();
+        let maxMinor = -1;
+        let minMinor = 65536;
+        for (let i = 0; i < data.length; ++i) {
+            let lb = data[i];
+            uuidSet.add(lb.uuid);
+            majorSet.add(lb.major);
+            maxMinor = Math.max(lb.minor, maxMinor);
+            minMinor = Math.min(lb.minor, minMinor);
+        }
+        _locatorObject._beaconInfo = {
+            uuid: Array.from(uuidSet),
+            major: Array.from(majorSet),
+            minor: [minMinor, maxMinor]
+        };
     }
 }
 
@@ -196,6 +215,10 @@ function _getLocatingBeaconArray() {
     return _locatorObject._locatingBeaconArray;
 }
 
+function _getBeaconInfo() {
+    return _locatorObject._beaconInfo;
+}
+
 class locator extends Evented {
     constructor(buildingID, options) {
         super();
@@ -279,6 +302,8 @@ class locator extends Evented {
             return _getLocatingBeaconGeojson();
         } else if ('_getLocatingBeaconArray' === methodName) {
             return _getLocatingBeaconArray();
+        } else if ('_getBeaconInfo' === methodName) {
+            return _getBeaconInfo();
         }
         console.log('OK, as you wish!')
     }

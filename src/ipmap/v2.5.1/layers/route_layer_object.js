@@ -1,4 +1,4 @@
-import {geojson_utils} from "../utils/geojson_utils";
+import {geojson_utils} from '../utils/geojson_utils';
 import {extend, clone} from '../utils/ip_util'
 
 class layer_object {

@@ -4,7 +4,7 @@ import {version} from '../config/config'
 import IPCity from '../entity/city'
 import IPBuilding from '../entity/building'
 import IPMapInfo from '../entity/mapinfo'
-import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from "../entity/symbol";
+import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from '../entity/symbol';
 
 import IPDataManager from '../data/data_manager'
 
@@ -19,7 +19,7 @@ import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 import IndoorLocator from '../locator/locator'
 
 import defaultStyle from '../config/default_style'
-import {clone} from "../utils/ip_util";
+import {clone} from '../utils/ip_util';
 // function getBrtStylePath(options) {
 //     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 // }
@@ -30,7 +30,7 @@ class IPMap extends BoxMap {
 
         // console.log('IPMap.constructor');
         // console.log('Version: ' + version);
-        let defaultHost = window.location.protocol + "//" + window.location.host;
+        let defaultHost = window.location.protocol + '//' + window.location.host;
 
         if (options._apiHost == null) options._apiHost = defaultHost;
         if (options._apiPath == null) options._apiPath = 'WTMapService';
