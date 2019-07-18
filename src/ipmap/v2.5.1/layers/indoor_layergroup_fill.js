@@ -1,4 +1,37 @@
 import IndoorGroupLayer from './indoor_layer_base'
+import {extend, clone} from '../utils/ip_util'
+
+let defaultFillLayer = {
+    'type': 'fill',
+    'source-layer': 'fill',
+    'layout': {},
+    'paint': {},
+    'filter': ['all']
+};
+
+let defaultOutlineLayer = {
+    'type': 'line',
+    'layout': {
+        'line-join': 'round',
+        'line-cap': 'round',
+    },
+    'paint': {},
+    'filter': ['all']
+};
+
+let testOutlineLayer = {
+    'type': 'ipline',
+    'layout': {
+        'ipline-join': 'round',
+        'ipline-cap': 'round',
+    },
+    'paint': {
+        'ipline-color': 'green',
+        'ipline-height': ['/', ['get', 'extrusion-height'], 10],
+        'ipline-width': 1
+    },
+    'filter': ['all']
+};
 
 class indoor_layergroup_fill extends IndoorGroupLayer {
     constructor(map, name, layerNumber) {
@@ -19,65 +52,36 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             if (!symbol) continue;
 
             let layerID = `${subLayerName}-fill-${symbolID}`;
-            let layer = {
+            let layer = extend({
                 'id': layerID,
                 'symbolID': symbolID,
-                'type': 'fill',
                 'source': this.sourceID,
                 'source-layer': 'fill',
-                'layout': {},
-                'paint': {
-                    'fill-color': symbol.fillColor,
-                    'fill-opacity': symbol.fillOpacity,
-                },
-                'filter': ['all']
-            };
+            }, clone(defaultFillLayer));
+            layer.paint['fill-color'] = symbol.fillColor;
+            layer.paint['fill-opacity'] = symbol.fillOpacity;
 
             let outlineLayerID = `${subLayerName}-outline-${symbolID}`;
-            let outlineLayer = {
+            let outlineLayer = extend({
                 'id': outlineLayerID,
                 'symbolID': symbolID,
-                'type': 'line',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round',
-                },
                 'source': this.sourceID,
                 'source-layer': 'fill',
-                'paint': {
-                    'line-color': symbol.outlineColor,
-                    // 'line-color': 'blue',
-                    'line-opacity': symbol.outlineOpacity,
-                    'line-width': symbol.outlineWidth
-                    // 'line-width': 5
-                },
-                'filter': ['all']
-            };
+            }, clone(defaultOutlineLayer));
+            outlineLayer.paint['line-color'] = symbol.outlineColor;
+            outlineLayer.paint['line-opacity'] = symbol.outlineOpacity;
+            outlineLayer.paint['line-width'] = symbol.outlineWidth;
 
             let testIpLine = true;
             testIpLine = false;
             if (testIpLine) {
-                outlineLayer = {
+                outlineLayer = extend({
                     'id': outlineLayerID,
                     'symbolID': symbolID,
-                    'type': 'ipline',
-                    'layout': {
-                        'ipline-join': 'round',
-                        'ipline-cap': 'round',
-                    },
                     'source': this.sourceID,
                     'source-layer': 'fill',
-                    'paint': {
-                        // 'ipline-color': symbol.outlineColor,
-                        'ipline-color': 'green',
-                        'ipline-opacity': symbol.outlineOpacity,
-                        // 'ipline-width': symbol.outlineWidth
-                        'ipline-height': ['/', ['get', 'extrusion-height'], 10],
-                        // 'ipline-height': 10,
-                        'ipline-width': 1
-                    },
-                    'filter': ['all']
-                };
+                }, clone(testOutlineLayer));
+                outlineLayer.paint['ipline-opacity'] = symbol.outlineOpacity;
             }
 
             let levelMin = symbol.levelMin;

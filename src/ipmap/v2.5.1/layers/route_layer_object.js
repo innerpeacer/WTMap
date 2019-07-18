@@ -1,4 +1,5 @@
 import {geojson_utils} from "../utils/geojson_utils";
+import {extend, clone} from '../utils/ip_util'
 
 class layer_object {
     constructor(sourceID, layerID, layerID2) {
@@ -52,6 +53,39 @@ class layer_object {
     }
 }
 
+let defaultLineLayer = {
+    'type': 'line',
+    'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+    },
+    'paint': {}
+};
+
+let defaultSymbolLayer = {
+    'type': 'symbol',
+    'paint': {
+        'text-color': '#fff',
+    },
+    'layout': {
+        'text-anchor': 'center',
+        'text-padding': 0,
+        'icon-allow-overlap': true,
+        'icon-rotation-alignment': 'map',
+    }
+};
+
+let defaultCircleLayer = {
+    'type': 'circle',
+    'paint': {
+        'circle-radius': 10,
+        'circle-color': ['get', 'color'],
+        'circle-opacity': 1.0,
+        'circle-stroke-color': '#fff',
+        'circle-stroke-width': 2
+    }
+};
+
 class route_layer_object {
     constructor(name) {
         this.name = name;
@@ -62,121 +96,71 @@ class route_layer_object {
             let wholeRouteLayer1ID = `whole-${this.name}-layer1`;
             let wholeRouteLayer2ID = `whole-${this.name}-layer2`;
             this.wholeRouteObject = new layer_object(wholeRouteSourceID, wholeRouteLayer1ID, wholeRouteLayer2ID);
-            this.wholeRouteObject.layer = {
+            this.wholeRouteObject.layer = extend({
                 'id': wholeRouteLayer1ID,
-                'type': 'line',
                 'source': wholeRouteSourceID,
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#ffffff',
-                    'line-width': 8
-                }
-            };
-            this.wholeRouteObject.layer2 = {
+            }, clone(defaultLineLayer));
+            this.wholeRouteObject.layer.paint['line-color'] = '#ffffff';
+            this.wholeRouteObject.layer.paint['line-width'] = 8;
+
+            this.wholeRouteObject.layer2 = extend({
                 'id': wholeRouteLayer2ID,
-                'type': 'line',
                 'source': wholeRouteSourceID,
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#00ff00',
-                    'line-width': 6
-                }
-            };
+            }, clone(defaultLineLayer));
+            this.wholeRouteObject.layer2.paint['line-color'] = '#00ff00';
+            this.wholeRouteObject.layer2.paint['line-width'] = 6;
 
             let wholeRouteArrowSourceID = `whole-${this.name}-arrow-source`;
             let wholeRouteArrowLayerID = `whole-${this.name}-arrow-layer`;
             this.wholeArrowObject = new layer_object(wholeRouteArrowSourceID, wholeRouteArrowLayerID);
-            this.wholeArrowObject.layer = {
+            this.wholeArrowObject.layer = extend({
                 'id': wholeRouteArrowLayerID,
-                'type': 'symbol',
                 'source': wholeRouteArrowSourceID,
-                'layout': {
-                    'icon-image': 'icon_route_arrow',
-                    'icon-size': 1,
-                    'icon-allow-overlap': true,
-                    'icon-rotate': {
-                        'type': 'identity',
-                        'property': 'angle'
-                    },
-                    'icon-rotation-alignment': 'map',
-                },
-            };
+            }, clone(defaultSymbolLayer));
+            this.wholeArrowObject.layer.layout['icon-image'] = 'icon_route_arrow';
+            this.wholeArrowObject.layer.layout['icon-size'] = 1;
+            this.wholeArrowObject.layer.layout['icon-rotate'] = ['get', 'angle'];
         }
-
 
         {
             let segmentRouteSourceID = `segment-${this.name}-source`;
             let segmentRouteLayer1ID = `segment-${this.name}-layer1`;
             let segmentRouteLayer2ID = `segment-${this.name}-layer2`;
             this.segmentRouteObject = new layer_object(segmentRouteSourceID, segmentRouteLayer1ID, segmentRouteLayer2ID);
-            this.segmentRouteObject.layer = {
+            this.segmentRouteObject.layer = extend({
                 'id': segmentRouteLayer1ID,
-                'type': 'line',
                 'source': segmentRouteSourceID,
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#ffffff',
-                    'line-width': 8
-                }
-            };
-            this.segmentRouteObject.layer2 = {
+            }, clone(defaultLineLayer));
+            this.segmentRouteObject.layer.paint['line-color'] = '#ffffff';
+            this.segmentRouteObject.layer.paint['line-width'] = 8;
+
+            this.segmentRouteObject.layer2 = extend({
                 'id': segmentRouteLayer2ID,
-                'type': 'line',
                 'source': segmentRouteSourceID,
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#ff5959',
-                    'line-width': 6
-                },
-            };
+            }, clone(defaultLineLayer));
+            this.segmentRouteObject.layer2.paint['line-color'] = '#ff5959';
+            this.segmentRouteObject.layer2.paint['line-width'] = 6;
 
             let passedSegmentRouteSourceID = `passed-segment-${this.name}-source`;
             let passedSegmentRouteLayerID = `passed-segment-${this.name}-layer`;
             this.passedSegmentRouteObject = new layer_object(passedSegmentRouteSourceID, passedSegmentRouteLayerID);
-            this.passedSegmentRouteObject.layer = {
+            this.passedSegmentRouteObject.layer = extend({
                 'id': passedSegmentRouteLayerID,
-                'type': 'line',
                 'source': passedSegmentRouteSourceID,
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#888888',
-                    'line-width': 6
-                },
-            };
+            }, clone(defaultLineLayer));
+            this.passedSegmentRouteObject.layer.paint['line-color'] = '#888888';
+            this.passedSegmentRouteObject.layer.paint['line-width'] = 8;
 
             let segmentArrowSourceID = `segment-${this.name}-arrow-source`;
             let segmentArrowLayerID = `segment-${this.name}-arrow-layer`;
             this.segmentArrowObject = new layer_object(segmentArrowSourceID, segmentArrowLayerID);
-            this.segmentArrowObject.layer = {
+            this.segmentArrowObject.layer = extend({
                 'id': segmentArrowLayerID,
-                'type': 'symbol',
                 'source': segmentArrowSourceID,
-                'layout': {
-                    'icon-image': 'icon_route_arrow',
-                    'icon-size': 1,
-                    'icon-allow-overlap': true,
-                    'icon-rotate': {
-                        'type': 'identity',
-                        'property': 'angle'
-                    },
-                    'icon-rotation-alignment': 'map',
-                },
-            };
+            }, clone(defaultSymbolLayer));
+            this.segmentArrowObject.layer.layout['icon-image'] = 'icon_route_arrow';
+            this.segmentArrowObject.layer.layout['icon-rotate'] = ['get', 'angle'];
+            this.segmentArrowObject.layer.layout['icon-size'] = 1;
         }
 
         {
@@ -184,75 +168,19 @@ class route_layer_object {
             let routeStopLayer1ID = `${this.name}-stop-layer1`;
             let routeStopLayer2ID = `${this.name}-stop-layer2`;
             this.routeStopObject = new layer_object(routeStopSourceID, routeStopLayer1ID, routeStopLayer2ID);
-            this.routeStopObject.layer = {
+            this.routeStopObject.layer = extend({
                 'id': routeStopLayer1ID,
-                'type': 'circle',
                 'source': routeStopSourceID,
-                'paint': {
-                    'circle-radius': 10,
-                    'circle-color': {
-                        'type': 'identity',
-                        'property': 'color'
-                    },
-                    'circle-opacity': 1.0,
-                    'circle-stroke-color': '#fff',
-                    'circle-stroke-width': 2
-                }
-            };
-            this.routeStopObject.layer2 = {
+            }, clone(defaultCircleLayer));
+
+            this.routeStopObject.layer2 = extend({
                 'id': routeStopLayer2ID,
-                'type': 'symbol',
                 'source': routeStopSourceID,
-                'paint': {
-                    'text-color': '#fff',
-                },
-                'layout': {
-                    'text-field': '{NAME}',
-                    'text-size': 15,
-                    'text-font': ['simhei'],
-                    'text-anchor': 'center',
-                    'text-padding': 0,
-                    'text-offset': [0, 0.2]
-                }
-            };
-
-
-            // this.routeStopObject1 = new layer_object(routeStopSourceID, routeStopLayer1ID);
-            // this.routeStopObject1.layer = {
-            //     'id': routeStopLayer1ID,
-            //     'type': 'circle',
-            //     'source': routeStopSourceID,
-            //     'paint': {
-            //         'circle-radius': 10,
-            //         'circle-color': {
-            //             'type': 'identity',
-            //             'property': 'color'
-            //         },
-            //         'circle-opacity': 1.0,
-            //         'circle-stroke-color': '#fff',
-            //         'circle-stroke-width': 2
-            //     }
-            // };
-            //
-            // this.routeStopObject2 = new layer_object(routeStopSourceID, routeStopLayer2ID);
-            // this.routeStopObject2.layer = {
-            //     'id': routeStopLayer2ID,
-            //     'type': 'symbol',
-            //     'source': routeStopSourceID,
-            //     'paint': {
-            //         'text-color': '#fff',
-            //     },
-            //     'layout': {
-            //         'text-field': '{NAME}',
-            //         'text-size': 15,
-            //         'text-font': ['simhei'],
-            //         'text-anchor': 'center',
-            //         'text-padding': 0,
-            //         'text-offset': [0, 0.2]
-            //     }
-            // };
+            }, clone(defaultSymbolLayer));
+            this.routeStopObject.layer2.layout['text-field'] = ['get', 'NAME'];
+            this.routeStopObject.layer2.layout['text-font'] = ['simhei'];
+            this.routeStopObject.layer2.layout['text-size'] = 15;
         }
-
     }
 }
 

@@ -45,8 +45,6 @@ layerGroup.startEndLayer2 = {
         "text-font": ["simhei"],
         "text-anchor": "center",
         "text-padding": 0,
-        "text-offset": [0, 0.2]
-        // "text-offset": [0, -0.9]
     }
 };
 
@@ -76,7 +74,7 @@ layerGroup.paramsLayer2 = {
         // "text-color": "#525252",
         // "text-color": "#fff",
         "text-color": "#000",
-        "text-translate":[0, -20],
+        "text-translate": [0, -20],
         "text-translate-anchor": "viewport"
     },
     'layout': {
@@ -138,7 +136,7 @@ function createStartEndData(start, end) {
         "type": "FeatureCollection",
         "features": features
     };
-};
+}
 
 function createParamData(stopPoints) {
     var features = [];
@@ -153,4 +151,4 @@ function createParamData(stopPoints) {
         "type": "FeatureCollection",
         "features": features
     };
-};
+}

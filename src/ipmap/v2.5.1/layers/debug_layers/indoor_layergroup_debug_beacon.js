@@ -39,8 +39,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         this.map.addSource(locatingBeaconSourceID, GeojsonUtils.emptySource);
         {
             let layerID = `${locatingBeaconLayerName}-circle`;
-            let layer = {id: layerID, source: locatingBeaconSourceID};
-            extend(layer, clone(defaultCircleLayer));
+            let layer = extend({id: layerID, source: locatingBeaconSourceID}, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 2;
             layer.paint['circle-color'] = '#3bb2d0';
             this.styleLayers[layerID] = layer;
@@ -48,8 +47,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         }
         {
             let layerID = `${locatingBeaconLayerName}-symbol`;
-            let layer = {id: layerID, source: locatingBeaconSourceID};
-            extend(layer, clone(defaultTextSymbolLayer));
+            let layer = extend({id: layerID, source: locatingBeaconSourceID}, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#8B8682';
             layer.layout['text-field'] = ['get', 'minor'];
             this.styleLayers[layerID] = layer;
@@ -65,8 +63,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         // ---------- current floor beacons ----------
         {
             let layerID = `${scannedBeaconLayerName}-circle-1`;
-            let layer = {id: layerID, source: scannedBeaconSourceID};
-            extend(layer, clone(defaultCircleLayer));
+            let layer = extend({id: layerID, source: scannedBeaconSourceID}, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 3;
             layer.paint['circle-color'] = '#ff00ff';
             this.styleLayers[layerID] = layer;
@@ -74,8 +71,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         }
         {
             let layerID = `${scannedBeaconLayerName}-symbol-1`;
-            let layer = {id: layerID, source: scannedBeaconSourceID};
-            extend(layer, clone(defaultTextSymbolLayer));
+            let layer = extend({id: layerID, source: scannedBeaconSourceID}, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#ff00ff';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor']], {'font-scale': 1.2},
@@ -90,8 +86,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         // ---------- other floor beacons ----------
         {
             let layerID = `${scannedBeaconLayerName}-circle-2`;
-            let layer = {id: layerID, source: scannedBeaconSourceID};
-            extend(layer, clone(defaultCircleLayer));
+            let layer = extend({id: layerID, source: scannedBeaconSourceID}, clone(defaultCircleLayer));
             layer.paint['circle-radius'] = 3;
             layer.paint['circle-color'] = '#bd0026';
             this.styleLayers[layerID] = layer;
@@ -99,8 +94,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         }
         {
             let layerID = `${scannedBeaconLayerName}-symbol-2`;
-            let layer = {id: layerID, source: scannedBeaconSourceID};
-            extend(layer, clone(defaultTextSymbolLayer));
+            let layer = extend({id: layerID, source: scannedBeaconSourceID}, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#bd0026';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
@@ -118,8 +112,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         this.map.addSource(locationSourceID, GeojsonUtils.emptySource);
         {
             // let layerID = `${locationLayerName}-circle`;
-            // let layer = {id: layerID, source: locationSourceID};
-            // extend(layer, clone(defaultCircleLayer));
+            // let layer = extend({id: layerID, source: locationSourceID}, clone(defaultCircleLayer));
             // layer.paint['circle-radius'] = 15;
             // layer.paint['circle-color'] = '#feb24c';
             // this.styleLayers[layerID] = layer;
@@ -128,8 +121,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
 
         {
             let layerID = `${locationLayerName}-symbol`;
-            let layer = {id: layerID, source: locationSourceID};
-            extend(layer, clone(defaultTextSymbolLayer));
+            let layer = extend({id: layerID, source: locationSourceID}, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#253494';
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'maxRssi'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},

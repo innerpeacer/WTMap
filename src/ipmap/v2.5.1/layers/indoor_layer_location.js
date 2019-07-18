@@ -1,5 +1,15 @@
 import IndoorGroupLayer from './indoor_layer_base'
+import {extend, clone} from '../utils/ip_util'
 import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils'
+
+let defaultSymbolLayer = {
+    'type': 'symbol',
+    'paint': {},
+    'layout': {
+        'icon-size': 1,
+        'icon-allow-overlap': true
+    }
+};
 
 class indoor_layer_location extends IndoorGroupLayer {
     constructor(map) {
@@ -12,17 +22,8 @@ class indoor_layer_location extends IndoorGroupLayer {
         this.map.addSource(this.sourceID, GeojsonUtils.emptySource);
         {
             let layerID = `${subLayerName}-symbol`;
-            let layer = {
-                'id': layerID,
-                'type': 'symbol',
-                'source': this.sourceID,
-                'paint': {},
-                'layout': {
-                    'icon-image': 'icon_location',
-                    'icon-size': 1,
-                    'icon-allow-overlap': true
-                }
-            };
+            let layer = extend({id: layerID, source: this.sourceID}, clone(defaultSymbolLayer));
+            layer.layout['icon-image'] = 'icon_location';
             this.styleLayers[layerID] = layer;
         }
     }

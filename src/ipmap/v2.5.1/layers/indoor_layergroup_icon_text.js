@@ -1,4 +1,18 @@
 import IndoorGroupLayer from './indoor_layer_base'
+import {extend, clone} from '../utils/ip_util'
+
+let defaultSymbolLayer = {
+    'type': 'symbol',
+    'paint': {
+        'text-halo-color': '#ffffff',
+        'text-halo-width': 1
+    },
+    'layout': {
+        'symbol-z-order': 'source',
+        'text-offset': [0.6, 0.1],
+        'text-padding': 2,
+    },
+};
 
 class indoor_layergroup_icon_text extends IndoorGroupLayer {
     constructor(map, name) {
@@ -17,24 +31,14 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
             if (!symbol) continue;
 
             let layerID = `${subLayerName}-${symbolUID}`;
-            let layer = {
+            let layer = extend({
                 'id': layerID,
                 'symbol': symbol,
                 'symbolID': symbol.symbolID,
-                'type': 'symbol',
                 'source': this.sourceID,
                 'source-layer': subLayerName,
-                'paint': {
-                    'symbol-height': height,
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 1
-                },
-                'layout': {
-                    'symbol-z-order': 'source',
-                    'text-offset': [0.6, 0.1],
-                    'text-padding': 2,
-                },
-            };
+            }, clone(defaultSymbolLayer));
+            layer.paint['symbol-height'] = height;
 
             if (symbol.iconVisible) {
                 layer.layout['icon-image'] = ['concat', ['get', 'ICON'], '_normal'];
