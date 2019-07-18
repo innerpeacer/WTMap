@@ -4,8 +4,7 @@ import {version} from '../config/config'
 import IPCity from '../entity/city'
 import IPBuilding from '../entity/building'
 import IPMapInfo from '../entity/mapinfo'
-import IPIconTextSymbol from '../entity/icon_text_symbol'
-import IPFillSymbol from '../entity/fill_symbol'
+import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from "../entity/symbol";
 
 import IPDataManager from '../data/data_manager'
 
