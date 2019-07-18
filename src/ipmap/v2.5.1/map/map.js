@@ -19,7 +19,7 @@ import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 import IndoorLocator from '../locator/locator'
 
 import defaultStyle from '../config/default_style'
-
+import {clone} from "../utils/ip_util";
 // function getBrtStylePath(options) {
 //     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 // }
@@ -30,20 +30,23 @@ class IPMap extends BoxMap {
 
         // console.log('IPMap.constructor');
         // console.log('Version: ' + version);
+        let defaultHost = window.location.protocol + "//" + window.location.host;
 
-        if (options._apiHost == null) options._apiHost = 'http://localhost:8112';
+        if (options._apiHost == null) options._apiHost = defaultHost;
         if (options._apiPath == null) options._apiPath = 'WTMapService';
 
-        if (options._apiRouteHost == null) options._apiRouteHost = 'http://localhost:8112';
+        if (options._apiRouteHost == null) options._apiRouteHost = defaultHost;
         if (options._apiRoute == null) options._apiRoute = 'WTRouteService';
 
-        if (options._cbmPath == null) options._cbmPath = 'http://localhost:8112/' + options._apiPath + '/web/GetCBM';
+        if (options._cbmPath == null) options._cbmPath = defaultHost + options._apiPath + '/web/GetCBM';
 
         if (options._resourceRootDir == null) options._resourceRootDir = 'WTMapResource';
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
 
         // options.style = getBrtStylePath(options);
-        options.style = defaultStyle;
+        options.style = clone(defaultStyle);
+        options.style.sprite = options._apiHost + options.style.sprite;
+        options.style.glyphs = options._apiHost + options.style.glyphs;
         if (options.sprite != null) options.style.sprite = options.sprite;
         if (options.glyphs != null) options.style.glyphs = options.glyphs;
 

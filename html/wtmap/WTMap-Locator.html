@@ -22,7 +22,6 @@
 <script>
     new VConsole();
     console.log(wtmap.version);
-    var host = window.location.protocol + "//" + window.location.host;
     var buildingID = "00270003";
     var use3D = true;
     use3D = false;
@@ -35,9 +34,6 @@
         _dataVersion: "v5",
         usePbf: true,
         _debugBeacon: true,
-        sprite: host + "/WTMapResource/sprites/MilitaryGames",
-        glyphs: host + "/WTMapResource/glyphs/{fontstack}/{range}.pbf",
-        _apiHost: host
     });
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;

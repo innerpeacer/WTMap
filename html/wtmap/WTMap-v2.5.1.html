@@ -21,7 +21,6 @@
 
 <script>
     console.log(wtmap.version);
-    var host = window.location.protocol + "//" + window.location.host;
     var buildingID = "00270003";
     var use3D = true;
     // use3D = false;
@@ -32,8 +31,6 @@
         use3D: use3D,
         _disableCache: true,
         _dataVersion: "v5",
-        sprite: host + "/WTMapResource/sprites/MilitaryGames",
-        glyphs: host + "/WTMapResource/glyphs/{fontstack}/{range}.pbf",
     });
 
     var isEnglish = false;

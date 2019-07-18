@@ -22,7 +22,6 @@
 </div>
 
 <script>
-    var host = window.location.protocol + "//" + window.location.host;
     var buildingID = getParameter("buildingID");
     if (buildingID == null) buildingID = "00270003";
 
@@ -56,8 +55,6 @@
         buildingID: buildingID,
 //        use3D: false,
         floorID: "00270003F01",
-        sprite: host + "/WTMapResource/sprites/MilitaryGames",
-        glyphs: host + "/WTMapResource/glyphs/{fontstack}/{range}.pbf",
     });
     console.log(map);
 
