@@ -1,5 +1,5 @@
 import IndoorGroupLayer from './indoor_layer_base'
-import GeojsonUtils from '../utils/geojson_utils'
+import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils'
 
 class indoor_layer_location extends IndoorGroupLayer {
     constructor(map) {
@@ -9,11 +9,7 @@ class indoor_layer_location extends IndoorGroupLayer {
         this.styleLayers = {};
         this.sourceID = subLayerName;
 
-        let emptySource = {
-            'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
-        };
-
-        this.map.addSource(this.sourceID, emptySource);
+        this.map.addSource(this.sourceID, GeojsonUtils.emptySource);
         {
             let layerID = `${subLayerName}-symbol`;
             let layer = {

@@ -3,10 +3,6 @@ import CoordProjection from '../utils/coord_projection'
 import RouteLayerObject from './route_layer_object'
 import AnimationObject from '../utils/route_animation_object'
 
-let emptySource = {
-    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
-};
-
 let routeAnimationObject = new AnimationObject();
 
 function sliceLength2(zoom) {

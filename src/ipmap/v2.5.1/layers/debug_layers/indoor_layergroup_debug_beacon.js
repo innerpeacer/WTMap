@@ -1,10 +1,6 @@
 import IndoorGroupLayer from '../indoor_layer_base'
 import {extend, clone} from '../../utils/ip_util'
-
-let emptySource = {
-    'type': 'geojson',
-    'data': {'type': 'FeatureCollection', 'features': []}
-};
+import {geojson_utils as GeojsonUtils} from "../../utils/geojson_utils";
 
 let defaultCircleLayer = {
     'type': 'circle',
@@ -40,7 +36,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         let locatingBeaconLayerName = 'locating_beacon';
         let locatingBeaconSourceID = locatingBeaconLayerName;
         this.locatingBeaconSourceID = locatingBeaconSourceID;
-        this.map.addSource(locatingBeaconSourceID, emptySource);
+        this.map.addSource(locatingBeaconSourceID, GeojsonUtils.emptySource);
         {
             let layerID = `${locatingBeaconLayerName}-circle`;
             let layer = {id: layerID, source: locatingBeaconSourceID};
@@ -64,7 +60,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         let scannedBeaconLayerName = 'scanned_beacon';
         let scannedBeaconSourceID = scannedBeaconLayerName;
         this.scannedBeaconSourceID = scannedBeaconSourceID;
-        this.map.addSource(scannedBeaconSourceID, emptySource);
+        this.map.addSource(scannedBeaconSourceID, GeojsonUtils.emptySource);
 
         // ---------- current floor beacons ----------
         {
@@ -119,7 +115,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
         let locationLayerName = 'debug_location';
         let locationSourceID = locationLayerName;
         this.locationSourceID = locationSourceID;
-        this.map.addSource(locationSourceID, emptySource);
+        this.map.addSource(locationSourceID, GeojsonUtils.emptySource);
         {
             // let layerID = `${locationLayerName}-circle`;
             // let layer = {id: layerID, source: locationSourceID};

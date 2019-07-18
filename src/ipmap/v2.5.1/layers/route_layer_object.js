@@ -1,11 +1,9 @@
-let emptySource = {
-    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
-};
+import {geojson_utils} from "../utils/geojson_utils";
 
 class layer_object {
     constructor(sourceID, layerID, layerID2) {
         this.sourceID = sourceID;
-        this.source = emptySource;
+        this.source = geojson_utils.emptySource;
 
         this.layerID = layerID;
         this.layerID2 = layerID2;
@@ -36,7 +34,7 @@ class layer_object {
     }
 
     clearSource(map) {
-        map.getSource(this.sourceID).setData(emptySource.data);
+        map.getSource(this.sourceID).setData(geojson_utils.emptySource.data);
     }
 
     hide(map) {

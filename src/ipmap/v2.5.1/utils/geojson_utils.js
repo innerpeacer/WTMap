@@ -36,4 +36,8 @@ geojson_utils.createPointFeatureCollection = function (points) {
     return pointData;
 };
 
-export default geojson_utils;
+geojson_utils.emptySource = {
+    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
+};
+
+export {geojson_utils};

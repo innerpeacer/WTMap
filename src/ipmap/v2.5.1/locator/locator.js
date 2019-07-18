@@ -1,11 +1,9 @@
 import {Evented} from '../utils/ip_evented'
 import Parser from './pbf-parse/t_y_beacon_parser';
 import {local_point as LocalPoint} from '../entity/local_point';
-// import LocatingBeacon from './locating_beacon';
-// import ScannedBeacon from './scanned_beacon';
 import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from "./beacon";
 import CoordProjection from '../utils/coord_projection';
-import GeojsonUtils from '../utils/geojson_utils';
+import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 
 let _locatorObject = {};
 
