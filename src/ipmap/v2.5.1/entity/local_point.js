@@ -1,5 +1,4 @@
 class local_point {
-
     constructor(x, y, f) {
         this.x = x;
         this.y = y;
@@ -39,4 +38,16 @@ local_point.toStopParams = function (stops) {
     return str;
 };
 
-export {local_point}
+class lnglat_point {
+    constructor(lng, lat, f) {
+        this.lng = lng;
+        this.lat = lat;
+        this.floor = f;
+    }
+
+    toString() {
+        return `Lng: ${this.lng}, Lat: ${this.lat}, Floor: ${this.floor}`;
+    }
+}
+
+export {local_point, lnglat_point}
