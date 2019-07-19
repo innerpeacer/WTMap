@@ -43,7 +43,7 @@ class OneFingerZoomHandler {
         if (!this._tapped) {
             this._tapped = setTimeout(() => {
                 this._tapped = null;
-            }, 300);
+            }, 500);
         } else {
             clearTimeout(this._tapped);
             this._tapped = null;
