@@ -45,6 +45,7 @@ class OneFingerZoomHandler {
                 this._tapped = null;
             }, 500);
         } else {
+            this._map.fire("onef_zoom_start");
             clearTimeout(this._tapped);
             this._tapped = null;
             DOM.addEventListener(window.document, 'touchmove', this._onMove, {capture: true, passive: false});
@@ -57,6 +58,7 @@ class OneFingerZoomHandler {
     _onMove(e) {
         e.preventDefault();
         this._hasPanned = true;
+        this._map.fire("onef_zoom");
         const pos = DOM.mousePos(this._el, e);
         if (this._lastPos.equals(pos) || (pos.dist(this._mouseDownPos) < this._clickTolerance)) {
             return;
@@ -71,6 +73,7 @@ class OneFingerZoomHandler {
         } else {
             this._active = false;
         }
+        this._map.fire("onef_zoom_end");
     }
 
     onDblClick(e) {
