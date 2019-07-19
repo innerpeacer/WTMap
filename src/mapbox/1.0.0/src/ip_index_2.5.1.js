@@ -13,7 +13,8 @@ import {
     MapInfo,
     LocalPoint,
     LngLatPoint,
-    TileCoord
+    TileCoord,
+    AgentUtil
 } from '../../../ipmap/v2.5.1/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
@@ -46,6 +47,7 @@ const exported = {
     LocalPoint,
     LngLatPoint,
     TileCoord,
+    AgentUtil,
 
     NavigationControl,
     GeolocateControl,
