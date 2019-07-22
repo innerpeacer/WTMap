@@ -35,13 +35,44 @@
         _dataVersion: "v5",
         usePbf: true,
         _debugBeacon: true,
+        enableOrientation: true
     });
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
+    var flag = true;
     map.on("click", function (evt) {
         // console.log("Zoom: " + map.getZoom());
-        // console.log(evt.lngLat);
+        console.log(evt.lngLat);
+        console.log(map.building.initAngle);
+        flag = !flag;
+        if (flag) {
+            map.enableOrientation();
+        } else {
+            map.disableOrientation();
+        }
+
+        map.showLocation({
+            lng: 114.35357264656244,
+            lat: 30.556887301517563,
+            floor: map.currentMapInfo.floorNumber
+        }, {
+            center: true,
+            angle: currentHeading || 0
+        });
+    });
+
+    var currentHeading = null;
+    map.on("heading", function (evt) {
+        currentHeading = evt.heading || 0;
+        map.showLocation({
+            lng: 114.35357264656244,
+            lat: 30.556887301517563,
+            floor: map.currentMapInfo.floorNumber
+        }, {
+            center: true,
+            angle: currentHeading - map.building.initAngle
+        });
     });
 
     var floorSwitch = document.getElementById('floorSwitch');

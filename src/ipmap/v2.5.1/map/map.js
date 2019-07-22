@@ -20,6 +20,7 @@ import IndoorLocator from '../locator/locator'
 
 import defaultStyle from '../config/default_style'
 import {clone} from '../utils/ip_util';
+import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
 // function getBrtStylePath(options) {
 //     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 // }
@@ -59,6 +60,9 @@ class IPMap extends BoxMap {
         if (options.usePbf == null) options.usePbf = true;
         if (options._debugBeacon == null) options._debugBeacon = false;
         this._debugBeacon = options._debugBeacon;
+
+        if (options.enableOrientation == null) options.enableOrientation = false;
+        this._enableOrientation = options.enableOrientation;
 
         let dataVersion = null;
         let disableCache = false;
@@ -148,6 +152,17 @@ class IPMap extends BoxMap {
             // console.log('inner-locator-failed');
             map.fire('locator-failed', error);
         });
+
+        this._orientationHandler = new OrientationHandler(this);
+        if (this._enableOrientation) this._orientationHandler.bind();
+    }
+
+    enableOrientation() {
+        this._orientationHandler && this._orientationHandler.bind();
+    }
+
+    disableOrientation() {
+        this._orientationHandler && this._orientationHandler.unbind();
     }
 
     showLocation(location, options) {
@@ -160,7 +175,7 @@ class IPMap extends BoxMap {
         } else {
             return;
         }
-        let angle = (options && options.angle) || 0;
+        let angle = -1 * (options && options.angle) || 0;
         loc.properties = {
             angle: angle,
             floor: location.floor
