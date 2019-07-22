@@ -160,7 +160,9 @@ class IPMap extends BoxMap {
         } else {
             return;
         }
+        let angle = (options && options.angle) || 0;
         loc.properties = {
+            angle: angle,
             floor: location.floor
         };
         let map = this;

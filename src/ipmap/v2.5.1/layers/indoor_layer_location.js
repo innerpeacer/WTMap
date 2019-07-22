@@ -7,6 +7,8 @@ let defaultSymbolLayer = {
     'paint': {},
     'layout': {
         'icon-size': 1,
+        'icon-rotate': ['get', 'angle'],
+        'icon-rotation-alignment': 'map',
         'icon-allow-overlap': true
     }
 };
