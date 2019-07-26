@@ -9,6 +9,17 @@
 </head>
 <body>
 
+<style>
+    .map-overlay {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        position: absolute;
+        width: 100px;
+        top: 0;
+        right: 0;
+        padding: 10px;
+    }
+</style>
+
 <div id='map'></div>
 <div class='floor-switch-overlay top'>
     <div class='floor-switch-overlay-inner'>
@@ -19,7 +30,14 @@
     </div>
 </div>
 
+<div id='data'>
+    <div class='map-overlay'>
+        <label id="hint"></label>
+    </div>
+</div>
+
 <script>
+    var hintLabel = document.getElementById("hint");
     new VConsole();
     console.log(wtmap.version);
     var buildingID = getParameter("buildingID");
@@ -35,7 +53,8 @@
         _dataVersion: "v5",
         usePbf: true,
         _debugBeacon: true,
-        enableOrientation: true
+        enableOrientation: true,
+        enableMotion: true
     });
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
@@ -52,6 +71,7 @@
             map.disableOrientation();
         }
 
+        if (!map.currentMapInfo || !map.currentMapInfo.floorNumber) return;
         map.showLocation({
             lng: 114.35357264656244,
             lat: 30.556887301517563,
@@ -64,6 +84,7 @@
 
     var currentHeading = null;
     map.on("heading", function (evt) {
+        if (!map.currentMapInfo || !map.currentMapInfo.floorNumber) return;
         currentHeading = evt.heading || 0;
         map.showLocation({
             lng: 114.35357264656244,
@@ -73,6 +94,40 @@
             center: true,
             angle: currentHeading - map.building.initAngle
         });
+    });
+
+    var maxYZ = 0;
+
+    function round2(v) {
+        return parseInt(v * 100) / 100;
+    }
+
+    function eventToString(evt) {
+        var res = "x: " + round2(evt.acceleration.x) + "<br>";
+        res += "y: " + round2(evt.acceleration.y) + "<br>";
+        res += "z: " + round2(evt.acceleration.z) + "<br>";
+
+        res += "x: " + round2(evt.gravity.x) + "<br>";
+        res += "y: " + round2(evt.gravity.y) + "<br>";
+        res += "z: " + round2(evt.gravity.z) + "<br>";
+
+        res += "r-alpha: " + round2(evt.rotationRate.alpha) + "<br>";
+        res += "r-beta: " + round2(evt.rotationRate.beta) + "<br>";
+        res += "r-gamma: " + round2(evt.rotationRate.gamma) + "<br>";
+
+        var acc = evt.acceleration;
+        var yz = acc.y * acc.y + acc.z * acc.z;
+        if (yz > maxYZ) maxYZ = yz;
+        res += "maxYZ: " + round2(maxYZ) + "<br>";
+        res += "YZ: " + round2(yz) + "<br>";
+        res += "interval: " + evt.interval + "<br>";
+
+        return res;
+    }
+
+    map.on("motion", function (evt) {
+        // console.log(evt);
+        hintLabel.innerHTML = eventToString(evt);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');

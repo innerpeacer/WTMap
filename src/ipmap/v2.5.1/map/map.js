@@ -21,6 +21,7 @@ import IndoorLocator from '../locator/locator'
 import defaultStyle from '../config/default_style'
 import {clone} from '../utils/ip_util';
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
+import {motion_handler as MotionHandler} from "../motion/motion_handler";
 // function getBrtStylePath(options) {
 //     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 // }
@@ -63,6 +64,9 @@ class IPMap extends BoxMap {
 
         if (options.enableOrientation == null) options.enableOrientation = false;
         this._enableOrientation = options.enableOrientation;
+
+        if (options.enableMotion == null) options.enableMotion = false;
+        this._enableMotion = options.enableMotion;
 
         let dataVersion = null;
         let disableCache = false;
@@ -155,6 +159,9 @@ class IPMap extends BoxMap {
 
         this._orientationHandler = new OrientationHandler(this);
         if (this._enableOrientation) this._orientationHandler.bind();
+
+        this._motionHandler = new MotionHandler(this);
+        if (this._enableMotion) this._motionHandler.bind();
     }
 
     enableOrientation() {
@@ -162,7 +169,16 @@ class IPMap extends BoxMap {
     }
 
     disableOrientation() {
+        console.log("disableOrientation");
         this._orientationHandler && this._orientationHandler.unbind();
+    }
+
+    enableMotion() {
+        this._motionHandler && this._motionHandler.bind();
+    }
+
+    disableMotion() {
+        this._motionHandler && this._motionHandler.unbind();
     }
 
     showLocation(location, options) {
