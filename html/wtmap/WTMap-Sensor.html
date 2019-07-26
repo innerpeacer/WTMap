@@ -1,0 +1,206 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>WTMap-Sensor</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src="js/config-dev-2.5.1.js"></script>
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
+
+    <script src="../../dist/lab.js"></script>
+    <script src="inertial.js"></script>
+    <script src="geojson_utils.js"></script>
+</head>
+<body>
+
+<div id='map'></div>
+<div class='floor-switch-overlay top'>
+    <div class='floor-switch-overlay-inner'>
+        <fieldset>
+            <label>Select Floor</label>
+            <select id='floorSwitch' name='floorSwitch'></select>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    console.log(wtmap.version);
+    var buildingID = "00278888";
+    var use3D = true;
+    use3D = false;
+
+    var map = new wtmap.WTMap({
+        container: 'map',
+        buildingID: buildingID,
+        use3D: use3D,
+        _disableCache: true,
+        usePbf: true,
+        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
+        // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
+        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
+    });
+    map.showTileBoundaries = true;
+    // map.showCollisionBoxes = true;
+
+    map.on("click", function (evt) {
+        console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
+        console.log(wtmap.CoordProjection.lngLatToMercator(evt.lngLat.lng, evt.lngLat.lat));
+        // stepPoints.push({lng: evt.lngLat.lng, lat: evt.lngLat.lat});
+        // map.getSource("stepPoint").setData(geojson_utils.createPointFeatureCollection(stepPoints));
+        // map.getSource("stepLine").setData(geojson_utils.createLineFeatureCollection([stepPoints]));
+    });
+
+    var startLngLat = {lng: 114.35357211913498, lat: 30.55688800619197};
+    var start = wtmap.CoordProjection.lngLatToMercator(startLngLat.lng, startLngLat.lat);
+    console.log(start);
+
+    function radianToDegree(rad) {
+        return rad * 180 / Math.PI;
+    }
+
+    function convertRotationRate(input) {
+        return {alpha: radianToDegree(input.x), beta: radianToDegree(input.y), gamma: radianToDegree(input.z)};
+    }
+
+    // var currentX = 0;
+    // var currentY = 0;
+    var currentPoint = {x: start.x, y: start.y};
+
+    function updateStep(point, step, heading) {
+        var x = point.x;
+        var y = point.y;
+        var rad = Math.PI * heading / 180;
+        return {x: x + Math.sin(rad) * step, y: y + Math.cos(rad) * step};
+    }
+
+    var disCount = 0;
+
+    var stepPoints = [];
+
+    var str = "";
+
+    function sensorCallback(event) {
+        // console.log(event);
+
+        // console.log(currentPoint);
+        var step = event.step;
+        var heading = event.heading;
+        disCount += step;
+        console.log(step, heading);
+        // console.log(heading);
+        str += "time: " + event.timestamp + ", length: " + round2(step) + "\n";
+        currentPoint = updateStep(currentPoint, step, (heading - map.building.initAngle));
+        // console.log("dis: ", disCount);
+        stepPoints.push(wtmap.CoordProjection.mercatorToLngLat(currentPoint.x, currentPoint.y));
+        // map.getSource("stepPoint").setData(geojson_utils.createPointFeatureCollection(stepPoints));
+        // map.getSource("stepLine").setData(geojson_utils.createLineFeatureCollection([stepPoints]));
+    }
+
+
+    function getData() {
+        var url = "2019-07-26_14:23:38.pbf";
+        // url = "2019-07-26_14:24:49.pbf";
+        // url = "2019-08-19_17:21:11.pbf";
+        url = "2019-08-20_13:50:54.pbf";
+        requestBlob(url, function (data) {
+            var motionParser = new lab.TYMotionParser(data);
+            var data = motionParser.data.motions;
+
+            console.log(data.length + " records");
+            str = "";
+            for (var i = 0; i < data.length; ++i) {
+                var motion = data[i];
+                if (i < 5) {
+                    // console.log(motion);
+                }
+                processEvent({
+                    acceleration: motion.userAcceleration,
+                    rotationRate: convertRotationRate(motion.rotationRate),
+                    heading: motion.heading,
+                    // timestamp: parseInt(motion.timestamp * 1000)
+                    timestamp: motion.timestamp * 1000
+                }, sensorCallback)
+            }
+            // console.log(motionParser.data);
+            console.log(str);
+            animate();
+        }, function (error) {
+            console.log(error);
+        });
+    }
+
+    var stepIndex = 0;
+
+    function animate() {
+        setInterval(function () {
+            stepIndex++;
+            var steps = stepPoints.slice(0, stepIndex);
+            map.getSource("stepPoint").setData(geojson_utils.createPointFeatureCollection(steps));
+            map.getSource("stepLine").setData(geojson_utils.createLineFeatureCollection([steps]));
+        }, 100);
+    }
+
+    var floorSwitch = document.getElementById('floorSwitch');
+    floorSwitch.onchange = function () {
+        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
+    };
+
+    map.on("mapready", function (evt) {
+        // console.log("mapready");
+        map.mapInfoArray.forEach(function (mapInfo) {
+            var floorButton = document.createElement('option');
+            floorButton.value = mapInfo.floorName;
+            floorButton.text = mapInfo.floorName;
+            floorSwitch.appendChild(floorButton);
+            floorSwitch.selectedIndex = map.building.initFloorIndex;
+        });
+        console.log("initAngle: " + map.building.initAngle);
+        getData();
+        initStepLayers();
+    });
+
+    map.on("floorend", function () {
+        map.setZoom(21);
+        map.setCenter(startLngLat);
+    });
+
+    map.on("error", function (error) {
+        console.log("map-error");
+        console.log(error)
+    });
+
+    function initStepLayers() {
+        var emptySource = {
+            'type': 'geojson', 'data': {"type": "FeatureCollection", "features": []}
+        };
+
+        var stepPointLayer = {
+            'id': "stepPoint",
+            'type': 'circle',
+            'source': emptySource,
+            'paint': {
+                'circle-radius': 3,
+                'circle-color': '#3bb2d0'
+            }
+        };
+
+        var stepLineLayer = {
+            "id": "stepLine",
+            "type": "line",
+            "source": emptySource,
+            "layout": {
+                "line-join": "round",
+                "line-cap": "round",
+            },
+            "paint": {
+                "line-color": "#888",
+                "line-width": 1,
+            }
+        };
+        map.addLayer(stepLineLayer);
+        map.addLayer(stepPointLayer);
+    }
+</script>
+
+</body>
+</html>
