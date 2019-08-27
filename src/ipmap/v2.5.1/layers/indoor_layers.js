@@ -62,6 +62,7 @@ class indoor_layers {
 
         this._maskingLayer = new MaskingLayer(map).addToMap();
         this._highlightLayer = new HighlightLayer(map).addToMap();
+        this._baseLayerArray.push(this._highlightLayer);
 
         this._switch3D(this._use3D);
     }

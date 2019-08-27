@@ -19,6 +19,8 @@ class indoor_layer_highlight extends IndoorGroupLayer {
             "filter": ["==", "POI_ID", "not exist"]
         };
         this.styleLayers[layerID] = layer;
+
+        this.pois = [];
     }
 
     _highlightPoi(pois, options) {
@@ -29,12 +31,23 @@ class indoor_layer_highlight extends IndoorGroupLayer {
         if (options && options.opacity) {
             this.map.setPaintProperty(this.highlightLayerID, "fill-opacity", options.opacity);
         }
-        let filter = ['in', 'POI_ID'].concat(pois);
+
+        this.pois = [].concat(pois);
+        let filter = ['all'];
+        filter.push(['==', 'floor', this.map.currentMapInfo.floorNumber]);
+        filter.push(['in', 'POI_ID'].concat(this.pois));
         this.map.setFilter(this.highlightLayerID, filter);
     }
 
     _resetHighlight() {
         this.map.setFilter(this.highlightLayerID, ["==", "POI_ID", "not exist"]);
+    }
+
+    _setMapInfo(mapInfo) {
+        let filter = ['all'];
+        filter.push(['==', 'floor', this.map.currentMapInfo.floorNumber]);
+        filter.push(['in', 'POI_ID'].concat(this.pois));
+        this.map.setFilter(this.highlightLayerID, filter);
     }
 }
 
