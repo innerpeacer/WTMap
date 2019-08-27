@@ -352,6 +352,28 @@ class IPMap extends BoxMap {
             'bounds': initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
+        let maskingBounds = IPEntityUtils.extendedBounds2(maxInfo, 10);
+        let lng1 = maskingBounds[0];
+        let lat1 = maskingBounds[1];
+        let lng2 = maskingBounds[2];
+        let lat2 = maskingBounds[3];
+        let maskingData = {
+            "type": "FeatureCollection",
+            "features": [{
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': [[
+                        [lng1, lat1],
+                        [lng2, lat1],
+                        [lng2, lat2],
+                        [lng1, lat2],
+                        [lng1, lat1],
+                    ]]
+                }
+            }]
+        };
+        map._layerGroup._setMaskingData(maskingData);
         map._layerGroup._updateLocator(map._locator);
         map.fire('mapready');
 
@@ -361,6 +383,14 @@ class IPMap extends BoxMap {
             let initFloorIndex = map.building.initFloorIndex;
             map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
         }
+    }
+
+    highlightPoi(pois, options) {
+        this._layerGroup._highlightPoi(pois, options);
+    }
+
+    clearHighlight() {
+        this._layerGroup._resetHighlight();
     }
 
     getBaseZoom() {
