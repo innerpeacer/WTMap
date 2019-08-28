@@ -203,6 +203,8 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
 
     result.startPoint = convertPoint(startPoint);
     result.endPoint = convertPoint(endPoint);
+    result.startRoomID = multiStopResult.startRoomID;
+    result.endRoomID = multiStopResult.endRoomID;
 
     let stopArray = multiStopResult.stops;
     let resStops = [];

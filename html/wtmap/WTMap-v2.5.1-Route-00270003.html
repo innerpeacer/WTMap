@@ -125,6 +125,7 @@
         showParams();
 
         map.requestRoute(startPoint, endPoint, stopPoints, function (routeResult) {
+            console.log("routeResult");
             console.log(routeResult);
             map.showRoute();
         }, function (error) {

@@ -7,6 +7,9 @@ class multi_stop_route_result {
         this.endPoint = null;
         this.stopPoints = null;
 
+        this.startRoomID = null;
+        this.endRoomID = null;
+
         this.indices = null;
         this.rearrangedPoints = null;
     }

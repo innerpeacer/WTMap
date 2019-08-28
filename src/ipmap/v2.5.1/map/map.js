@@ -251,6 +251,8 @@ class IPMap extends BoxMap {
         if (this._outerRouteCallback != null) this._outerRouteCallback({
             startPoint: result.startPoint,
             endPoint: result.endPoint,
+            startRoomID: result.startRoomID,
+            endRoomID: result.endRoomID,
             stopPoints: result.stopPoints,
             rearrangedPoints: result.rearrangedPoints,
             indices: result.indices,
