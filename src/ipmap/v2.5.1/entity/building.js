@@ -12,6 +12,8 @@ class building {
         this.routeURL = obj.routeURL;
         this.status = obj.status;
         this.initFloorIndex = obj.initFloorIndex || 0;
+        this.wgs84CalibrationPoint = obj.wgs84CalibrationPoint || null;
+        this.wtCalibrationPoint = obj.wtCalibrationPoint || null;
     }
 
     toString() {

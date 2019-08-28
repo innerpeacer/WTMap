@@ -14,6 +14,7 @@ import IPEntityUtils from '../entity/entity_utils'
 
 import IndoorLayers from '../layers/indoor_layers'
 import CoordProjection from '../utils/coord_projection'
+import WtWgs84Converter from '../utils/wt_wgs84_converter'
 import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 
 import IndoorLocator from '../locator/locator'
@@ -184,9 +185,9 @@ class IPMap extends BoxMap {
     showLocation(location, options) {
         // console.log('indoor_layer.showLocation');
         let loc = {};
-        if (location.lng && location.lat) {
+        if (location && location.lng && location.lat) {
             loc = {lng: location.lng, lat: location.lat};
-        } else if (location.x && location.y) {
+        } else if (location && location.x && location.y) {
             loc = CoordProjection.mercatorToLngLat(location.x, location.y);
         } else {
             return;
@@ -311,6 +312,7 @@ class IPMap extends BoxMap {
         let map = this;
         map.city = new IPCity(data['Cities'][0]);
         map.building = new IPBuilding(data['Buildings'][0]);
+        map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
         map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
         map._fillSymbolArray.forEach(function (fill, index) {

@@ -11,6 +11,9 @@ class t_y_cbm_parser {
         let data = {};
         data.Cities = cbm.Cities;
         data.Buildings = cbm.Buildings;
+        console.log("parser");
+        console.log(cbm.Buildings[0].wgs84CalibrationPoint);
+        console.log(cbm.Buildings[0].wtCalibrationPoint);
         data.MapInfo = cbm.MapInfos;
         data.FillSymbols = cbm.FillSymbols;
         data.IconTextSymbols = cbm.IconTextSymbols;

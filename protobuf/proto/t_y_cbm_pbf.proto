@@ -36,6 +36,8 @@ message BuildingPbf {
     required double xmax = 12;
     required double ymax = 13;
     required uint32 initFloorIndex = 14;
+    repeated double wgs84CalibrationPoint = 15;
+    repeated double wtCalibrationPoint = 16;
 }
 
 message MapInfoPbf {
