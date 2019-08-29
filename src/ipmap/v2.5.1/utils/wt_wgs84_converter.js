@@ -3,9 +3,9 @@ import CoordTransform from "./coord_transform"
 
 class wt_wgs84_converter {
     constructor(wgs84Points, wtPoints) {
-        console.log("wt_wgs84_converter.constructor");
-        console.log(wgs84Points);
-        console.log(wtPoints);
+        // console.log("wt_wgs84_converter.constructor");
+        // console.log(wgs84Points);
+        // console.log(wtPoints);
 
         if (!wgs84Points || wgs84Points.length != 6 || !wtPoints || wtPoints.length != 6) {
             this._valid = false;
@@ -24,8 +24,6 @@ class wt_wgs84_converter {
         mercatorXY.push(xy3.y);
 
         this._valid = true;
-        console.log(mercatorXY);
-        console.log(wtPoints);
         this._transform = new CoordTransform(mercatorXY, wtPoints);
     }
 

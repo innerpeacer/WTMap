@@ -21,8 +21,8 @@ class coord_transform {
         let lamda = (fromDelta.x * this._fromDelta13.y - fromDelta.y * this._fromDelta13.x) / (this._fromDelta12.x * this._fromDelta13.y - this._fromDelta12.y * this._fromDelta13.x);
         let miu = (fromDelta.x * this._fromDelta12.y - fromDelta.y * this._fromDelta12.x) / (this._fromDelta13.x * this._fromDelta12.y - this._fromDelta12.x * this._fromDelta13.y);
         return {
-            x: this._from1.x + lamda * this._fromDelta12.x + miu * this._fromDelta13.x,
-            y: this._from1.y + lamda * this._fromDelta12.y + miu * this._fromDelta13.y
+            x: this._to1.x + lamda * this._toDelta12.x + miu * this._toDelta13.x,
+            y: this._to1.y + lamda * this._toDelta12.y + miu * this._toDelta13.y
         };
     }
 
@@ -31,8 +31,8 @@ class coord_transform {
         let lamda = (toDelta.x * this._toDelta13.y - toDelta.y * this._toDelta13.x) / (this._toDelta12.x * this._toDelta13.y - this._toDelta12.y * this._toDelta13.x);
         let miu = (toDelta.x * this._toDelta12.y - toDelta.y * this._toDelta12.x) / (this._toDelta13.x * this._toDelta12.y - this._toDelta12.x * this._toDelta13.y);
         return {
-            x: this._to1.x + lamda * this._toDelta12.x + miu * this._toDelta13.x,
-            y: this._to1.y + lamda * this._toDelta12.y + miu * this._toDelta13.y
+            x: this._from1.x + lamda * this._fromDelta12.x + miu * this._fromDelta13.x,
+            y: this._from1.y + lamda * this._fromDelta12.y + miu * this._fromDelta13.y
         };
     }
 

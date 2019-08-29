@@ -41,7 +41,7 @@
     new VConsole();
     console.log(wtmap.version);
     var buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00278880";
+    if (buildingID == null) buildingID = "00278888";
     var use3D = true;
     use3D = false;
 
@@ -95,8 +95,6 @@
             floorSwitch.appendChild(floorButton);
             floorSwitch.selectedIndex = map.building.initFloorIndex;
         });
-        map.setMaxBounds(null);
-        map.setMinZoom(0);
     });
 
     map.on("floorend", function (evt) {
@@ -181,20 +179,18 @@
     var index = 0
 
     function gpsLocation(position) {
-        console.log("gpsLocation");
+        // console.log("gpsLocation");
         hintLabel.innerHTML = "Index: " + index++ + "<br />Latitude: " + position.coords.latitude +
             "<br />Longitude: " + position.coords.longitude;
 
-
-        var converted = map._wtWgs84Converter.convertGPS({
+        var gps = {
             lng: position.coords.longitude,
-            lat: position.coords.latitude,
-            // floor :1
-        });
+            lat: position.coords.latitude
+        };
+
+        var converted = map._wtWgs84Converter.convertGPS(gps);
         converted.floor = map.currentMapInfo.floorNumber;
         currentLocation = converted;
-        console.log("converted");
-        console.log(converted);
         map.showLocation(converted, {
             center: true,
             angle: currentHeading - map.building.initAngle
