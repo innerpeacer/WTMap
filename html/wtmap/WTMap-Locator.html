@@ -38,10 +38,10 @@
 
 <script>
     var hintLabel = document.getElementById("hint");
-    new VConsole();
+    // new VConsole();
     console.log(wtmap.version);
     var buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00278888";
+    if (buildingID == null) buildingID = "00278880";
     var use3D = true;
     use3D = false;
 
@@ -64,21 +64,15 @@
         // console.log("Zoom: " + map.getZoom());
         console.log(evt.lngLat);
         console.log(map.building.initAngle);
-    });
 
-    var currentHeading = null;
-    map.on("heading", function (evt) {
-        if (!map.currentMapInfo || !map.currentMapInfo.floorNumber) return;
-        currentHeading = evt.heading || 0;
-        map.showLocation(currentLocation, {
-            center: true,
-            angle: currentHeading - map.building.initAngle
-        });
-    });
-
-    map.on("motion", function (evt) {
-        // console.log(evt);
-        // hintLabel.innerHTML = eventToString(evt);
+        var beacons = [{
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10194,
+            "minor": 5336,
+            "rssi": -70,
+            "accuracy": 1.4534
+        }];
+        scan(beacons);
     });
 
     var floorSwitch = document.getElementById('floorSwitch');
@@ -117,6 +111,12 @@
         console.log(error)
     });
 
+    map.on("location-update", function (res) {
+        res.location.floor = 1;
+        console.log(res);
+        map.showLocation(res.location);
+    });
+
     map.on("locator-ready", function () {
         // console.log("locator-ready");
         let beaconInfo = map._locator._biteMe("_getBeaconInfo");
@@ -150,21 +150,11 @@
             console.log(currentLocation);
             map.showLocation(currentLocation, {
                 center: map.currentMapInfo.floorNumber !== currentLocation.floor,
-                angle: currentHeading - map.building.initAngle
             });
             return res;
         }
         console.log("no location");
         return "no location";
-    }
-
-    function watchGPS() {
-        console.log("watchGPS");
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(gpsLocation);
-        } else {
-            hintLabel.innerHTML = "Geolocation is not supported by this browser.";
-        }
     }
 
     function getGPS() {
@@ -176,29 +166,9 @@
         }
     }
 
-    var index = 0
-
-    function gpsLocation(position) {
-        // console.log("gpsLocation");
-        hintLabel.innerHTML = "Index: " + index++ + "<br />Latitude: " + position.coords.latitude +
-            "<br />Longitude: " + position.coords.longitude;
-
-        var gps = {
-            lng: position.coords.longitude,
-            lat: position.coords.latitude
-        };
-
-        var converted = map._wtWgs84Converter.convertGPS(gps);
-        converted.floor = map.currentMapInfo.floorNumber;
-        currentLocation = converted;
-        map.showLocation(converted, {
-            center: true,
-            angle: currentHeading - map.building.initAngle
-        });
+    function showHint(hint) {
+        hintLabel.innerHTML = hint;
     }
-
-    watchGPS();
-    // getGPS();
 
 </script>
 

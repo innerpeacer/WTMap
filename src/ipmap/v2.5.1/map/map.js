@@ -147,17 +147,6 @@ class IPMap extends BoxMap {
             map._requestCBM();
         });
 
-        this._locator = new IndoorLocator(this.buildingID, options);
-        this._locator.on('inner-locator-ready', function () {
-            // console.log('inner-locator-ready');
-            if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
-            map.fire('locator-ready');
-        });
-        this._locator.on('inner-locator-failed', function (error) {
-            // console.log('inner-locator-failed');
-            map.fire('locator-failed', error);
-        });
-
         this._orientationHandler = new OrientationHandler(this);
         if (this._enableOrientation) this._orientationHandler.bind();
 
@@ -378,7 +367,7 @@ class IPMap extends BoxMap {
             }]
         };
         map._layerGroup._setMaskingData(maskingData);
-        map._layerGroup._updateLocator(map._locator);
+        // map._layerGroup._updateLocator(map._locator);
         map.fire('mapready');
 
         if (this._targetFloorID != null) {
@@ -387,6 +376,22 @@ class IPMap extends BoxMap {
             let initFloorIndex = map.building.initFloorIndex;
             map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
         }
+
+        map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
+        map._locator.on('inner-locator-ready', function () {
+            // console.log('inner-locator-ready');
+            if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
+            map.fire('locator-ready');
+        });
+        map._locator.on('inner-locator-failed', function (error) {
+            // console.log('inner-locator-failed');
+            map.fire('locator-failed', error);
+        });
+        map._locator.on(IndoorLocator.LocatorEventTypeUpdate, function (res) {
+            console.log("IndoorLocator.LocatorEventTypeUpdate");
+            console.log(res);
+            map.fire("location-update", res);
+        });
     }
 
     highlightPoi(pois, options) {
