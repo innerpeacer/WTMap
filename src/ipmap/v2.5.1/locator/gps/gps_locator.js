@@ -1,9 +1,9 @@
 import {Evented} from '../../utils/ip_evented'
+import InnerEventManager from "../../utils/inner_event_manager"
 
-const EventTypeGpsError = "inner-gps-error";
-const EventTypeGpsResult = "inner-gps-result";
+let GpsEvent = InnerEventManager.GpsEvent;
 
-class gps_manager extends Evented {
+class gps_locator extends Evented {
     constructor(converter) {
         super();
 
@@ -16,7 +16,7 @@ class gps_manager extends Evented {
         if (this._isStarted) return;
 
         if (!this._isSupported) {
-            this.fire(EventTypeGpsError, {description: "calibration point is not valid"});
+            this.fire(GpsEvent.GpsError, {description: "calibration point is not valid"});
             return;
         }
 
@@ -33,7 +33,7 @@ class gps_manager extends Evented {
             });
             this._isStarted = true;
         } else {
-            this.fire(EventTypeGpsError, {description: "geolocation is not supported by this browser."});
+            this.fire(GpsEvent.GpsError, {description: "geolocation is not supported by this browser."});
         }
     }
 
@@ -51,7 +51,7 @@ class gps_manager extends Evented {
         let originGps = {lng: gps.coords.longitude, lat: gps.coords.latitude, accuracy: gps.coords.accuracy};
         let wtGps = this._gpsConverter.convertGPS(originGps);
         wtGps.accuracy = originGps.accuracy;
-        this.fire(EventTypeGpsResult, {
+        this.fire(GpsEvent.GpsResult, {
             timestamp: (new Date()).valueOf(),
             location: wtGps,
             origin: originGps
@@ -60,11 +60,8 @@ class gps_manager extends Evented {
 
     _gpsError(error) {
         // console.log("gps_manager.gpsError");
-        this.fire(EventTypeGpsError, error);
+        this.fire(GpsEvent.GpsError, error);
     }
 }
 
-gps_manager.EventTypeGpsResult = EventTypeGpsResult;
-gps_manager.EventTypeGpsError = EventTypeGpsError;
-
-export default gps_manager;
+export default gps_locator;

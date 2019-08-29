@@ -4,10 +4,12 @@ import {local_point as LocalPoint} from '../entity/local_point';
 import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from './beacon';
 import CoordProjection from '../utils/coord_projection';
 import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
-import GpsManager from "./gps/gps_manager"
+import GpsLocator from "./gps/gps_locator"
 
-const LocatorEventTypeError = "locator-error";
-const LocatorEventTypeUpdate = "location-update";
+import InnerEventManager from "../utils/inner_event_manager"
+
+let InnerGpsEvent = InnerEventManager.GpsEvent;
+let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
 let _locatorObject = {};
 
@@ -248,11 +250,11 @@ class locator extends Evented {
 
         this._init();
 
-        this._gpsManager = new GpsManager(this._converter);
-        this._gpsManager.on(GpsManager.EventTypeGpsError, (error) => {
+        this._gpsLocator = new GpsLocator(this._converter);
+        this._gpsLocator.on(InnerGpsEvent.GpsError, (error) => {
             self._gpsError(error);
         });
-        this._gpsManager.on(GpsManager.EventTypeGpsResult, (gps) => {
+        this._gpsLocator.on(InnerGpsEvent.GpsResult, (gps) => {
             self._gpsUpdated(gps);
         });
         this.startGps();
@@ -278,21 +280,21 @@ class locator extends Evented {
             let hybridLocation = CoordProjection.mercatorToLngLat(x, y);
             hybridLocation.floor = this._bleLocation.floor;
 
-            this.fire(LocatorEventTypeUpdate, {
+            this.fire(InnerLocatorEvent.LocationUpdate, {
                 location: hybridLocation,
                 source: "hybrid",
                 timestamp: now
             });
         } else if (this._bleLocation != null) {
             bleTime = this._bleLocation.timestamp;
-            this.fire(LocatorEventTypeUpdate, {
+            this.fire(InnerLocatorEvent.LocationUpdate, {
                 location: this._bleLocation.location,
                 source: "ble",
                 timestamp: this._bleLocation.timestamp
             });
         } else if (this._gpsLocation != null) {
             gpsTime = this._gpsLocation.timestamp;
-            this.fire(LocatorEventTypeUpdate, {
+            this.fire(InnerLocatorEvent.LocationUpdate, {
                 location: this._gpsLocation.location,
                 source: "gps",
                 timestamp: this._gpsLocation.timestamp
@@ -317,18 +319,17 @@ class locator extends Evented {
 
     startGps() {
         // console.log("startGps");
-        this._gpsManager.startUpdateGps();
+        this._gpsLocator.startUpdateGps();
     }
 
     stopGps() {
         // console.log("stopGps");
-        this._gpsManager.stopUpdateGps();
+        this._gpsLocator.stopUpdateGps();
     }
 
     _init() {
         if (this._buildingID == null) {
-            this.fire('error', {errorCode: 800, description: 'buildingID is null'});
-            this.fire('inner-locator-failed', {errorCode: 800, description: 'buildingID is null'});
+            this.fire(InnerLocatorEvent.LocatorFailed, {errorCode: 800, description: 'buildingID is null'});
             return;
         }
         this._path = `${this._url}?buildingID=${this._buildingID}`;
@@ -346,9 +347,9 @@ class locator extends Evented {
                     _loadBeacons(that, parser.getBeaconList());
                     that._ready = true;
                     that.fire('ready');
-                    that.fire('inner-locator-ready');
+                    that.fire(InnerLocatorEvent.LocatorReady);
                 } else {
-                    that.fire('inner-locator-failed', {errorCode: 900, description: 'Beacon Data error!'});
+                    that.fire(InnerLocatorEvent.LocatorFailed, {errorCode: 900, description: 'Beacon Data error!'});
                 }
             }
         };
@@ -397,8 +398,5 @@ class locator extends Evented {
         console.log('OK, as you wish!')
     }
 }
-
-locator.LocatorEventTypeError = LocatorEventTypeError;
-locator.LocatorEventTypeUpdate = LocatorEventTypeUpdate;
 
 export default locator;

@@ -1,4 +1,7 @@
 import {Evented} from './ip_evented'
+import InnerEventManager from "./inner_event_manager"
+
+let HttpEvent = InnerEventManager.HttpEvent;
 
 class http_request extends Evented {
     constructor() {
@@ -36,9 +39,9 @@ class http_request extends Evented {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     let json = JSON.parse(httpRequest.responseText);
-                    that.fire('http-result', json);
+                    that.fire(HttpEvent.HttpResult, json);
                 } else {
-                    that.fire('http-error', {status: httpRequest.status, statusText: httpRequest.statusText});
+                    that.fire(HttpEvent.HttpError, {status: httpRequest.status, statusText: httpRequest.statusText});
                 }
             }
         };
@@ -54,9 +57,9 @@ class http_request extends Evented {
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     let bytes = httpRequest.response;
-                    that.fire('http-result', {bytes: bytes});
+                    that.fire(HttpEvent.HttpResult, {bytes: bytes});
                 } else {
-                    that.fire('http-error', {status: httpRequest.status, statusText: httpRequest.statusText});
+                    that.fire(HttpEvent.HttpError, {status: httpRequest.status, statusText: httpRequest.statusText});
                 }
             }
         };

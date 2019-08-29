@@ -2,6 +2,12 @@ import {Evented} from '../utils/ip_evented'
 import IPHttpRequest from '../utils/http_request'
 import {t_y_cbm_parser as CBMParser} from '../pbf-parse/t_y_cbm_parser';
 
+
+import InnerEventManager from "../utils/inner_event_manager"
+
+let InnerDataEvent = InnerEventManager.DataEvent;
+let HttpEvent = InnerEventManager.HttpEvent;
+
 let getCBMJson = function (bID, options) {
     if (options._useFile) {
         return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json`;
@@ -34,16 +40,16 @@ class data_manager extends Evented {
         let that = this;
 
         request.request(getCBMJson(this.buildingID, this._options));
-        request.on('http-result', function (data) {
+        request.on(HttpEvent.HttpResult, function (data) {
             if (data.success) {
-                that.fire('cbm-ready', data);
+                that.fire(InnerDataEvent.CBMReady, data);
             } else {
-                that.fire('cbm-error', data);
+                that.fire(InnerDataEvent.CBMError, data);
             }
         });
 
-        request.on('http-error', function (error) {
-            that.fire('cbm-error', error);
+        request.on(HttpEvent.HttpError, function (error) {
+            that.fire(InnerDataEvent.CBMError, error);
         });
     }
 
@@ -52,14 +58,14 @@ class data_manager extends Evented {
         let that = this;
 
         request.requestBlob(getCBMPbf(this.buildingID, this._options));
-        request.on('http-result', function (data) {
+        request.on(HttpEvent.HttpResult, function (data) {
             let byteArray = new Uint8Array(data.bytes);
             let parser = new CBMParser(byteArray);
-            that.fire('cbm-ready', parser.getData());
+            that.fire(InnerDataEvent.CBMReady, parser.getData());
         });
 
-        request.on('http-error', function (error) {
-            that.fire('cbm-error', error);
+        request.on(HttpEvent.HttpError, function (error) {
+            that.fire(InnerDataEvent.CBMError, error);
         });
     }
 

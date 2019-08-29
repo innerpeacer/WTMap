@@ -12,6 +12,11 @@ import CoordProjection from '../utils/coord_projection'
 import EntityUtils from '../entity/entity_utils'
 import {local_point as IPLocalPoint} from '../entity/local_point'
 
+import InnerEventManager from "../utils/inner_event_manager"
+
+let RouteEvent = InnerEventManager.RouteEvent;
+let HttpEvent = InnerEventManager.HttpEvent;
+
 // let getRoutePath = function (bID, options, start, end, stops, params) {
 //     // console.log('getRoutePath: ');
 //     let rearrange = true;
@@ -271,16 +276,16 @@ class multi_stop_route_manager extends Evented {
         let that = this;
 
         request.request(getRoutePath(that.building.buildingID, that._options, start, end, stops, params));
-        request.on('http-result', function (data) {
+        request.on(HttpEvent.HttpResult, function (data) {
             if (data.success) {
                 let result = parseMultiStopRouteResult(data, that.allMapInfos, start, end, stops, callback, errorCallback);
-                that.fire('route-result', result);
+                that.fire(RouteEvent.RouteResult, result);
             } else {
-                that.fire('route-error', {statusText: '没有找到路径'});
+                that.fire(RouteEvent.RouteError, {statusText: '没有找到路径'});
             }
         });
-        request.on('http-error', function (error) {
-            that.fire('route-error', error);
+        request.on(HttpEvent.HttpError, function (error) {
+            that.fire(RouteEvent.RouteError, error);
         });
     }
 }

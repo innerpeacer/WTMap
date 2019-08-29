@@ -27,6 +27,17 @@ import {motion_handler as MotionHandler} from "../motion/motion_handler";
 //     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
 // }
 
+import EventManager from "../utils/event_manager"
+
+let MapEvent = EventManager.MapEvent;
+let LocatorEvent = EventManager.LocatorEvent;
+
+import InnerEventManager from "../utils/inner_event_manager"
+
+let InnerDataEvent = InnerEventManager.DataEvent;
+let InnerRouteEvent = InnerEventManager.RouteEvent;
+let InnerLocatorEvent = InnerEventManager.LocatorEvent;
+
 class IPMap extends BoxMap {
     constructor(options) {
         super(options);
@@ -76,7 +87,7 @@ class IPMap extends BoxMap {
 
         this.buildingID = options.buildingID;
         if (this.buildingID == null) {
-            this.fire('error', {'description': 'buildingID is null'});
+            this.fire(MapEvent.Error, {'description': 'buildingID is null'});
             return;
         }
 
@@ -109,22 +120,21 @@ class IPMap extends BoxMap {
 
 
         this._msRouteManager = new IPMultiStopRouteManager(options);
-        this._msRouteManager.on('route-result', function (result) {
+        this._msRouteManager.on(InnerRouteEvent.RouteResult, function (result) {
             map.__routeReady(result);
         });
-        this._msRouteManager.on('route-error', function (error) {
+        this._msRouteManager.on(InnerRouteEvent.RouteError, function (error) {
             map.__routeError(error);
         });
 
         this._dataManager = new IPDataManager(this.resourceBuildingID, options);
-        this.on('inner-cbm-ready', this.__cbmReady);
-        this._dataManager.on('cbm-ready', function (data) {
-            map.fire('inner-cbm-ready', data);
+        this.on(InnerDataEvent.CBMReady, this.__cbmReady);
+        this._dataManager.on(InnerDataEvent.CBMReady, function (data) {
+            map.fire(InnerDataEvent.CBMReady, data);
         });
 
-        this._dataManager.on('cbm-error', function (error) {
-            // console.log('cbm-error');
-            map.fire('error', error);
+        this._dataManager.on(InnerDataEvent.CBMError, function (error) {
+            map.fire(MapEvent.Error, error);
         });
 
         if (dataVersion) {
@@ -141,7 +151,7 @@ class IPMap extends BoxMap {
         this.on('load', function () {
             // console.log('on load');
             if (map.__abort) {
-                map.fire('error', {'description': 'Invalid Token: ' + options.token + ' for ' + options.buildingID});
+                map.fire(MapEvent.Error, {'description': 'Invalid Token: ' + options.token + ' for ' + options.buildingID});
                 return;
             }
             map._requestCBM();
@@ -315,13 +325,6 @@ class IPMap extends BoxMap {
         });
         map._layerSymbolMap = data['Symbols'];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
-        // let facilityList = data['Symbols']['facility'];
-        // console.log('============== Facility ================');
-        // for (let i = 0; i < facilityList.length; ++i) {
-        //     let uid = facilityList[i];
-        //     let symbol = map._iconTextSymbolMap[uid];
-        //     console.log(symbol.UID + ': ' + symbol.symbolID);
-        // }
 
         let initInfo = map.mapInfoArray[0];
         // console.log('initBounds');
@@ -368,7 +371,7 @@ class IPMap extends BoxMap {
         };
         map._layerGroup._setMaskingData(maskingData);
         // map._layerGroup._updateLocator(map._locator);
-        map.fire('mapready');
+        map.fire(MapEvent.MapReady);
 
         if (this._targetFloorID != null) {
             map.setFloor(this._targetFloorID);
@@ -378,19 +381,19 @@ class IPMap extends BoxMap {
         }
 
         map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
-        map._locator.on('inner-locator-ready', function () {
+        map._locator.on(InnerLocatorEvent.LocatorReady, function () {
             // console.log('inner-locator-ready');
             if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
-            map.fire('locator-ready');
+            map.fire(LocatorEvent.LocatorReady);
         });
-        map._locator.on('inner-locator-failed', function (error) {
+        map._locator.on(InnerLocatorEvent.LocatorFailed, function (error) {
             // console.log('inner-locator-failed');
-            map.fire('locator-failed', error);
+            map.fire(LocatorEvent.LocatorFailed, error);
         });
-        map._locator.on(IndoorLocator.LocatorEventTypeUpdate, function (res) {
+        map._locator.on(InnerLocatorEvent.LocationUpdate, function (res) {
             console.log("IndoorLocator.LocatorEventTypeUpdate");
             console.log(res);
-            map.fire("location-update", res);
+            map.fire(LocatorEvent.LocationUpdate, res);
         });
     }
 
@@ -440,7 +443,7 @@ class IPMap extends BoxMap {
 
         let targetInfo = this._getInfoByFloorNumber(floor);
         if (targetInfo == null) {
-            map.fire('error', {'description': 'Floor not exist: ' + floor});
+            map.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
             return;
         }
         map._loadFloorData({mapInfo: targetInfo}, {rezoom: false});
@@ -454,7 +457,7 @@ class IPMap extends BoxMap {
 
         let targetInfo = this._getInfoByFloorID(floorID);
         if (targetInfo == null) {
-            map.fire('error', {'description': 'FloorID not exist: ' + floorID});
+            map.fire(MapEvent.Error, {'description': 'FloorID not exist: ' + floorID});
             return;
         }
 
@@ -464,7 +467,7 @@ class IPMap extends BoxMap {
     _loadFloorData(result, options) {
         // console.log('_loadFloorData');
         let map = this;
-        map.fire('floorstart', {});
+        map.fire(MapEvent.FloorStart, {});
         // map._layerGroup.hideLayers();
         map.currentMapInfo = result.mapInfo;
 
@@ -488,7 +491,7 @@ class IPMap extends BoxMap {
                 map._firstLoad = false;
             }
 
-            map.fire('floorend', {mapInfo: result.mapInfo});
+            map.fire(MapEvent.FloorEnd, {mapInfo: result.mapInfo});
 
             if (map._outerFloorCallback != null) {
                 map._outerFloorCallback();
