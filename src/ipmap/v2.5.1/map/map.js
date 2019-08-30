@@ -381,18 +381,18 @@ class IPMap extends BoxMap {
         }
 
         map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
-        map._locator.on(InnerLocatorEvent.LocatorReady, function () {
+        map._locator.on(InnerLocatorEvent.LocatorReady, function (event) {
             // console.log('inner-locator-ready');
             if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
-            map.fire(LocatorEvent.LocatorReady);
+            map.fire(LocatorEvent.LocatorReady, event);
         });
         map._locator.on(InnerLocatorEvent.LocatorFailed, function (error) {
             // console.log('inner-locator-failed');
             map.fire(LocatorEvent.LocatorFailed, error);
         });
         map._locator.on(InnerLocatorEvent.LocationUpdate, function (res) {
-            console.log("IndoorLocator.LocatorEventTypeUpdate");
-            console.log(res);
+            // console.log("IndoorLocator.LocatorEventTypeUpdate");
+            // console.log(res);
             map.fire(LocatorEvent.LocationUpdate, res);
         });
     }

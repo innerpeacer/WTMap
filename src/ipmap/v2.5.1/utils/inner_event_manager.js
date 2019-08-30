@@ -23,11 +23,19 @@ let RouteEvent = {
 inner_event_manager.RouteEvent = RouteEvent;
 
 let GpsEvent = {
+    GpsReady: "inner-gps-ready",
+    GpsFailed: "inner-gps-failed",
     GpsError: "inner-gps-error",
     GpsResult: "inner-gps-result"
 };
-
 inner_event_manager.GpsEvent = GpsEvent;
+
+let BleEvent = {
+    BleReady: "inner-ble-ready",
+    BleFailed: "inner-ble-failed",
+    BleResult: "inner-ble-result"
+};
+inner_event_manager.BleEvent = BleEvent;
 
 let LocatorEvent = {
     LocatorReady: "inner-locator-ready",

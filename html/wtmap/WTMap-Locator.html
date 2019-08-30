@@ -62,8 +62,8 @@
 
     map.on("click", function (evt) {
         // console.log("Zoom: " + map.getZoom());
-        console.log(evt.lngLat);
-        console.log(map.building.initAngle);
+        // console.log(evt.lngLat);
+        // console.log(map.building.initAngle);
 
         var beacons = [{
             "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
@@ -115,15 +115,17 @@
         res.location.floor = 1;
         console.log(res);
         map.showLocation(res.location);
+        showHint(res.location);
     });
 
-    map.on("locator-ready", function () {
-        // console.log("locator-ready");
+    map.on("locator-ready", function (event) {
+        console.log("locator-ready");
+        console.log(event);
         let beaconInfo = map._locator._biteMe("_getBeaconInfo");
         if (beaconInfo) {
-            console.log(beaconInfo.uuid);
-            console.log(beaconInfo.major);
-            console.log(beaconInfo.minor);
+            // console.log(beaconInfo.uuid);
+            // console.log(beaconInfo.major);
+            // console.log(beaconInfo.minor);
         }
     });
 
@@ -141,29 +143,19 @@
     }
 
     function scan(data) {
-        console.log("scan called");
-        console.log(data);
+        // console.log("scan called");
+        // console.log(data);
 
         var res = map.didRangeBeacons(data);
         if (res && res.location) {
             currentLocation = {x: res.location.x, y: res.location.y, floor: res.location.floor};
-            console.log(currentLocation);
+            // console.log(currentLocation);
             map.showLocation(currentLocation, {
                 center: map.currentMapInfo.floorNumber !== currentLocation.floor,
             });
             return res;
         }
-        console.log("no location");
         return "no location";
-    }
-
-    function getGPS() {
-        console.log("getGPS");
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(gpsLocation);
-        } else {
-            hintLabel.innerHTML = "Geolocation is not supported by this browser.";
-        }
     }
 
     function showHint(hint) {

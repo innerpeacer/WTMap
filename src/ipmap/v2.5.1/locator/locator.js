@@ -5,225 +5,15 @@ import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from
 import CoordProjection from '../utils/coord_projection';
 import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 import GpsLocator from "./gps/gps_locator"
+import BleLocator from "./ble/ble_locator"
 
 import InnerEventManager from "../utils/inner_event_manager"
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
+let InnerBleEvent = InnerEventManager.BleEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
-let _locatorObject = {};
-
-function _loadBeacons(locator, data) {
-    for (let i = 0; i < data.length; ++i) {
-        let lb = data[i];
-        let locatingBeacon = new LocatingBeacon(lb.uuid, lb.major, lb.minor, lb.x, lb.y, lb.floor);
-        _locatorObject.locatingBeaconDict.set(locatingBeacon.key, locatingBeacon);
-    }
-
-    if (locator._debugBeacon) {
-        let uuidSet = new Set();
-        let majorSet = new Set();
-        let maxMinor = -1;
-        let minMinor = 65536;
-        for (let i = 0; i < data.length; ++i) {
-            let lb = data[i];
-            uuidSet.add(lb.uuid);
-            majorSet.add(lb.major);
-            maxMinor = Math.max(lb.minor, maxMinor);
-            minMinor = Math.min(lb.minor, minMinor);
-        }
-        _locatorObject._beaconInfo = {
-            uuid: Array.from(uuidSet),
-            major: Array.from(majorSet),
-            minor: [minMinor, maxMinor]
-        };
-    }
-}
-
-function _updateBeaconPool(sbeacons) {
-    let beaconPool = _locatorObject.beaconPool;
-    let now = parseInt(new Date().getTime());
-
-    for (let i = 0; i < sbeacons.length; ++i) {
-        let sb = sbeacons[i];
-        beaconPool.set(sb.key, {beacon: sb, time: now});
-    }
-
-    beaconPool.forEach(function (b, key) {
-        if (Math.abs(b.time - now) > 5000) {
-            beaconPool.delete(key);
-        }
-    });
-}
-
-function _preprocessBeacons(locator, sbeacons) {
-    _locatorObject.scannedBeaconArray = [];
-    for (let i = 0; i < sbeacons.length; ++i) {
-        let sb = sbeacons[i];
-        if (sb.uuid !== locator._uuid) continue;
-        if (sb.rssi > -20) continue;
-
-        if (_locatorObject.locatingBeaconDict.has(sb.key)) {
-            _locatorObject.scannedBeaconArray.push(sb);
-        }
-    }
-}
-
-function _calculateLocation(options) {
-    let weightingArray = [];
-    let pointArray = [];
-
-    let beaconList = [];
-    _locatorObject.beaconPool.forEach(function (value) {
-        beaconList.push(value.beacon);
-    });
-
-    beaconList.sort(function (a, b) {
-        return b.rssi - a.rssi;
-    });
-
-    let totalWeighting = 0.0;
-    let totalWeightingX = 0.0;
-    let totalWeightingY = 0.0;
-
-    let maxRssi = -100;
-
-    let index = Math.min(9, beaconList.length);
-    let frequencyMap = new Map();
-
-    let debugArray = [];
-    for (let i = 0; i < index; ++i) {
-        let sb = beaconList[i];
-        maxRssi = sb.rssi;
-        let location = _locatorObject.locatingBeaconDict.get(sb.key).location;
-
-        let weighting = 1.0 / Math.pow(sb.accuracy, 2);
-        totalWeighting += weighting;
-        weightingArray.push(weighting);
-        pointArray.push(location);
-
-        let lnglat = CoordProjection.mercatorToLngLat(location.x, location.y);
-        let desc = '';
-        if (i == 0) desc = 'First';
-        if (i == 1) desc = 'Second';
-        debugArray.push({
-            lng: lnglat.lng,
-            lat: lnglat.lat,
-            properties: {
-                major: sb.major,
-                minor: sb.minor,
-                x: location.x,
-                y: location.y,
-                floor: location.floor,
-                rssi: sb.rssi,
-                accuracy: parseInt(sb.accuracy * 100) / 100,
-                weighting: parseInt(weighting * 100) / 100,
-                desc: desc
-            }
-        });
-
-        let floorWeight = 1;
-        if (i === 0 || i === 1) floorWeight = 2;
-
-        if (frequencyMap.has(location.floor)) {
-            frequencyMap.set(location.floor, frequencyMap.get(location.floor) + floorWeight);
-        } else {
-            frequencyMap.set(location.floor, floorWeight);
-        }
-    }
-
-    let maxCount = 0;
-    let maxFloor = 0;
-
-    frequencyMap.forEach(function (floorCount, floor) {
-        if (floorCount > maxCount) {
-            maxCount = floorCount;
-            maxFloor = floor;
-        }
-    });
-
-    for (let i = 0; i < weightingArray.length; ++i) {
-        totalWeightingX += weightingArray[i] * pointArray[i].x;
-        totalWeightingY += weightingArray[i] * pointArray[i].y;
-    }
-
-    let resultLocation = null;
-    if (totalWeighting === 0) {
-        resultLocation = null;
-    } else {
-        resultLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
-    }
-
-    let res = {
-        location: resultLocation,
-        maxRssi: maxRssi
-    };
-
-    if (options && options.debug) {
-        res.maxIndex = index;
-        res.totalWeighting = totalWeighting;
-        res.beaconList = beaconList.length;
-        res.beaconPool = _locatorObject.beaconPool.size;
-        res.debugData = GeojsonUtils.createPointFeatureCollection(debugArray);
-        if (resultLocation) {
-            let debugLocation = CoordProjection.mercatorToLngLat(resultLocation.x, resultLocation.y);
-            let text = '';
-            text += 'maxIndex: ' + index + '\n';
-            text += 'maxRssi: ' + maxRssi + '\n';
-            frequencyMap.forEach(function (floorCount, floor) {
-                text += 'F' + floor;
-                if (floor == maxFloor) text += '(maxFloor)';
-                text += ': Count(' + floorCount + ')';
-                text += '\n';
-            });
-            debugLocation = {lng: debugLocation.lng, lat: debugLocation.lat};
-            debugLocation.properties = {
-                maxRssi: maxRssi,
-                maxIndex: index,
-                beaconPool: res.beaconPool,
-                beaconList: res.beaconList,
-                totalWeighting: res.totalWeighting,
-                floor: resultLocation.floor,
-                text: text,
-            };
-            res.debugLocation = GeojsonUtils.createPointFeatureCollection([debugLocation]);
-        }
-    }
-    return res;
-}
-
-function _getLocatingBeaconGeojson() {
-    let BeaconDict = _locatorObject.locatingBeaconDict;
-    if (_locatorObject._locatingGeojson == null) {
-        let beacons = [];
-        BeaconDict.forEach(function (lb) {
-            let lngLat = CoordProjection.mercatorToLngLat(lb.location.x, lb.location.y);
-            beacons.push({
-                lng: lngLat.lng,
-                lat: lngLat.lat,
-                properties: {floor: lb.location.floor, major: lb.major, minor: lb.minor}
-            });
-        });
-        _locatorObject._locatingGeojson = GeojsonUtils.createPointFeatureCollection(beacons);
-    }
-    return _locatorObject._locatingGeojson;
-}
-
-function _getLocatingBeaconArray() {
-    let BeaconDict = _locatorObject.locatingBeaconDict;
-    if (_locatorObject._locatingBeaconArray == null) {
-        let beacons = [];
-        BeaconDict.forEach(function (lb) {
-            beacons.push(lb);
-        });
-        _locatorObject._locatingBeaconArray = beacons;
-    }
-    return _locatorObject._locatingBeaconArray;
-}
-
-function _getBeaconInfo() {
-    return _locatorObject._beaconInfo;
-}
+let status = {};
 
 class locator extends Evented {
     constructor(buildingID, options, converter) {
@@ -231,24 +21,12 @@ class locator extends Evented {
         let self = this;
         this._buildingID = buildingID;
         this._converter = converter;
-        this._uuid = null;
-        this._url = 'https://gis.cx9z.com/map-server/beacon/getBeaconPbf';
-        if (options != null && options.url != null) {
-            this._url = options.url;
-        }
-        this._debugBeacon = !!(options && options._debugBeacon);
-
-        _locatorObject.locatingBeaconDict = new Map();
-        _locatorObject.scannedBeaconArray = [];
-        _locatorObject.beaconPool = new Map();
 
         this.currentLocation = null;
-        this._gpsLocation = null;
+        this._gpsResult = null;
         this._bleLocation = null;
 
         this._ready = false;
-
-        this._init();
 
         this._gpsLocator = new GpsLocator(this._converter);
         this._gpsLocator.on(InnerGpsEvent.GpsError, (error) => {
@@ -257,7 +35,31 @@ class locator extends Evented {
         this._gpsLocator.on(InnerGpsEvent.GpsResult, (gps) => {
             self._gpsUpdated(gps);
         });
+        this._gpsLocator.on(InnerGpsEvent.GpsReady, () => {
+            // console.log("gps ready");
+            status._gpsReady = true;
+            this._processStatus();
+        });
+        this._gpsLocator.on(InnerGpsEvent.GpsFailed, () => {
+            // console.log("gps failed");
+            status._gpsReady = false;
+            this._processStatus();
+        });
         this.startGps();
+
+        this._bleLocator = new BleLocator(buildingID, options);
+        this._bleLocator.on(InnerBleEvent.BleReady, (error) => {
+            // console.log("ble ready");
+            status._bleReady = true;
+            this._processStatus();
+        });
+
+        this._bleLocator.on(InnerBleEvent.BleFailed, (error) => {
+            // console.log("ble failed");
+            // console.log(error);
+            status._bleReady = false;
+            this._processStatus();
+        });
 
         this._initTime = new Date().valueOf();
         this._timeHandler = setInterval(() => {
@@ -266,7 +68,7 @@ class locator extends Evented {
     }
 
     _doFusion() {
-        console.log("doFusion");
+        // console.log("doFusion");
         let now = new Date().valueOf();
 
         let bleTime = 0;
@@ -274,9 +76,9 @@ class locator extends Evented {
 
         if (!this._newBle && !this._newGps) return;
 
-        if (this._bleLocation != null && this._gpsLocation != null) {
-            let x = (this._bleLocation.location.x + this._gpsLocation.location.x) * 0.5;
-            let y = (this._bleLocation.location.y + this._gpsLocation.location.y) * 0.5;
+        if (this._bleLocation != null && this._gpsResult != null) {
+            let x = (this._bleLocation.location.x + this._gpsResult.location.x) * 0.5;
+            let y = (this._bleLocation.location.y + this._gpsResult.location.y) * 0.5;
             let hybridLocation = CoordProjection.mercatorToLngLat(x, y);
             hybridLocation.floor = this._bleLocation.floor;
 
@@ -292,12 +94,12 @@ class locator extends Evented {
                 source: "ble",
                 timestamp: this._bleLocation.timestamp
             });
-        } else if (this._gpsLocation != null) {
-            gpsTime = this._gpsLocation.timestamp;
+        } else if (this._gpsResult != null) {
+            gpsTime = this._gpsResult.timestamp;
             this.fire(InnerLocatorEvent.LocationUpdate, {
-                location: this._gpsLocation.location,
+                location: this._gpsResult.location,
                 source: "gps",
-                timestamp: this._gpsLocation.timestamp
+                timestamp: this._gpsResult.timestamp
             });
         }
 
@@ -313,7 +115,7 @@ class locator extends Evented {
     _gpsUpdated(gps) {
         // console.log("_gpsUpdated");
         // console.log(gps);
-        this._gpsLocation = gps;
+        this._gpsResult = gps;
         this._newGps = true;
     }
 
@@ -327,58 +129,24 @@ class locator extends Evented {
         this._gpsLocator.stopUpdateGps();
     }
 
-    _init() {
-        if (this._buildingID == null) {
-            this.fire(InnerLocatorEvent.LocatorFailed, {errorCode: 800, description: 'buildingID is null'});
-            return;
-        }
-        this._path = `${this._url}?buildingID=${this._buildingID}`;
-
-        let that = this;
-        let httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', this._path, true);
-        httpRequest.responseType = 'arraybuffer';
-        httpRequest.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                if (this.status === 200) {
-                    let byteArray = new Uint8Array(httpRequest.response);
-                    let parser = new Parser(byteArray);
-                    that._uuid = parser.getUuid();
-                    _loadBeacons(that, parser.getBeaconList());
-                    that._ready = true;
-                    that.fire('ready');
-                    that.fire(InnerLocatorEvent.LocatorReady);
-                } else {
-                    that.fire(InnerLocatorEvent.LocatorFailed, {errorCode: 900, description: 'Beacon Data error!'});
-                }
-            }
-        };
-        httpRequest.send();
+    _didRangeBeacons(beacons) {
+        this._newBle = true;
+        this._bleLocation = this._bleLocator._didRangeBeacons(beacons);
+        return this._bleLocation;
     }
 
-    _didRangeBeacons(beacons) {
-        if (!this._ready) {
-            console.log('Not ready yet');
-            return null;
+    _processStatus() {
+        if (status._bleReady == null || status._gpsReady == null) return;
+        if (!status._bleReady && !status._gpsReady) {
+            this.fire(InnerLocatorEvent.LocatorFailed, {description: "Both gps and ble failed!"});
+            return;
         }
 
-        let sbList = [];
-        for (let i = 0; i < beacons.length; ++i) {
-            let sb = beacons[i];
-            let scannedBeacon = new ScannedBeacon(sb.uuid, sb.major, sb.minor, sb.rssi, sb.accuracy);
-            sbList.push(scannedBeacon);
-        }
-
-        _preprocessBeacons(this, sbList);
-        _updateBeaconPool(_locatorObject.scannedBeaconArray);
-        let res = _calculateLocation({debug: this._debugBeacon});
-        this.currentLocation = res.location;
-        this._bleLocation = {
-            location: res.location,
-            timestamp: (new Date()).valueOf(),
-        };
-        this._newBle = true;
-        return res;
+        this.fire(InnerLocatorEvent.LocatorReady, {
+            ble: status._bleReady,
+            gps: status._gpsReady,
+            description: `Ble: ${status._bleReady}, Gps: ${status._gpsReady}`
+        });
     }
 
     getLocation() {
@@ -386,16 +154,7 @@ class locator extends Evented {
     }
 
     _biteMe(methodName, params) {
-        if ('_getLocatingBeaconGeojson' === methodName) {
-            return _getLocatingBeaconGeojson();
-        } else if ('getLocatingBeacons' === methodName) {
-            return _getLocatingBeaconGeojson();
-        } else if ('_getLocatingBeaconArray' === methodName) {
-            return _getLocatingBeaconArray();
-        } else if ('_getBeaconInfo' === methodName) {
-            return _getBeaconInfo();
-        }
-        console.log('OK, as you wish!')
+        return this._bleLocator._biteMe(methodName, params);
     }
 }
 

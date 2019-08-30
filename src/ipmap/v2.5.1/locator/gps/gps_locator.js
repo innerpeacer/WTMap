@@ -16,7 +16,7 @@ class gps_locator extends Evented {
         if (this._isStarted) return;
 
         if (!this._isSupported) {
-            this.fire(GpsEvent.GpsError, {description: "calibration point is not valid"});
+            this.fire(GpsEvent.GpsFailed, {description: "calibration point is not valid"});
             return;
         }
 
@@ -32,8 +32,9 @@ class gps_locator extends Evented {
                 maximumAge: 3000
             });
             this._isStarted = true;
+            this.fire(GpsEvent.GpsReady, {description: "gps is started!"});
         } else {
-            this.fire(GpsEvent.GpsError, {description: "geolocation is not supported by this browser."});
+            this.fire(GpsEvent.GpsFailed, {description: "geolocation is not supported by this browser."});
         }
     }
 
