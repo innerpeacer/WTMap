@@ -74,7 +74,7 @@ class indoor_layers {
     }
 
     _updateLocator(locator) {
-        if (locator && locator._ready && this._debugBeacon) {
+        if (locator && locator._isBleReady() && this._debugBeacon) {
             this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe('_getLocatingBeaconGeojson'));
         }
     }

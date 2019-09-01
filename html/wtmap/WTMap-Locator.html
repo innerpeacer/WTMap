@@ -13,7 +13,7 @@
     .map-overlay {
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
         position: absolute;
-        width: 100px;
+        width: 200px;
         top: 0;
         right: 0;
         padding: 10px;
@@ -41,7 +41,8 @@
     // new VConsole();
     console.log(wtmap.version);
     var buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00278880";
+    // if (buildingID == null) buildingID = "00278880";
+    if (buildingID == null) buildingID = "00270003";
     var use3D = true;
     use3D = false;
 
@@ -64,14 +65,36 @@
         // console.log("Zoom: " + map.getZoom());
         // console.log(evt.lngLat);
         // console.log(map.building.initAngle);
-
         var beacons = [{
             "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
             "major": 10194,
             "minor": 5336,
-            "rssi": -70,
+            "rssi": -100 + parseInt(Math.random() * 20),
             "accuracy": 1.4534
-        }];
+        },
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10194,
+                "minor": 5335,
+                "rssi": -100 + parseInt(Math.random() * 20),
+                "accuracy": 1.4534
+            }];
+
+
+        beacons = [{
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10180,
+            "minor": 31223,
+            "rssi": -100 + parseInt(Math.random() * 20),
+            "accuracy": 1.4534
+        },
+            {
+                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+                "major": 10180,
+                "minor": 31222,
+                "rssi": -60 + parseInt(Math.random() * 20),
+                "accuracy": 1.4534
+            }];
         scan(beacons);
     });
 
@@ -112,10 +135,21 @@
     });
 
     map.on("location-update", function (res) {
-        res.location.floor = 1;
-        console.log(res);
+        // console.log(res);
         map.showLocation(res.location);
-        showHint(res.location);
+
+        var details = res.details;
+        var hint = "Source: " + res.source + "<br>";
+        hint += "Mode: " + details.mode + "<br>";
+        hint += "X: " + round(res.location.x, 1) + ", Y: " + round(res.location.y, 1) + ", floor: " + res.location.floor + "<br>";
+        hint += "Gps: " + details.gpsValid + ", Ble: " + details.bleValid + "<br>";
+
+        if (details.bleValid) {
+            hint += "MaxRssi: " + details.maxRssi + ", Count: " + details.beaconCount + ", Index: " + details.index+ "<br>";
+            hint += "Avg: " + round(details.averageRssi, 2) + ", Avg2: " + round(details.averageRssi2, 2)+ "<br>";
+
+        }
+        showHint(hint);
     });
 
     map.on("locator-ready", function (event) {
@@ -145,23 +179,28 @@
     function scan(data) {
         // console.log("scan called");
         // console.log(data);
+        map.didRangeBeacons(data);
 
-        var res = map.didRangeBeacons(data);
-        if (res && res.location) {
-            currentLocation = {x: res.location.x, y: res.location.y, floor: res.location.floor};
-            // console.log(currentLocation);
-            map.showLocation(currentLocation, {
-                center: map.currentMapInfo.floorNumber !== currentLocation.floor,
-            });
-            return res;
-        }
-        return "no location";
+        // var res = map.didRangeBeacons(data);
+        // if (res && res.location) {
+        //     currentLocation = {x: res.location.x, y: res.location.y, floor: res.location.floor};
+        //     // console.log(currentLocation);
+        //     map.showLocation(currentLocation, {
+        //         center: map.currentMapInfo.floorNumber !== currentLocation.floor,
+        //     });
+        //     return res;
+        // }
+        // return "no location";
     }
 
     function showHint(hint) {
         hintLabel.innerHTML = hint;
     }
 
+
+    function round(num, n) {
+        return parseInt(num * Math.pow(10, n)) / Math.pow(10, n);
+    }
 </script>
 
 </body>

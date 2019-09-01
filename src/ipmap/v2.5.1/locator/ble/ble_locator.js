@@ -10,6 +10,8 @@ import InnerEventManager from "../../utils/inner_event_manager"
 let InnerBleEvent = InnerEventManager.BleEvent;
 let _locatorObject = {};
 
+const NumOfBeacons = 15;
+
 class ble_locator extends Evented {
     constructor(buildingID, options) {
         super();
@@ -182,14 +184,16 @@ function _calculateLocation(options) {
     let totalWeightingY = 0.0;
 
     let maxRssi = -100;
+    let sumRssi = 0;
 
-    let index = Math.min(9, beaconList.length);
+    let index = Math.min(NumOfBeacons, beaconList.length);
     let frequencyMap = new Map();
 
     let debugArray = [];
     for (let i = 0; i < index; ++i) {
         let sb = beaconList[i];
-        maxRssi = sb.rssi;
+        maxRssi = Math.max(maxRssi, sb.rssi);
+        sumRssi += Number(sb.rssi);
         let location = _locatorObject.locatingBeaconDict.get(sb.key).location;
 
         let weighting = 1.0 / Math.pow(sb.accuracy, 2);
@@ -227,6 +231,16 @@ function _calculateLocation(options) {
         }
     }
 
+    let sumRssi2 = 0;
+    for (let i = 0; i < NumOfBeacons; ++i) {
+        if (i < beaconList.length) {
+            let sb = beaconList[i];
+            sumRssi2 += Number(sb.rssi);
+        } else {
+            sumRssi2 += -100;
+        }
+    }
+
     let maxCount = 0;
     let maxFloor = 0;
 
@@ -249,10 +263,15 @@ function _calculateLocation(options) {
         resultLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
     }
 
+    // console.log("sum: ", sumRssi, ", num: ", beaconList.length, ", avg: ", (sumRssi / beaconList.length));
     let res = {
         timestamp: now,
         location: resultLocation,
-        maxRssi: maxRssi
+        maxRssi: maxRssi,
+        averageRssi: sumRssi / index,
+        averageRssi2: sumRssi2 / NumOfBeacons,
+        beaconCount: beaconList.length,
+        index: index
     };
 
     if (options && options.debug) {
