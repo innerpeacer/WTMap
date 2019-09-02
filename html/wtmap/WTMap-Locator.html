@@ -149,6 +149,12 @@
         showHint(hint);
     });
 
+    map.on("location-update-failed", function (error) {
+        // console.log("location-update-failed: ", error);
+        showHint(error.description);
+        map.hideLocation();
+    });
+
     map.on("locator-ready", function (event) {
         console.log("locator-ready");
         console.log(event);

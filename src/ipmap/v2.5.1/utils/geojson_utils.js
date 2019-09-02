@@ -40,4 +40,6 @@ geojson_utils.emptySource = {
     'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
 };
 
+geojson_utils.emptyGeojson = {'type': 'FeatureCollection', 'features': []};
+
 export {geojson_utils};

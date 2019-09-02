@@ -211,6 +211,10 @@ class IPMap extends BoxMap {
         }
     };
 
+    hideLocation() {
+        this._layerGroup._hideLocation();
+    }
+
     didRangeBeacons(beacons) {
         let data = this._locator._didRangeBeacons(beacons);
         if (data == null) return data;
@@ -394,6 +398,9 @@ class IPMap extends BoxMap {
             // console.log("IndoorLocator.LocatorEventTypeUpdate");
             // console.log(res);
             map.fire(LocatorEvent.LocationUpdate, res);
+        });
+        map._locator.on(InnerLocatorEvent.LocationUpdateFailed, function (error) {
+            map.fire(LocatorEvent.LocationUpdateFailed, error);
         });
     }
 

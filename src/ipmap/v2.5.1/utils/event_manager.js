@@ -15,7 +15,8 @@ event_manager.MapEvent = MapEvent;
 let LocatorEvent = {
     LocatorReady: "locator-ready",
     LocatorFailed: "locator-failed",
-    LocationUpdate: "location-update"
+    LocationUpdate: "location-update",
+    LocationUpdateFailed: "location-update-failed",
 };
 event_manager.LocatorEvent = LocatorEvent;
 

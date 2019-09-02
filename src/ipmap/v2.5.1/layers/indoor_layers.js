@@ -199,6 +199,10 @@ class indoor_layers {
         this._locationLayer._showLocation(location);
     }
 
+    _hideLocation() {
+        this._locationLayer._hideLocation();
+    }
+
     getLayerIDs(subLayer) {
         if (subLayer === 'floor') return this._floorLayer._getLayerIDs();
         if (subLayer === 'room') return this._roomLayer._getLayerIDs();

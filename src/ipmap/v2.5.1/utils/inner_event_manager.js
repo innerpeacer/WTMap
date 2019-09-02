@@ -42,6 +42,7 @@ let LocatorEvent = {
     LocatorFailed: "innner-locator-failed",
     LocatorError: "inner-locator-error",
     LocationUpdate: "inner-location-update",
+    LocationUpdateFailed: "inner-location-update-failed",
 };
 inner_event_manager.LocatorEvent = LocatorEvent;
 

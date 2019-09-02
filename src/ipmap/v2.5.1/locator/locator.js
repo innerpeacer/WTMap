@@ -15,12 +15,17 @@ let InnerGpsEvent = InnerEventManager.GpsEvent;
 let InnerBleEvent = InnerEventManager.BleEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
+import EventManager from "../utils/event_manager"
+
+let LocatorEvent = EventManager.LocatorEvent;
+
 let status = {};
 
 let LocatorParams = {
     ModeSwitchInterval: 4000,
     ResultValidInterval: 6000,
-    WaitingBleInterval: 3000
+    WaitingBleInterval: 3000,
+    LocationValidInterval: 6000,
 };
 
 const MODE = {
@@ -57,8 +62,9 @@ class locator extends Evented {
             status._gpsReady = true;
             this._processStatus();
         });
-        this._gpsLocator.on(InnerGpsEvent.GpsFailed, () => {
+        this._gpsLocator.on(InnerGpsEvent.GpsFailed, (error) => {
             // console.log("gps failed");
+            console.log("GPS Failed: ", error.description);
             status._gpsReady = false;
             this._processStatus();
         });
@@ -143,7 +149,6 @@ class locator extends Evented {
                 res.details.index = this._bleResult.index;
             }
             this._notifyResult(res);
-            return;
         } else if (this._currentMode === MODE.BLE) {
             let res = {
                 location: this._bleResult.location,
@@ -185,17 +190,19 @@ class locator extends Evented {
             }
             this._notifyResult(res);
         }
+        this._lastTimeLocationUpdated = now;
     }
 
     _doFusion() {
         // console.log("doFusion");
+        let now = new Date().valueOf();
         if (!this._newGpsResult && !this._newBleResult) {
             // console.log("No New Result!");
+            if (this._lastTimeLocationUpdated != null && Math.abs(now - this._lastTimeLocationUpdated) > LocatorParams.LocationValidInterval) {
+                this.fire(InnerLocatorEvent.LocationUpdateFailed, {description: `no new result updated for ${parseInt(Math.abs(now - this._lastTimeLocationUpdated) / 1000)}s`});
+            }
             return;
         }
-
-        let now = new Date().valueOf();
-
 
         this._targetMode = this._checkMode();
         if (this._currentMode == null || this._modeChangeTime == null) {
@@ -256,6 +263,7 @@ class locator extends Evented {
 
         let self = this;
         this._initTime = new Date().valueOf();
+        this._lastTimeLocationUpdated = this._initTime;
         this._timeHandler = setInterval(() => {
             self._doFusion()
         }, 900);

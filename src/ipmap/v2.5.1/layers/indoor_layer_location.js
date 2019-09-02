@@ -35,6 +35,10 @@ class indoor_layer_location extends IndoorGroupLayer {
         this.map.getSource(this.sourceID).setData(data);
     }
 
+    _hideLocation() {
+        this.map.getSource(this.sourceID).setData(GeojsonUtils.emptyGeojson);
+    }
+
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
