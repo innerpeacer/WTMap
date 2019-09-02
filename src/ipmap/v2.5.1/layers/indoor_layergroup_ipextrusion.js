@@ -42,6 +42,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
             let symbolUID = symbolUIDArray[i];
             let symbol = map._fillSymbolMap[symbolUID];
             if (!symbol) continue;
+            if (!symbol.visible) continue;
 
             let extrusionLayerID = `${subLayerName}-${symbolUID}`;
             let extrusionLayer = extend({

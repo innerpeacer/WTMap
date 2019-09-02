@@ -129,7 +129,7 @@ MapInfoPbf.write = function (obj, pbf) {
 var FillSymbolPbf = exports.FillSymbolPbf = {};
 
 FillSymbolPbf.read = function (pbf, end) {
-    return pbf.readFields(FillSymbolPbf._readField, {UID: 0, symbolID: 0, fillColor: "", outlineColor: "", outlineWidth: 0, levelMin: 0, levelMax: 0}, end);
+    return pbf.readFields(FillSymbolPbf._readField, {UID: 0, symbolID: 0, fillColor: "", outlineColor: "", outlineWidth: 0, levelMin: 0, levelMax: 0, visible: false}, end);
 };
 FillSymbolPbf._readField = function (tag, obj, pbf) {
     if (tag === 1) obj.UID = pbf.readVarint();
@@ -139,6 +139,7 @@ FillSymbolPbf._readField = function (tag, obj, pbf) {
     else if (tag === 5) obj.outlineWidth = pbf.readDouble();
     else if (tag === 6) obj.levelMin = pbf.readDouble();
     else if (tag === 7) obj.levelMax = pbf.readDouble();
+    else if (tag === 8) obj.visible = pbf.readBoolean();
 };
 FillSymbolPbf.write = function (obj, pbf) {
     if (obj.UID) pbf.writeVarintField(1, obj.UID);
@@ -148,6 +149,7 @@ FillSymbolPbf.write = function (obj, pbf) {
     if (obj.outlineWidth) pbf.writeDoubleField(5, obj.outlineWidth);
     if (obj.levelMin) pbf.writeDoubleField(6, obj.levelMin);
     if (obj.levelMax) pbf.writeDoubleField(7, obj.levelMax);
+    if (obj.visible) pbf.writeBooleanField(8, obj.visible);
 };
 
 // IconTextSymbolPbf ========================================

@@ -14,6 +14,11 @@ class fill_symbol {
 
         this.levelMin = obj.levelMin;
         this.levelMax = obj.levelMax;
+        if (obj.visible != null) {
+            this.visible = obj.visible;
+        } else {
+            this.visible = true;
+        }
     }
 
     toString() {

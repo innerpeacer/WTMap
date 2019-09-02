@@ -50,6 +50,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             let symbolID = symbolIDArray[i];
             let symbol = map._fillSymbolMap[symbolID];
             if (!symbol) continue;
+            if (!symbol.visible) continue;
 
             let layerID = `${subLayerName}-fill-${symbolID}`;
             let layer = extend({

@@ -10,6 +10,7 @@ message FillSymbolPbf {
     required double outlineWidth = 5;
     required double levelMin = 6;
     required double levelMax = 7;
+    required bool visible = 8;
 }
 
 message IconTextSymbolPbf {
