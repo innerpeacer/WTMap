@@ -16,9 +16,12 @@ let InnerBleEvent = InnerEventManager.BleEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
 let status = {};
-const RESULT_VALID_INTERVAL = 6000;
 
-const MODE_SWTICH_INTERVAL = 6000;
+let LocatorParams = {
+    ModeSwitchInterval: 4000,
+    ResultValidInterval: 6000,
+    WaitingBleInterval: 3000
+};
 
 const MODE = {
     BLE: 1,
@@ -74,11 +77,6 @@ class locator extends Evented {
             status._bleReady = false;
             this._processStatus();
         });
-
-        this._initTime = new Date().valueOf();
-        this._timeHandler = setInterval(() => {
-            self._doFusion()
-        }, 500);
     }
 
     _notifyResult(res) {
@@ -89,17 +87,12 @@ class locator extends Evented {
 
     _checkMode() {
         let now = new Date().valueOf();
-        let bleValid = !!(this._bleResult && this._bleResult.location != null && Math.abs(now - this._bleResult.timestamp) < RESULT_VALID_INTERVAL);
-        let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < RESULT_VALID_INTERVAL);
+        let bleValid = !!(this._bleResult && this._bleResult.location != null && Math.abs(now - this._bleResult.timestamp) < LocatorParams.ResultValidInterval);
+        let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < LocatorParams.ResultValidInterval);
         let mode = null;
-
 
         if (!bleValid && !gpsValid) {
             return;
-        }
-
-        if (this._bleResult && this._bleResult.maxRssi) {
-            // console.log(this._bleResult.maxRssi);
         }
 
         if (bleValid && !gpsValid) {
@@ -122,8 +115,13 @@ class locator extends Evented {
 
     _calculateResult() {
         let now = new Date().valueOf();
-        let bleValid = !!(this._bleResult && this._bleResult.location && Math.abs(now - this._bleResult.timestamp) < RESULT_VALID_INTERVAL);
-        let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < RESULT_VALID_INTERVAL);
+        let bleValid = !!(this._bleResult && this._bleResult.location && Math.abs(now - this._bleResult.timestamp) < LocatorParams.ResultValidInterval);
+        let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < LocatorParams.ResultValidInterval);
+
+        if (Math.abs(now - this._initTime) < LocatorParams.WaitingBleInterval && !bleValid) {
+            console.log("Waiting BLE Result!");
+            return;
+        }
 
         if (this._currentMode === MODE.GPS) {
             this._gpsResult.location.floor = this._latestFloor;
@@ -206,84 +204,12 @@ class locator extends Evented {
         } else if (this._currentMode == this._targetMode) {
             this._modeChangeTime = now;
         } else {
-            if (Math.abs(now - this._modeChangeTime) > MODE_SWTICH_INTERVAL) {
+            if (Math.abs(now - this._modeChangeTime) > LocatorParams.ModeSwitchInterval) {
                 this._modeChangeTime = now;
                 this._currentMode = this._targetMode;
             }
         }
         this._calculateResult();
-
-        // let bleValid = !!(this._bleResult && this._bleResult.location && Math.abs(now - this._bleResult.timestamp) < RESULT_VALID_INTERVAL);
-        // let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < RESULT_VALID_INTERVAL);
-        // console.log(bleValid, gpsValid);
-        // if (bleValid && !gpsValid) {
-        //     this._notifyResult({
-        //         location: this._bleResult.location,
-        //         source: "ble",
-        //         details: {
-        //             bleValid: bleValid,
-        //             gpsValid: gpsValid,
-        //             maxRssi: this._bleResult.maxRssi,
-        //             beaconCount: this._bleResult.beaconCount,
-        //             averageRssi: this._bleResult.averageRssi,
-        //             index: this._bleResult.index,
-        //         },
-        //         timestamp: now
-        //     });
-        //     return;
-        // }
-        //
-        // if (gpsValid && !bleValid) {
-        //     this._gpsResult.location.floor = this._latestFloor;
-        //     this._notifyResult({
-        //         location: this._gpsResult.location,
-        //         source: "gps",
-        //         details: {
-        //             bleValid: bleValid,
-        //             gpsValid: gpsValid,
-        //         },
-        //         timestamp: now
-        //     });
-        //     return;
-        // }
-        //
-        // // Now both valid
-        // if (this._bleResult.maxRssi > -80 || this._bleResult.beaconCount > 20) {
-        //     this._notifyResult({
-        //         location: this._bleResult.location,
-        //         source: "ble",
-        //         details: {
-        //             bleValid: bleValid,
-        //             gpsValid: gpsValid,
-        //             maxRssi: this._bleResult.maxRssi,
-        //             beaconCount: this._bleResult.beaconCount,
-        //             averageRssi: this._bleResult.averageRssi,
-        //             index: this._bleResult.index,
-        //         },
-        //         timestamp: now
-        //     });
-        //     return;
-        // }
-        //
-        // {
-        //     let x = (this._bleResult.location.x + this._gpsResult.location.x) * 0.5;
-        //     let y = (this._bleResult.location.y + this._gpsResult.location.y) * 0.5;
-        //     let floor = this._latestFloor;
-        //     let loc = Location.fromXY({x: x, y: y, floor: floor});
-        //     this._notifyResult({
-        //         location: loc,
-        //         source: "hybrid",
-        //         details: {
-        //             bleValid: bleValid,
-        //             gpsValid: gpsValid,
-        //             maxRssi: this._bleResult.maxRssi,
-        //             beaconCount: this._bleResult.beaconCount,
-        //             averageRssi: this._bleResult.averageRssi,
-        //             index: this._bleResult.index,
-        //         },
-        //         timestamp: now
-        //     });
-        // }
     }
 
     _gpsError(error) {
@@ -318,7 +244,7 @@ class locator extends Evented {
     _processStatus() {
         if (status._bleReady == null || status._gpsReady == null) return;
         if (!status._bleReady && !status._gpsReady) {
-            this.fire(InnerLocatorEvent.LocatorFailed, {description: "Both gps and ble failed!"});
+            this.fire(InnerLocatorEvent.LocatorFailed, {description: "Both gps and ble not supported!"});
             return;
         }
 
@@ -327,6 +253,12 @@ class locator extends Evented {
             gps: status._gpsReady,
             description: `Ble: ${status._bleReady}, Gps: ${status._gpsReady}`
         });
+
+        let self = this;
+        this._initTime = new Date().valueOf();
+        this._timeHandler = setInterval(() => {
+            self._doFusion()
+        }, 900);
     }
 
     getLocation() {

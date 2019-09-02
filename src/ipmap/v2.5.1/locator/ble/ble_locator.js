@@ -203,8 +203,8 @@ function _calculateLocation(options) {
 
         let lnglat = CoordProjection.mercatorToLngLat(location.x, location.y);
         let desc = '';
-        if (i == 0) desc = 'First';
-        if (i == 1) desc = 'Second';
+        if (i === 0) desc = 'First';
+        if (i === 1) desc = 'Second';
         debugArray.push({
             lng: lnglat.lng,
             lat: lnglat.lat,
@@ -287,7 +287,7 @@ function _calculateLocation(options) {
             text += 'maxRssi: ' + maxRssi + '\n';
             frequencyMap.forEach(function (floorCount, floor) {
                 text += 'F' + floor;
-                if (floor == maxFloor) text += '(maxFloor)';
+                if (floor === maxFloor) text += '(maxFloor)';
                 text += ': Count(' + floorCount + ')';
                 text += '\n';
             });

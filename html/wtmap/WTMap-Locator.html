@@ -69,32 +69,29 @@
             "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
             "major": 10194,
             "minor": 5336,
+            "rssi": -60 + parseInt(Math.random() * 20),
+            "accuracy": 1.4534
+        }, {
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10194,
+            "minor": 5335,
             "rssi": -100 + parseInt(Math.random() * 20),
             "accuracy": 1.4534
-        },
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10194,
-                "minor": 5335,
-                "rssi": -100 + parseInt(Math.random() * 20),
-                "accuracy": 1.4534
-            }];
+        }];
 
-
-        beacons = [{
+        beacons = beacons.concat([{
             "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
             "major": 10180,
             "minor": 31223,
             "rssi": -100 + parseInt(Math.random() * 20),
             "accuracy": 1.4534
-        },
-            {
-                "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-                "major": 10180,
-                "minor": 31222,
-                "rssi": -60 + parseInt(Math.random() * 20),
-                "accuracy": 1.4534
-            }];
+        }, {
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": 10180,
+            "minor": 31222,
+            "rssi": -60 + parseInt(Math.random() * 20),
+            "accuracy": 1.4534
+        }]);
         scan(beacons);
     });
 
@@ -145,8 +142,8 @@
         hint += "Gps: " + details.gpsValid + ", Ble: " + details.bleValid + "<br>";
 
         if (details.bleValid) {
-            hint += "MaxRssi: " + details.maxRssi + ", Count: " + details.beaconCount + ", Index: " + details.index+ "<br>";
-            hint += "Avg: " + round(details.averageRssi, 2) + ", Avg2: " + round(details.averageRssi2, 2)+ "<br>";
+            hint += "MaxRssi: " + details.maxRssi + ", Count: " + details.beaconCount + ", Index: " + details.index + "<br>";
+            hint += "Avg: " + round(details.averageRssi, 2) + ", Avg2: " + round(details.averageRssi2, 2) + "<br>";
 
         }
         showHint(hint);
