@@ -38,7 +38,7 @@
 
 <script>
     var hintLabel = document.getElementById("hint");
-    // new VConsole();
+    new VConsole();
     console.log(wtmap.version);
     var buildingID = getParameter("buildingID");
     // if (buildingID == null) buildingID = "00278880";
@@ -138,13 +138,14 @@
         var details = res.details;
         var hint = "Source: " + res.source + "<br>";
         hint += "Mode: " + details.mode + "<br>";
+        hint += "Target Mode: " + details.targetMode + "<br>";
+        hint += "Condition:<br> " + details.condition + "<br>";
         hint += "X: " + round(res.location.x, 1) + ", Y: " + round(res.location.y, 1) + ", floor: " + res.location.floor + "<br>";
         hint += "Gps: " + details.gpsValid + ", Ble: " + details.bleValid + "<br>";
 
         if (details.bleValid) {
             hint += "MaxRssi: " + details.maxRssi + ", Count: " + details.beaconCount + ", Index: " + details.index + "<br>";
             hint += "Avg: " + round(details.averageRssi, 2) + ", Avg2: " + round(details.averageRssi2, 2) + "<br>";
-
         }
         showHint(hint);
     });

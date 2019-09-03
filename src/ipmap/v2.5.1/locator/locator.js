@@ -34,6 +34,16 @@ const MODE = {
     HYBRID: 9
 };
 
+function modeName(mode) {
+    if (mode === MODE.BLE) {
+        return "ble";
+    } else if (mode === MODE.GPS) {
+        return "gps";
+    } else if (mode === MODE.HYBRID) {
+        return "hybrid";
+    }
+}
+
 class locator extends Evented {
     constructor(buildingID, options, converter) {
         super();
@@ -96,6 +106,7 @@ class locator extends Evented {
         let bleValid = !!(this._bleResult && this._bleResult.location != null && Math.abs(now - this._bleResult.timestamp) < LocatorParams.ResultValidInterval);
         let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < LocatorParams.ResultValidInterval);
         let mode = null;
+        this._modeCondition = null;
 
         if (!bleValid && !gpsValid) {
             return;
@@ -103,18 +114,25 @@ class locator extends Evented {
 
         if (bleValid && !gpsValid) {
             mode = MODE.BLE;
+            this._modeCondition = "gps not valid";
         } else if (gpsValid && !bleValid) {
             mode = MODE.GPS;
+            this._modeCondition = "ble not valid";
         } else if (this._bleResult.maxRssi > -70 || this._bleResult.beaconCount > 30) {
             mode = MODE.BLE;
+            this._modeCondition = `max(${this._bleResult.maxRssi}) > -70 or count(${this._bleResult.beaconCount}) > 30`;
         } else if (this._bleResult.maxRssi < -95 || this._bleResult.beaconCount < 4) {
             mode = MODE.GPS;
+            this._modeCondition = `max(${this._bleResult.maxRssi}) < -95 or count(${this._bleResult.beaconCount}) < 4`;
         } else if (this._bleResult.averageRssi2 > -78) {
-            mode = MODE.BLE
+            mode = MODE.BLE;
+            this._modeCondition = `avg2(${this._bleResult.averageRssi2}) > -78`;
         } else if (this._bleResult.averageRssi2 < -90) {
             mode = MODE.GPS;
+            this._modeCondition = `avg2(${this._bleResult.averageRssi2}) < 90`;
         } else {
             mode = MODE.HYBRID;
+            this._modeCondition = `none of the above`;
         }
         return mode;
     }
@@ -133,36 +151,16 @@ class locator extends Evented {
             this._gpsResult.location.floor = this._latestFloor;
             let res = {
                 location: this._gpsResult.location,
-                source: "gps",
-                details: {
-                    mode: this._currentMode,
-                    bleValid: bleValid,
-                    gpsValid: gpsValid,
-                },
+                source: modeName(this._currentMode),
+                details: this._getDetails(gpsValid, bleValid),
                 timestamp: now
             };
-            if (this._bleResult && bleValid) {
-                res.details.beaconCount = this._bleResult.beaconCount;
-                res.details.maxRssi = this._bleResult.maxRssi;
-                res.details.averageRssi = this._bleResult.averageRssi;
-                res.details.averageRssi2 = this._bleResult.averageRssi2;
-                res.details.index = this._bleResult.index;
-            }
             this._notifyResult(res);
         } else if (this._currentMode === MODE.BLE) {
             let res = {
                 location: this._bleResult.location,
-                source: "ble",
-                details: {
-                    mode: this._currentMode,
-                    bleValid: bleValid,
-                    gpsValid: gpsValid,
-                    maxRssi: this._bleResult.maxRssi,
-                    beaconCount: this._bleResult.beaconCount,
-                    averageRssi: this._bleResult.averageRssi,
-                    averageRssi2: this._bleResult.averageRssi2,
-                    index: this._bleResult.index,
-                },
+                source: modeName(this._currentMode),
+                details: this._getDetails(gpsValid, bleValid),
                 timestamp: now
             };
             this._notifyResult(res);
@@ -173,24 +171,32 @@ class locator extends Evented {
             let loc = Location.fromXY({x: x, y: y, floor: floor});
             let res = {
                 location: loc,
-                source: "hybrid",
-                details: {
-                    mode: this._currentMode,
-                    bleValid: bleValid,
-                    gpsValid: gpsValid,
-                },
+                source: modeName(this._currentMode),
+                details: this._getDetails(gpsValid, bleValid),
                 timestamp: now
             };
-            if (this._bleResult && bleValid) {
-                res.details.beaconCount = this._bleResult.beaconCount;
-                res.details.maxRssi = this._bleResult.maxRssi;
-                res.details.averageRssi = this._bleResult.averageRssi;
-                res.details.averageRssi2 = this._bleResult.averageRssi2;
-                res.details.index = this._bleResult.index;
-            }
             this._notifyResult(res);
         }
         this._lastTimeLocationUpdated = now;
+    }
+
+    _getDetails(gpsValid, bleValid) {
+        let details = {
+            mode: this._currentMode,
+            targetMode: `${this._targetMode}(${modeName(this._targetMode)})`,
+            condition: this._modeCondition,
+            gpsValid: gpsValid,
+            bleValid: bleValid,
+        };
+
+        if (this._bleResult && bleValid) {
+            details.beaconCount = this._bleResult.beaconCount;
+            details.maxRssi = this._bleResult.maxRssi;
+            details.averageRssi = this._bleResult.averageRssi;
+            details.averageRssi2 = this._bleResult.averageRssi2;
+            details.index = this._bleResult.index;
+        }
+        return details;
     }
 
     _doFusion() {
