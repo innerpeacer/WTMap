@@ -1,0 +1,124 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>WTMap-Sample</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src="js/config-dev-2.5.1.js"></script>
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div id='map'></div>
+<div class='floor-switch-overlay top'>
+    <div class='floor-switch-overlay-inner'>
+        <fieldset>
+            <label>Select Floor</label>
+            <select id='floorSwitch' name='floorSwitch'></select>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    console.log(wtmap.version);
+    console.log(wtmap);
+    var buildingID = "00270003";
+    var sampleID = getParameter("sampleID");
+    var use3D = true;
+    use3D = false;
+
+    // var path = "http://localhost:8112/WTMapService/lab/GetAllSamples?buildingID=" + buildingID;
+    var path = "http://localhost:8112/WTMapService/lab/GetSamplePbf?sampleID=" + sampleID;
+    var http = new wtmap.HttpRequest();
+
+    var map = new wtmap.WTMap({
+        container: 'map',
+        buildingID: buildingID,
+        use3D: use3D,
+        _disableCache: true,
+        __disableGps: true,
+        usePbf: true,
+        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
+        // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
+        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
+    });
+    map.showTileBoundaries = true;
+    // map.showCollisionBoxes = true;
+
+    map.on("click", function (evt) {
+        console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
+        console.log(wtmap.CoordProjection.lngLatToMercator(evt.lngLat.lng, evt.lngLat.lat));
+        // stepPoints.push({lng: evt.lngLat.lng, lat: evt.lngLat.lat});
+        // map.getSource("stepPoint").setData(geojson_utils.createPointFeatureCollection(stepPoints));
+        // map.getSource("stepLine").setData(geojson_utils.createLineFeatureCollection([stepPoints]));
+    });
+
+
+    var floorSwitch = document.getElementById('floorSwitch');
+    floorSwitch.onchange = function () {
+        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
+    };
+
+    var layer = new wtmap.CustomPointLabelLayer("all-sample");
+    // layer.setTextProperty("user");
+    layer.setTextField(["get", "sampleID"]);
+    // layer.setTextColor("#000000");
+    // layer.setTextSize(20);
+    // layer.setCircleColor("#ff0000");
+    // layer.setCircleRadius(20);
+
+    map.on("mapready", function (evt) {
+        // console.log("mapready");
+        map.mapInfoArray.forEach(function (mapInfo) {
+            var floorButton = document.createElement('option');
+            floorButton.value = mapInfo.floorName;
+            floorButton.text = mapInfo.floorName;
+            floorSwitch.appendChild(floorButton);
+            floorSwitch.selectedIndex = map.building.initFloorIndex;
+        });
+        console.log("initAngle: " + map.building.initAngle);
+
+        layer.addToMap(map);
+
+        getData();
+    });
+
+    map.on("floorend", function () {
+        // map.setZoom(21);
+    });
+
+    map.on("error", function (error) {
+        console.log("map-error");
+        console.log(error)
+    });
+
+    function getData() {
+        http.requestBlobData(path, function (data) {
+            console.log("data");
+            // console.log(data);
+            var samplePoints = data.SamplePoints;
+            var spArray = [];
+            for (var i = 0; i < samplePoints.length; ++i) {
+                var sp = samplePoints[i];
+                var lp = new wtmap.LocalPoint(sp.x, sp.y, sp.floor);
+                var lngLat = lp.toLngLatPoint();
+                lngLat.properties = {
+                    user: sp.user,
+                    sampleID: sp.sampleID,
+                    ble: sp.ble,
+                    gps: sp.gps,
+                    platform: sp.platform,
+                };
+                spArray.push(lngLat);
+            }
+
+            layer.showLabelData(spArray);
+        }, function (error) {
+
+        });
+    }
+
+</script>
+
+</body>
+</html>

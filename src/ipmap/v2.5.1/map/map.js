@@ -72,6 +72,7 @@ class IPMap extends BoxMap {
         if (options.use3D == null) options.use3D = true;
         if (options.usePbf == null) options.usePbf = true;
         if (options._debugBeacon == null) options._debugBeacon = false;
+        if (options.__disableGps == null) options.__disableGps = false;
         this._debugBeacon = options._debugBeacon;
 
         if (options.enableOrientation == null) options.enableOrientation = false;

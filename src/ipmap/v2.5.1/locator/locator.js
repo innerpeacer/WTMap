@@ -78,7 +78,9 @@ class locator extends Evented {
             status._gpsReady = false;
             this._processStatus();
         });
-        this.startGps();
+        if (!options.__disableGps) {
+            this.startGps();
+        }
 
         this._bleLocator = new BleLocator(buildingID, options);
         this._bleLocator.on(InnerBleEvent.BleReady, (error) => {
@@ -118,18 +120,20 @@ class locator extends Evented {
         } else if (gpsValid && !bleValid) {
             mode = MODE.GPS;
             this._modeCondition = "ble not valid";
-        } else if (this._bleResult.maxRssi > -70 || this._bleResult.beaconCount > 30) {
+            // } else if (this._bleResult.maxRssi > -70 || this._bleResult.beaconCount > 30) {
+        } else if (this._bleResult.maxRssi > -75) {
             mode = MODE.BLE;
-            this._modeCondition = `max(${this._bleResult.maxRssi}) > -70 or count(${this._bleResult.beaconCount}) > 30`;
+            // this._modeCondition = `max(${this._bleResult.maxRssi}) > -70 or count(${this._bleResult.beaconCount}) > 30`;
+            this._modeCondition = `max(${this._bleResult.maxRssi}) > -75`;
         } else if (this._bleResult.maxRssi < -95 || this._bleResult.beaconCount < 4) {
             mode = MODE.GPS;
             this._modeCondition = `max(${this._bleResult.maxRssi}) < -95 or count(${this._bleResult.beaconCount}) < 4`;
-        } else if (this._bleResult.averageRssi2 > -78) {
+        } else if (this._bleResult.averageRssi2 > -80 || this._bleResult.averageRssi > -80) {
             mode = MODE.BLE;
-            this._modeCondition = `avg2(${this._bleResult.averageRssi2}) > -78`;
+            this._modeCondition = `avg2(${parseInt(this._bleResult.averageRssi2 * 100) / 100}) > -80 or avg(${parseInt(this._bleResult.averageRssi * 100) / 100}) > -80`;
         } else if (this._bleResult.averageRssi2 < -90) {
             mode = MODE.GPS;
-            this._modeCondition = `avg2(${this._bleResult.averageRssi2}) < 90`;
+            this._modeCondition = `avg2(${parseInt(this._bleResult.averageRssi2 * 100) / 100}) < 90`;
         } else {
             mode = MODE.HYBRID;
             this._modeCondition = `none of the above`;

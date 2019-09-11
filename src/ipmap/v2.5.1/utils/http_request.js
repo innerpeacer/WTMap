@@ -9,22 +9,30 @@ class http_request extends Evented {
     }
 
     requestData(url, callback, errorCallback) {
-        var httpRequest = new XMLHttpRequest();
+        let httpRequest = new XMLHttpRequest();
         httpRequest.open('GET', url, true);
         httpRequest.onreadystatechange = function () {
             if (this.readyState == 4) {
                 if (this.status == 200) {
-                    let json = JSON.parse(httpRequest.responseText);
-                    if (callback) {
-                        callback(json);
-                    }
+                    if (callback) callback(JSON.parse(httpRequest.responseText));
                 } else {
-                    let error = {};
-                    error.status = httpRequest.status;
-                    error.statusText = httpRequest.statusText;
-                    if (errorCallback) {
-                        errorCallback(error);
-                    }
+                    if (errorCallback) errorCallback({status: httpRequest.status, statusText: httpRequest.statusText});
+                }
+            }
+        };
+        httpRequest.send();
+    }
+
+    requestBlobData(url, callback, errorCallback) {
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', url, true);
+        httpRequest.responseType = 'arraybuffer';
+        httpRequest.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    if (callback) callback(httpRequest.response);
+                } else {
+                    if (errorCallback) errorCallback({status: httpRequest.status, statusText: httpRequest.statusText});
                 }
             }
         };
@@ -67,4 +75,4 @@ class http_request extends Evented {
     }
 }
 
-export default http_request;
+export {http_request};

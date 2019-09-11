@@ -1,3 +1,5 @@
+import CoordProjection from '../utils/coord_projection'
+
 class local_point {
     constructor(x, y, f) {
         this.x = x;
@@ -24,6 +26,11 @@ class local_point {
     toString() {
         return `X: ${this.x}, Y: ${this.y}, Floor: ${this.floor}`;
     }
+
+    toLngLatPoint() {
+        let m = CoordProjection.mercatorToLngLat(this.x, this.y);
+        return new lnglat_point(m.lng, m.lat, this.floor);
+    }
 }
 
 local_point.toStopParams = function (stops) {
@@ -47,6 +54,11 @@ class lnglat_point {
 
     toString() {
         return `Lng: ${this.lng}, Lat: ${this.lat}, Floor: ${this.floor}`;
+    }
+
+    toLocalPoint() {
+        let m = CoordProjection.lngLatToMercator(this.lng, this.lat);
+        return new local_point(m.x, m.y, this.floor);
     }
 }
 

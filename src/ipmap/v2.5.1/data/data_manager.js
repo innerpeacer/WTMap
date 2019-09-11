@@ -1,5 +1,5 @@
 import {Evented} from '../utils/ip_evented'
-import IPHttpRequest from '../utils/http_request'
+import {http_request as IPHttpRequest} from "../utils/http_request";
 import {t_y_cbm_parser as CBMParser} from '../pbf-parse/t_y_cbm_parser';
 
 

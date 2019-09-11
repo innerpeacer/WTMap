@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+package cn.platalk.lab.blesample.pbf.proto;
+
+// 位置数据
+message LocationPbf {
+    required double x = 1;
+    required double y = 2;
+    required int32 floor = 3;
+}
+
+// 单个beacon信号
+message BleBeaconPbf {
+    required string uuid = 1;
+    required uint32 major = 2;
+    required uint32 minor = 3;
+    required int32 rssi = 4;
+    required double accuracy = 5;
+}
+
+// 一组beacon信号，表示一次蓝牙扫描结果
+message BleSignalPbf {
+    required double timestamp = 1;
+    repeated BleBeaconPbf beacons = 2;
+}
+
+// 单个GPS信号
+message GpsSignalPbf {
+    required double timestamp = 1;
+    required double lng = 2;
+    required double lat = 3;
+    required double accuracy = 4;
+}
+
+// 一次采样，包含位置信息、多次蓝牙扫描信号、多次GPS信号
+message BleSamplePbf {
+    required double timestamp = 1;
+    required string sampleID = 2;
+    required string buildingID = 3;
+    required LocationPbf location = 4;
+    repeated GpsSignalPbf gpsList = 5;
+    repeated BleSignalPbf bleList = 6;
+    optional uint32 platform = 7; // 1 for iOS, 2 for Android, 3 for H5
+    optional string user = 8;
+}
+
