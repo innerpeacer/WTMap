@@ -1,4 +1,4 @@
-import CoordProjection from '../utils/coord_projection'
+import {coord_projection as CoordProjection} from '../utils/coord_projection'
 import {local_point as TYLocalPoint, lnglat_point as TYLngLatPoint} from './local_point'
 
 class entity_utils {

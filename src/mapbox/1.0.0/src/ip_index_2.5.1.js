@@ -17,6 +17,7 @@ import {
     AgentUtil,
     CustomPointLabelLayer,
     HttpRequest,
+    Utils,
 } from '../../../ipmap/v2.5.1/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
@@ -52,6 +53,7 @@ const exported = {
     AgentUtil,
     CustomPointLabelLayer,
     HttpRequest,
+    Utils,
 
     NavigationControl,
     GeolocateControl,

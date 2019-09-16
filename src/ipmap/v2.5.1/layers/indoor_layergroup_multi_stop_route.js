@@ -1,5 +1,5 @@
 import ipTurf from '../utils/ip_turf'
-import CoordProjection from '../utils/coord_projection'
+import {coord_projection as CoordProjection} from '../utils/coord_projection'
 import RouteLayerObject from './route_layer_object'
 import AnimationObject from '../utils/route_animation_object'
 

@@ -13,7 +13,7 @@ import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
 import IPEntityUtils from '../entity/entity_utils'
 
 import IndoorLayers from '../layers/indoor_layers'
-import CoordProjection from '../utils/coord_projection'
+import {coord_projection as CoordProjection} from '../utils/coord_projection'
 import WtWgs84Converter from '../utils/wt_wgs84_converter'
 import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 

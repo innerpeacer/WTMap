@@ -8,7 +8,7 @@ import IPRoutePart from './route_part'
 import IPRouteResult from './route_result'
 import IPMutliRouteResult from './multi_stop_route_result'
 import {http_request as IPHttpRequest} from "../utils/http_request";
-import CoordProjection from '../utils/coord_projection'
+import {coord_projection as CoordProjection} from '../utils/coord_projection'
 import EntityUtils from '../entity/entity_utils'
 import {local_point as IPLocalPoint} from '../entity/local_point'
 

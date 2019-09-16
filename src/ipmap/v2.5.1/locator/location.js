@@ -1,4 +1,4 @@
-import CoordProjection from "../utils/coord_projection"
+import {coord_projection as CoordProjection} from "../utils/coord_projection"
 
 class location {
     constructor(lng, lat, x, y, f) {

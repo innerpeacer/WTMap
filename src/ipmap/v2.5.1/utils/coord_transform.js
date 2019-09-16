@@ -1,8 +1,5 @@
 class coord_transform {
     constructor(from, to) {
-        // this._fromArray = from;
-        // this._toArray = to;
-
         this._from1 = {x: from[0], y: from[1]};
         this._from2 = {x: from[2], y: from[3]};
         this._from3 = {x: from[4], y: from[5]};
@@ -45,4 +42,4 @@ class coord_transform {
     }
 }
 
-export default coord_transform;
+export {coord_transform};

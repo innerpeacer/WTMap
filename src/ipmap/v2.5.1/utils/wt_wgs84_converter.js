@@ -1,5 +1,5 @@
-import CoordProjection from "./coord_projection";
-import CoordTransform from "./coord_transform"
+import {coord_projection as CoordProjection} from "./coord_projection";
+import {coord_transform as CoordTransform} from "./coord_transform"
 
 class wt_wgs84_converter {
     constructor(wgs84Points, wtPoints) {

@@ -22,11 +22,6 @@ let lngLatCoordToMercatorCoord = function (lngLat) {
     return [x, y];
 };
 
-// coord_projection.lngLatToMercator = function (lng, lat) {
-//     let xy = lngLatCoordToMercatorCoord([lng, lat]);
-//     return {'x': xy[0], 'y': xy[1]};
-// };
-
 coord_projection.lngLatToMercator = function (input1, input2) {
     let lng, lat;
     if (Array.isArray(input1) && (input1.length === 2)) {
@@ -42,11 +37,6 @@ coord_projection.lngLatToMercator = function (input1, input2) {
     let xy = lngLatCoordToMercatorCoord([lng, lat]);
     return {x: xy[0], y: xy[1], lng: lng, lat: lat};
 };
-
-// coord_projection.mercatorToLngLat = function (x, y) {
-//     let lngLat = mercatorCoordToLngLatCoord([x, y]);
-//     return {'lng': lngLat[0], 'lat': lngLat[1]};
-// };
 
 coord_projection.mercatorToLngLat = function (input1, input2) {
     let x, y;
@@ -78,4 +68,4 @@ coord_projection.mercatorArrayToLngLatArray2 = function (coordArray) {
     return lngLatArray;
 };
 
-export default coord_projection
+export {coord_projection}
