@@ -109,6 +109,14 @@ class custom_point_label_layer {
         this.labelCircleLayer.paint["circle-radius"] = radius;
     }
 
+    setTextPaintProperty(prop, value) {
+        this.labelSymbolLayer.paint[prop] = value;
+    }
+
+    setTextLayoutProperty(prop, value) {
+        this.labelSymbolLayer.layout[prop] = value;
+    }
+
     _getLayerID() {
         return this.labelCircleLayerID;
     }
