@@ -21,15 +21,6 @@
 </style>
 
 <div id='map'></div>
-<div class='floor-switch-overlay top'>
-    <div class='floor-switch-overlay-inner'>
-        <fieldset>
-            <label>Select Floor</label>
-            <select id='floorSwitch' name='floorSwitch'></select>
-        </fieldset>
-    </div>
-</div>
-
 <div id='data'>
     <div class='map-overlay'>
         <label id="hint"></label>
@@ -130,31 +121,13 @@
         hintLabel.innerHTML = eventToString(evt);
     });
 
-    var floorSwitch = document.getElementById('floorSwitch');
-    floorSwitch.onchange = function () {
-        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
-    };
-
     map.on("mapready", function (evt) {
         // console.log("mapready");
-        map.mapInfoArray.forEach(function (mapInfo) {
-            var floorButton = document.createElement('option');
-            floorButton.value = mapInfo.floorName;
-            floorButton.text = mapInfo.floorName;
-            floorSwitch.appendChild(floorButton);
-            floorSwitch.selectedIndex = map.building.initFloorIndex;
-        });
+        initFloorSwitch(map);
     });
 
     map.on("floorend", function (evt) {
         // console.log(evt.mapInfo);
-        for (var i = 0; i < map.mapInfoArray.length; ++i) {
-            var info = map.mapInfoArray[i];
-            if (info.floorNumber == evt.mapInfo.floorNumber) {
-                floorSwitch.selectedIndex = i;
-                return;
-            }
-        }
     });
 
     map.on("wheel", function () {

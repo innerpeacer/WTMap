@@ -2,23 +2,15 @@
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-2.3.1</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
 
     <script src="js/config-dev-2.3.1.js"></script>
-    <link rel="stylesheet" type="text/css" href="./css/floor-switch.css">
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
 
 <div id='map'></div>
-<div class='floor-switch-overlay top'>
-    <div class='floor-switch-overlay-inner'>
-        <fieldset>
-            <label>Select Floor</label>
-            <select id='floorSwitch' name='floorSwitch'></select>
-        </fieldset>
-    </div>
-</div>
 
 <script>
     console.log(wtmap.version);
@@ -40,22 +32,10 @@
         console.log(evt.lngLat);
     });
 
-    var floorSwitch = document.getElementById('floorSwitch');
-    floorSwitch.onchange = function () {
-        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
-    };
-
     map.on("mapready", function (evt) {
         console.log("mapready");
         console.log("BaseZoom: " + map.getBaseZoom());
-
-        map.mapInfoArray.forEach(function (mapInfo) {
-            var floorButton = document.createElement('option');
-            floorButton.value = mapInfo.floorName;
-            floorButton.text = mapInfo.floorName;
-            floorSwitch.appendChild(floorButton);
-        });
-
+        initFloorSwitch(map);
     });
 
     map.on("wheel", function () {

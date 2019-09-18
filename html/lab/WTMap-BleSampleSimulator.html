@@ -7,18 +7,11 @@
     <link href="../wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
 
     <script src="../../dist/lab.js"></script>
+    <script src="sample_helper.js"></script>
 </head>
 <body>
 
 <div id='map'></div>
-<div class='floor-switch-overlay top'>
-    <div class='floor-switch-overlay-inner'>
-        <fieldset>
-            <label>Select Floor</label>
-            <select id='floorSwitch' name='floorSwitch'></select>
-        </fieldset>
-    </div>
-</div>
 
 <script>
     console.log(wtmap.version);
@@ -27,16 +20,13 @@
     var sampleID = wtmap.Utils.getParameter("sampleID");
     var floor = wtmap.Utils.getParameter("floor");
     if (floor) floor = parseInt(floor);
-    
+
     var use3D = true;
     use3D = false;
 
     var path = "/WTMapService/lab/GetSamplePbf?sampleID=" + sampleID;
     var http = new wtmap.HttpRequest();
     var simulator = new lab.Simulator();
-
-    console.log(typeof 1);
-    console.log(typeof "1");
 
     var map = new wtmap.WTMap({
         container: 'map',
@@ -60,45 +50,13 @@
         // map.getSource("stepLine").setData(geojson_utils.createLineFeatureCollection([stepPoints]));
     });
 
-
-    var floorSwitch = document.getElementById('floorSwitch');
-    floorSwitch.onchange = function () {
-        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
-    };
-
-    var sampleLayer = new wtmap.CustomPointLabelLayer("sample");
-    // sampleLayer.setTextProperty("user");
-    // sampleLayer.setTextField(["get", "sampleID"]);
-    var sampleText = ["concat", ["get", "sampleID"], "\nble(", ["get", "ble"], "), gps(", ["get", "gps"], ")"];
-    sampleLayer.setTextField(sampleText);
-    // sampleLayer.setTextColor("#ff0000");
-    sampleLayer.setTextColor("#48d448");
-    // sampleLayer.setTextSize(20);
-    // sampleLayer.setCircleColor("#ff0000");
-    sampleLayer.setCircleColor("#c4a000");
-    sampleLayer.setCircleRadius(5);
-    sampleLayer.setTextLayoutProperty("text-allow-overlap", true);
-
-    var gpsLayer = new wtmap.CustomPointLabelLayer("gps");
-    var gpsText = ["concat", "index: ", ["get", "index"], "\nAccuracy: ", ["get", "accuracy"]];
-    gpsLayer.setTextField(gpsText);
-    gpsLayer.setTextColor("#000000");
-    gpsLayer.setCircleRadius(3);
-    // gpsLayer.setCircleColor("#00ff00");
-    gpsLayer.setCircleColor("#00cccc");
-    gpsLayer.setTextLayoutProperty("text-allow-overlap", true);
+    var sampleLayer = createSingleSampleLayer("sample");
+    var gpsLayer = createSingleGpsLayer("gps");
 
     var mapStatus = {map: false, locator: false};
     map.on("mapready", function (evt) {
         // console.log("mapready");
-        map.mapInfoArray.forEach(function (mapInfo) {
-            var floorButton = document.createElement('option');
-            floorButton.value = mapInfo.floorName;
-            floorButton.text = mapInfo.floorName;
-            floorSwitch.appendChild(floorButton);
-            floorSwitch.selectedIndex = map.building.initFloorIndex;
-        });
-        console.log("initAngle: " + map.building.initAngle);
+        initFloorSwitch(map);
 
         sampleLayer.addToMap(map);
         gpsLayer.addToMap(map);

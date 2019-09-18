@@ -1,8 +1,12 @@
 var IP_PROJECT_NAME = "WTMap";
 var IP_MAP_VERSION = "v2.3.1";
 
-var ipmapJSPath = '<script src="/' + IP_PROJECT_NAME + '/src/mapbox/0.50.0/dist/wtmap-gl-' + IP_MAP_VERSION + '.js"></script>';
-var cssPath = '<link rel="stylesheet" type="text/css" href="/' + IP_PROJECT_NAME + '/src/mapbox/0.50.0/dist/wtmap-gl-'+IP_MAP_VERSION+'.css"/>';
+// Developement Path
+// var ipmapJSPath = '<script src="/' + IP_PROJECT_NAME + '/src/mapbox/0.50.0/dist/wtmap-gl-' + IP_MAP_VERSION + '.js"></script>';
+// var cssPath = '<link rel="stylesheet" type="text/css" href="/' + IP_PROJECT_NAME + '/src/mapbox/0.50.0/dist/wtmap-gl-'+IP_MAP_VERSION+'.css"/>';
+
+var ipmapJSPath = '<script src="/sdk/wtmap-gl-' + IP_MAP_VERSION + '.js"></script>';
+var cssPath = '<link rel="stylesheet" type="text/css" href="/sdk/wtmap-gl-' + IP_MAP_VERSION + '.css"/>';
 document.write(ipmapJSPath);
 document.write(cssPath);
 

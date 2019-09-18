@@ -5,30 +5,21 @@
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
     <script src="../wtmap/js/config-dev-2.5.1.js"></script>
     <link href="../wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
+
+    <script src="sample_helper.js"></script>
 </head>
 <body>
 
 <div id='map'></div>
-<div class='floor-switch-overlay top'>
-    <div class='floor-switch-overlay-inner'>
-        <fieldset>
-            <label>Select Floor</label>
-            <select id='floorSwitch' name='floorSwitch'></select>
-        </fieldset>
-    </div>
-</div>
 
 <script>
+
+
     console.log(wtmap.version);
     console.log(wtmap);
     var buildingID = "00270003";
     var use3D = true;
     use3D = false;
-
-    var path = "/WTMapService/lab/GetAllSamples?buildingID=" + buildingID;
-    // var path = "http://192.168.100.18:16666/backend/map/api/queryAllBleSample?buildingID=" + buildingID;
-
-    var http = new wtmap.HttpRequest();
 
     var map = new wtmap.WTMap({
         container: 'map',
@@ -42,8 +33,6 @@
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
     });
-    map.showTileBoundaries = true;
-    // map.showCollisionBoxes = true;
 
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
@@ -73,29 +62,11 @@
     });
 
 
-    var floorSwitch = document.getElementById('floorSwitch');
-    floorSwitch.onchange = function () {
-        map.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
-    };
-
-    var layer = new wtmap.CustomPointLabelLayer("all-sample");
-    // layer.setTextProperty("user");
-    layer.setTextField(["get", "sampleID"]);
-    // layer.setTextColor("#000000");
-    // layer.setTextSize(20);
-    // layer.setCircleColor("#ff0000");
-    // layer.setCircleRadius(20);
+    var layer = createMultiSampleLayer("all-sample");
 
     map.on("mapready", function (evt) {
-        // console.log("mapready");
-        map.mapInfoArray.forEach(function (mapInfo) {
-            var floorButton = document.createElement('option');
-            floorButton.value = mapInfo.floorName;
-            floorButton.text = mapInfo.floorName;
-            floorSwitch.appendChild(floorButton);
-            floorSwitch.selectedIndex = map.building.initFloorIndex;
-        });
-        console.log("initAngle: " + map.building.initAngle);
+        console.log("mapready");
+        initFloorSwitch(map);
 
         layer.addToMap(map);
         getData();
@@ -106,29 +77,10 @@
     });
 
     function getData() {
-        http.requestData(path, function (res) {
-            console.log("data");
-            // console.log(data);
+        http.requestData(getAllSampleUrl(buildingID), function (res) {
             var samplePoints = res.data.SamplePoints;
-            var spArray = [];
-            for (var i = 0; i < samplePoints.length; ++i) {
-                var sp = samplePoints[i];
-                var lp = new wtmap.LocalPoint(sp.x, sp.y, sp.floor);
-                var lngLat = lp.toLngLatPoint();
-                lngLat.properties = {
-                    user: sp.user,
-                    sampleID: sp.sampleID,
-                    ble: sp.ble,
-                    gps: sp.gps,
-                    floor: sp.floor,
-                    platform: sp.platform,
-                };
-                spArray.push(lngLat);
-            }
-
+            var spArray = samplePointsToGeojson(samplePoints);
             layer.showLabelData(spArray);
-        }, function (error) {
-
         });
     }
 

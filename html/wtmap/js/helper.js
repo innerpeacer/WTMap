@@ -41,3 +41,54 @@ function requestJson(url, callback, errorCallback) {
     };
     httpRequest.send();
 }
+
+function initFloorSwitch(aMap) {
+    // console.log("initFloorSwitch");
+
+    var floorSwitch;
+    var outerDiv = document.createElement('div');
+    outerDiv.className = "floor-switch-overlay top";
+    {
+        var innerDiv = document.createElement('div');
+        innerDiv.className = "floor-switch-overlay-inner";
+        {
+            var fieldSet = document.createElement("fieldset");
+
+            var label = document.createElement("label");
+            label.innerText = "Select Floor";
+            fieldSet.appendChild(label);
+
+            floorSwitch = document.createElement("select");
+            floorSwitch.id = "floorSwitch";
+            floorSwitch.name = "floorSwitch";
+            fieldSet.appendChild(floorSwitch);
+            innerDiv.appendChild(fieldSet);
+        }
+        outerDiv.appendChild(innerDiv);
+    }
+    aMap.getContainer().appendChild(outerDiv);
+
+
+    floorSwitch.onchange = function () {
+        aMap.setFloor(map.mapInfoArray[floorSwitch.selectedIndex].mapID);
+    };
+
+    aMap.mapInfoArray.forEach(function (mapInfo) {
+        var floorButton = document.createElement('option');
+        floorButton.value = mapInfo.floorName;
+        floorButton.text = mapInfo.floorName;
+        floorSwitch.appendChild(floorButton);
+        floorSwitch.selectedIndex = map.building.initFloorIndex;
+    });
+
+    aMap.on("floorend", function (evt) {
+        // console.log(evt.mapInfo);
+        for (var i = 0; i < aMap.mapInfoArray.length; ++i) {
+            var info = aMap.mapInfoArray[i];
+            if (info.floorNumber == evt.mapInfo.floorNumber) {
+                floorSwitch.selectedIndex = i;
+                return;
+            }
+        }
+    });
+}
