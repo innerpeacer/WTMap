@@ -19,13 +19,9 @@ import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 
 import IndoorLocator from '../locator/locator'
 
-import defaultStyle from '../config/default_style'
-import {clone} from '../utils/ip_util';
+import {getStyle} from '../config/default_style'
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
 import {motion_handler as MotionHandler} from "../motion/motion_handler";
-// function getBrtStylePath(options) {
-//     return `${options._apiHost}/${options._resourceRootDir}/style/${version}/wt-style.json`;
-// }
 
 import EventManager from "../utils/event_manager"
 
@@ -33,58 +29,51 @@ let MapEvent = EventManager.MapEvent;
 let LocatorEvent = EventManager.LocatorEvent;
 
 import InnerEventManager from "../utils/inner_event_manager"
+import {extend} from "../../../mapbox/1.0.0/src/util/util";
 
 let InnerDataEvent = InnerEventManager.DataEvent;
 let InnerRouteEvent = InnerEventManager.RouteEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
+let defaultHost = window.location.protocol + '//' + window.location.host;
+const defaultOptions = {
+    _apiHost: defaultHost,
+    _apiRouteHost: defaultHost,
+
+    _apiPath: "WTMapService",
+    _apiRoute: "WTRouteService",
+    _resourceRootDir: "WTMapResource",
+
+    localIdeographFontFamily: false,
+    maxZoom: 22,
+
+    usePbf: true,
+    enableMotion: false,
+    enableOrientation: false,
+
+    _dataVersion: null,
+    _disableCache: false,
+
+    _useFile: true,
+    _debugBeacon: false,
+
+    __disableGps: false,
+};
+
 class IPMap extends BoxMap {
     constructor(options) {
-        super(options);
-
         // console.log('IPMap.constructor');
         // console.log('Version: ' + version);
-        let defaultHost = window.location.protocol + '//' + window.location.host;
-
-        if (options._apiHost == null) options._apiHost = defaultHost;
-        if (options._apiPath == null) options._apiPath = 'WTMapService';
-
-        if (options._apiRouteHost == null) options._apiRouteHost = defaultHost;
-        if (options._apiRoute == null) options._apiRoute = 'WTRouteService';
-
+        options = extend({}, defaultOptions, options);
         if (options._cbmPath == null) options._cbmPath = defaultHost + options._apiPath + '/web/GetCBM';
-
-        if (options._resourceRootDir == null) options._resourceRootDir = 'WTMapResource';
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
+        options.style = getStyle(options._apiHost, options.sprite, options.glyphs);
 
-        // options.style = getBrtStylePath(options);
-        options.style = clone(defaultStyle);
-        options.style.sprite = options._apiHost + options.style.sprite;
-        options.style.glyphs = options._apiHost + options.style.glyphs;
-        if (options.sprite != null) options.style.sprite = options.sprite;
-        if (options.glyphs != null) options.style.glyphs = options.glyphs;
+        super(options);
+        this._options = options;
 
-        if (options.brtStyle != null) options.style = options.brtStyle;
-        if (options.localIdeographFontFamily == null) options.localIdeographFontFamily = false;
-
-        if (options.maxZoom == null) options.maxZoom = 22;
-        if (options._useFile == null) options._useFile = true;
-        if (options.use3D == null) options.use3D = true;
-        if (options.usePbf == null) options.usePbf = true;
-        if (options._debugBeacon == null) options._debugBeacon = false;
-        if (options.__disableGps == null) options.__disableGps = false;
-        this._debugBeacon = options._debugBeacon;
-
-        if (options.enableOrientation == null) options.enableOrientation = false;
-        this._enableOrientation = options.enableOrientation;
-
-        if (options.enableMotion == null) options.enableMotion = false;
-        this._enableMotion = options.enableMotion;
-
-        let dataVersion = null;
-        let disableCache = false;
-        if (options._dataVersion != null) dataVersion = options._dataVersion;
-        if (options._disableCache != null) disableCache = options._disableCache;
+        let dataVersion = options._dataVersion;
+        let disableCache = options._disableCache;
 
         this.buildingID = options.buildingID;
         if (this.buildingID == null) {
@@ -92,8 +81,9 @@ class IPMap extends BoxMap {
             return;
         }
 
-        super(options);
-        this._options = options;
+        this._debugBeacon = options._debugBeacon;
+        this._enableOrientation = options.enableOrientation;
+        this._enableMotion = options.enableMotion;
 
         if (options.floorID != null) this._targetFloor = options.floorID;
 

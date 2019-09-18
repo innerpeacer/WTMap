@@ -1,3 +1,5 @@
+import {clone} from '../utils/ip_util';
+
 const default_style = {
     'version': 8,
     'name': 'WTMap',
@@ -12,4 +14,12 @@ const default_style = {
     },
 };
 
-module.exports = default_style;
+function getStyle(host, sprite, glyphs) {
+    let style = clone(default_style);
+    style.sprite = sprite ? sprite : (host + style.sprite);
+    style.glyphs = glyphs ? glyphs : (host + style.glyphs);
+    return style;
+}
+
+// module.exports = default_style;
+export {getStyle}

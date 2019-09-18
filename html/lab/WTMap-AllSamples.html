@@ -102,8 +102,6 @@
     });
 
     map.on("floorend", function (event) {
-        console.log("floorend");
-        console.log(event.mapInfo);
         layer.setFloor(event.mapInfo.floorNumber);
     });
 
