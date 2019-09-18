@@ -2,7 +2,7 @@ import {Evented} from '../utils/ip_evented'
 import Parser from './pbf-parse/t_y_beacon_parser';
 import {local_point as LocalPoint} from '../entity/local_point';
 import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from './beacon';
-import CoordProjection from '../utils/coord_projection';
+import {coord_projection as CoordProjection} from '../utils/coord_projection';
 import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 import GpsLocator from "./gps/gps_locator"
 import BleLocator from "./ble/ble_locator"
@@ -80,6 +80,8 @@ class locator extends Evented {
         });
         if (!options.__disableGps) {
             this.startGps();
+        } else {
+            status._gpsReady = false;
         }
 
         this._bleLocator = new BleLocator(buildingID, options);

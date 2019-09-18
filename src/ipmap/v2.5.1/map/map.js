@@ -95,7 +95,7 @@ class IPMap extends BoxMap {
         super(options);
         this._options = options;
 
-        if (options.floorID != null) this._targetFloorID = options.floorID;
+        if (options.floorID != null) this._targetFloor = options.floorID;
 
         this._firstLoad = true;
 
@@ -378,8 +378,8 @@ class IPMap extends BoxMap {
         // map._layerGroup._updateLocator(map._locator);
         map.fire(MapEvent.MapReady);
 
-        if (this._targetFloorID != null) {
-            map.setFloor(this._targetFloorID);
+        if (this._targetFloor != null) {
+            map.setFloor(this._targetFloor);
         } else {
             let initFloorIndex = map.building.initFloorIndex;
             map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
@@ -457,15 +457,21 @@ class IPMap extends BoxMap {
         map._loadFloorData({mapInfo: targetInfo}, {rezoom: false});
     }
 
-    setFloor(floorID, outerCallback) {
+    setFloor(floor, outerCallback) {
         // console.log('setFloor: ' + floorID);
         let map = this;
-        map._targetFloorID = floorID;
+        map._targetFloor = floor;
         map._outerFloorCallback = outerCallback;
 
-        let targetInfo = this._getInfoByFloorID(floorID);
+        let targetInfo = null;
+        if (typeof floor === "number") {
+            targetInfo = this._getInfoByFloorNumber(floor);
+        } else if (typeof floor === "string") {
+            targetInfo = this._getInfoByFloorID(floor);
+        }
+
         if (targetInfo == null) {
-            map.fire(MapEvent.Error, {'description': 'FloorID not exist: ' + floorID});
+            map.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
             return;
         }
 

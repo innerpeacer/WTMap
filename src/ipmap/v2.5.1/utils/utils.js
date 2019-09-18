@@ -11,5 +11,11 @@ function getParameter(name) {
 
 utils.getParameter = getParameter;
 
+function round(value, n) {
+    let factor = Math.pow(10, n);
+    return parseInt(value * factor) / factor;
+}
+
+utils.round = round;
 
 export {utils}

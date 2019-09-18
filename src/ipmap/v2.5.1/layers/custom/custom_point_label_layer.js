@@ -117,6 +117,21 @@ class custom_point_label_layer {
         this.labelSymbolLayer.layout[prop] = value;
     }
 
+    setFilter(filter) {
+        this.labelCircleLayer.filter = filter;
+        this.labelSymbolLayer.filter = filter;
+    }
+
+    updateFilter(filter) {
+        this.map.setFilter(this.labelCircleLayerID, filter);
+        this.map.setFilter(this.labelSymbolLayerID, filter);
+    }
+
+    setFloor(floorNumber) {
+        let filter = ["all", ['==', 'floor', floorNumber]];
+        this.updateFilter(filter);
+    }
+
     _getLayerID() {
         return this.labelCircleLayerID;
     }
