@@ -9,7 +9,6 @@ import IPRouteResult from './route_result'
 import IPMutliRouteResult from './multi_stop_route_result'
 import {http_request as IPHttpRequest} from "../utils/http_request";
 import {coord_projection as CoordProjection} from '../utils/coord_projection'
-import EntityUtils from '../entity/entity_utils'
 import {local_point as IPLocalPoint} from '../entity/local_point'
 
 import InnerEventManager from "../utils/inner_event_manager"
@@ -262,12 +261,12 @@ class multi_stop_route_manager extends Evented {
 
     getRouteData(startLngLat, endLngLat, stopsLngLat, callback, errorCallback, params) {
         // console.log('getRouteData');
-        let start = EntityUtils.lngLatPoint2LocalPoint(startLngLat);
-        let end = EntityUtils.lngLatPoint2LocalPoint(endLngLat);
+        let start = IPLocalPoint.fromLngLat(startLngLat);
+        let end = IPLocalPoint.fromLngLat(endLngLat);
         let stops = [];
         if (stopsLngLat != null && stopsLngLat.length > 0) {
             for (let i = 0; i < stopsLngLat.length; ++i) {
-                let sp = EntityUtils.lngLatPoint2LocalPoint(stopsLngLat[i]);
+                let sp = IPLocalPoint.fromLngLat(stopsLngLat[i]);
                 stops.push(sp);
             }
         }

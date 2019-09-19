@@ -3,14 +3,12 @@ import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit
 import {version} from '../config/config'
 import IPCity from '../entity/city'
 import IPBuilding from '../entity/building'
-import IPMapInfo from '../entity/mapinfo'
+import {mapinfo as IPMapInfo} from '../entity/mapinfo'
 import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from '../entity/symbol';
 
 import IPDataManager from '../data/data_manager'
 
 import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
-
-import IPEntityUtils from '../entity/entity_utils'
 
 import IndoorLayers from '../layers/indoor_layers'
 import {coord_projection as CoordProjection} from '../utils/coord_projection'
@@ -325,7 +323,6 @@ class IPMap extends BoxMap {
         // console.log('initBounds');
         // console.log(initBounds);
 
-        // let initBounds = IPEntityUtils.extendedBounds2(initInfo, 0.2);
         let maxInfo = new IPMapInfo(data['MapInfo'][0]);
         for (let i = 0; i < map.mapInfoArray.length; ++i) {
             let info = map.mapInfoArray[i];
@@ -335,7 +332,7 @@ class IPMap extends BoxMap {
             maxInfo.mapExtent.ymax = Math.max(info.mapExtent.ymax, maxInfo.mapExtent.ymax);
         }
 
-        let initBounds = IPEntityUtils.extendedBounds2(maxInfo, 0.2);
+        let initBounds = maxInfo.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map.addSource('innerpeacer', {
             'tiles': map._dataManager.getTilePath(),
@@ -343,7 +340,7 @@ class IPMap extends BoxMap {
             'bounds': initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        let maskingBounds = IPEntityUtils.extendedBounds2(maxInfo, 10);
+        let maskingBounds = maxInfo.getExtendedBounds2(10);
         let lng1 = maskingBounds[0];
         let lat1 = maskingBounds[1];
         let lng2 = maskingBounds[2];
@@ -484,7 +481,7 @@ class IPMap extends BoxMap {
             // console.log(c);
             let lngLat = CoordProjection.mercatorToLngLat(c.x, c.y);
 
-            let maxBounds = IPEntityUtils.extendedBounds(result.mapInfo, 0.2);
+            let maxBounds = result.mapInfo.getExtendedBounds(0.2);
             map.setMaxBounds(maxBounds);
 
             map.setCenter([lngLat.lng, lngLat.lat]);

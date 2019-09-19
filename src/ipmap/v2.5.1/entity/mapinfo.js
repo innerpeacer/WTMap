@@ -1,4 +1,4 @@
-import {coord_projection as CoordProjection} from '../utils/coord_projection'
+import {local_point} from "./local_point";
 
 class map_extent {
     constructor(xmin, ymin, xmax, ymax) {
@@ -8,8 +8,32 @@ class map_extent {
         this.ymax = ymax;
     }
 
+    getSw() {
+        return new local_point(this.xmin, this.ymin);
+    }
+
+    getNe() {
+        return new local_point(this.xmax, this.ymax);
+    }
+
     getCenter() {
-        return {'x': (this.xmin + this.xmax) * 0.5, 'y': (this.ymin + this.ymax) * 0.5};
+        return new local_point((this.xmin + this.xmax) * 0.5, (this.ymin + this.ymax) * 0.5);
+    }
+
+    _getLngLatBounds() {
+        let min = this.getSw().getLngLat();
+        let max = this.getNe().getLngLat();
+        return [[min.lng, min.lat], [max.lng, max.lat]];
+    }
+
+    _getExtendedBounds(scale) {
+        if (scale == null) return this._getLngLatBounds();
+
+        let extentedWidth = (this.xmax - this.xmin) * scale;
+        let extentedHeight = (this.ymax - this.ymin) * scale;
+        let min = new local_point(this.xmin - extentedWidth, this.ymin - extentedHeight).getLngLat();
+        let max = new local_point(this.xmax + extentedWidth, this.ymax + extentedHeight).getLngLat();
+        return [[min.lng, min.lat], [max.lng, max.lat]];
     }
 }
 
@@ -36,13 +60,17 @@ class mapinfo {
         return this.mapExtent.getCenter();
     }
 
-    getBounds(scale) {
-        if (scale == null) scale = 0;
-        let extentedWidth = (this.mapExtent.xmax - this.mapExtent.xmin) * scale;
-        let extentedHeight = (this.mapExtent.ymax - this.mapExtent.ymin) * scale;
-        let min = CoordProjection.mercatorToLngLat(this.mapExtent.xmin - extentedWidth, this.mapExtent.ymin - extentedHeight);
-        let max = CoordProjection.mercatorToLngLat(this.mapExtent.xmax + extentedWidth, this.mapExtent.ymax + extentedHeight);
-        return [[min.lng, min.lat], [max.lng, max.lat]];
+    getLngLatBounds() {
+        return this.mapExtent._getLngLatBounds();
+    }
+
+    getExtendedBounds(scale) {
+        return this.mapExtent._getExtendedBounds(scale);
+    }
+
+    getExtendedBounds2(scale) {
+        let bounds = this.getExtendedBounds(scale);
+        return [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
     }
 
     toString() {
@@ -59,4 +87,4 @@ mapinfo.getMapInfoArray = function (array) {
     return result;
 };
 
-export default mapinfo
+export {mapinfo}
