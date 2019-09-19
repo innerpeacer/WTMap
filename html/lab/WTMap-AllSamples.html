@@ -13,19 +13,18 @@
 <div id='map'></div>
 
 <script>
-
-
     console.log(wtmap.version);
     console.log(wtmap);
-    var buildingID = "00270003";
-    var use3D = true;
-    use3D = false;
+    var buildingID = wtmap.Utils.getParameter("buildingID");
+    buildingID = buildingID ? buildingID : "00270003";
+
+    var useSimulator = !!wtmap.Utils.getParameter("simulator");
 
     var map = new wtmap.WTMap({
         container: 'map',
         buildingID: buildingID,
         floorID: buildingID + "F03",
-        use3D: use3D,
+        use3D: false,
         _disableCache: true,
         __disableGps: true,
         usePbf: true,
@@ -51,12 +50,12 @@
         if (features && features.length > 0) {
             var sampleID = features[0].properties.sampleID;
             var floor = features[0].properties.floor;
-            // console.log(features[0].properties.sampleID);
-            // var sampleUrl = "WTMap-Sample.html";
-            var sampleUrl = "WTMap-BleSampleSimulator.html";
-            sampleUrl += "?buildingID=" + buildingID;
-            sampleUrl += "&sampleID=" + sampleID;
-            sampleUrl += "&floor=" + floor;
+            var sampleUrl;
+            if (useSimulator) {
+                sampleUrl = getSampleSimulatorHtml(buildingID, sampleID, floor);
+            } else {
+                sampleUrl = getSampleDetailHtml(buildingID, sampleID, floor);
+            }
             window.open(sampleUrl);
         }
     });

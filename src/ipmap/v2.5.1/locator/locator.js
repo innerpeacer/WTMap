@@ -155,16 +155,18 @@ class locator extends Evented {
 
         if (this._currentMode === MODE.GPS) {
             this._gpsResult.location.floor = this._latestFloor;
+            let loc = Location.fromLngLat(this._gpsResult.location);
             let res = {
-                location: this._gpsResult.location,
+                location: loc,
                 source: modeName(this._currentMode),
                 details: this._getDetails(gpsValid, bleValid),
                 timestamp: now
             };
             this._notifyResult(res);
         } else if (this._currentMode === MODE.BLE) {
+            let loc = Location.fromXY(this._bleResult.location);
             let res = {
-                location: this._bleResult.location,
+                location: loc,
                 source: modeName(this._currentMode),
                 details: this._getDetails(gpsValid, bleValid),
                 timestamp: now

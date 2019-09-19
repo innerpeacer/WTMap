@@ -6,6 +6,7 @@ import {coord_projection as CoordProjection} from '../../utils/coord_projection'
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
 import InnerEventManager from "../../utils/inner_event_manager"
+import Location from "../location"
 
 let InnerBleEvent = InnerEventManager.BleEvent;
 let _locatorObject = {};
@@ -260,7 +261,12 @@ function _calculateLocation(options) {
     if (totalWeighting === 0) {
         resultLocation = null;
     } else {
-        resultLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
+        // resultLocation = new LocalPoint(totalWeightingX / totalWeighting, totalWeightingY / totalWeighting, maxFloor);
+        resultLocation = Location.fromXY({
+            x: totalWeightingX / totalWeighting,
+            y: totalWeightingY / totalWeighting,
+            floor: maxFloor
+        });
     }
 
     // console.log("sum: ", sumRssi, ", num: ", beaconList.length, ", avg: ", (sumRssi / beaconList.length));

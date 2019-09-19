@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title>WTMap-BleSampleSimulator</title>
+    <title>WTMap-BleSampleDetail</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
     <script src="../wtmap/js/config-dev-2.5.1.js"></script>
     <link href="../wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
@@ -22,16 +22,13 @@
     if (floor) floor = parseInt(floor);
 
     var http = new wtmap.HttpRequest();
-    var simulator = new lab.Simulator();
-
     var map = new wtmap.WTMap({
         container: 'map',
         buildingID: buildingID,
         use3D: false,
         _disableCache: true,
-        __disableGps: true,
-        _debugBeacon: true,
         maxZoom: 22,
+        __disableGps: true,
         usePbf: true,
         sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
@@ -42,8 +39,8 @@
         console.log("Zoom: " + map.getZoom());
     });
 
-    var sampleLayer = createSingleSampleLayer("sample");
     var gpsLayer = createSingleGpsLayer("gps");
+    var sampleLayer = createSingleSampleLayer("sample");
 
     var mapStatus = {map: false, locator: false};
     map.on("mapready", function (evt) {
@@ -71,39 +68,8 @@
             var parser = new lab.WTBleSampleParser(data);
             var result = pbfParserToGeojson(parser, map);
             sampleLayer.showLabelData(result.samplePoints);
-
-            simulator.loadSimulationData(parser.toSimulatingData());
-            simulator.start();
-        }, function (error) {
-
+            gpsLayer.showLabelData(result.gpsPoints);
         });
-    }
-
-    map.on("location-update", function (res) {
-        // map.showLocation(res.location);
-    });
-
-    simulator.on("replay", function (event) {
-        var replay = event.data;
-
-        var index = replay.index;
-        var data = replay.data;
-        var value = data.value;
-        var dataType = data.dataType;
-
-        if (dataType == lab.SimulationDataType.Gps) {
-            gpsLayer.showLabelData(gpsToGeojson(value, map));
-        }
-
-        if (dataType == lab.SimulationDataType.Ble) {
-            var res = map.didRangeBeacons(value.beacons);
-            map.showLocation(res.location);
-        }
-    });
-
-    function showBle(value) {
-        // console.log("showBle");
-        // console.log(value);
     }
 
 </script>

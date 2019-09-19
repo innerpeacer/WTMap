@@ -45,7 +45,7 @@ const defaultOptions = {
     _resourceRootDir: "WTMapResource",
 
     localIdeographFontFamily: false,
-    maxZoom: 22,
+    // maxZoom: 22,
 
     usePbf: true,
     enableMotion: false,
@@ -491,7 +491,9 @@ class IPMap extends BoxMap {
             if (options && options.rezoom) map.setZoom(10);
 
             if (map._firstLoad) {
-                map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
+                if (map._options.maxZoom == null) {
+                    map.setMaxZoom(Math.min(map._baseZoom + 4, 22));
+                }
                 map._firstLoad = false;
             }
 
