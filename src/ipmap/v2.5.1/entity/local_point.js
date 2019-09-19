@@ -5,6 +5,9 @@ class local_point {
         this.x = x;
         this.y = y;
         this.floor = f;
+        if (!!this.x && !!this.y) {
+            this._calculateLngLat();
+        }
     }
 
     toStartParameter() {
@@ -27,11 +30,41 @@ class local_point {
         return `X: ${this.x}, Y: ${this.y}, Floor: ${this.floor}`;
     }
 
-    toLngLatPoint() {
-        let m = CoordProjection.mercatorToLngLat(this.x, this.y);
-        return new lnglat_point(m.lng, m.lat, this.floor);
+
+    _calculateLngLat() {
+        let lngLat = CoordProjection.mercatorToLngLat(this.x, this.y);
+        this.lng = lngLat.lng;
+        this.lat = lngLat.lat;
+    }
+
+    _calculatreXY() {
+        let m = CoordProjection.lngLatToMercator(this.lng, this.lat);
+        this.x = m.x;
+        this.y = m.y;
+    }
+
+    getXY() {
+        return {x: this.x, y: this.y, floor: this.floor};
+    }
+
+    getLngLat() {
+        return {lng: this.lng, lat: this.lat, floor: this.floor};
     }
 }
+
+local_point.fromXY = function (obj) {
+    let lp = new local_point(obj.x, obj.y, obj.floor);
+    lp._calculateLngLat();
+    return lp;
+};
+
+local_point.fromLngLat = function (obj) {
+    let lp = new local_point(null, null, obj.floor);
+    lp.lng = obj.lng;
+    lp.lat = obj.lat;
+    lp._calculatreXY();
+    return lp;
+};
 
 local_point.toStopParams = function (stops) {
     let str = 'stops=';
@@ -45,21 +78,4 @@ local_point.toStopParams = function (stops) {
     return str;
 };
 
-class lnglat_point {
-    constructor(lng, lat, f) {
-        this.lng = lng;
-        this.lat = lat;
-        this.floor = f;
-    }
-
-    toString() {
-        return `Lng: ${this.lng}, Lat: ${this.lat}, Floor: ${this.floor}`;
-    }
-
-    toLocalPoint() {
-        let m = CoordProjection.lngLatToMercator(this.lng, this.lat);
-        return new local_point(m.x, m.y, this.floor);
-    }
-}
-
-export {local_point, lnglat_point}
+export {local_point}

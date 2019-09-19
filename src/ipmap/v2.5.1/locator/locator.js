@@ -7,8 +7,6 @@ import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 import GpsLocator from "./gps/gps_locator"
 import BleLocator from "./ble/ble_locator"
 
-import Location from "./location"
-
 import InnerEventManager from "../utils/inner_event_manager"
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
@@ -155,7 +153,7 @@ class locator extends Evented {
 
         if (this._currentMode === MODE.GPS) {
             this._gpsResult.location.floor = this._latestFloor;
-            let loc = Location.fromLngLat(this._gpsResult.location);
+            let loc = LocalPoint.fromLngLat(this._gpsResult.location);
             let res = {
                 location: loc,
                 source: modeName(this._currentMode),
@@ -164,7 +162,7 @@ class locator extends Evented {
             };
             this._notifyResult(res);
         } else if (this._currentMode === MODE.BLE) {
-            let loc = Location.fromXY(this._bleResult.location);
+            let loc = LocalPoint.fromXY(this._bleResult.location);
             let res = {
                 location: loc,
                 source: modeName(this._currentMode),
@@ -176,7 +174,7 @@ class locator extends Evented {
             let x = this._bleResult.location.x * 0.3 + this._gpsResult.location.x * 0.7;
             let y = this._bleResult.location.y * 0.3 + this._gpsResult.location.y * 0.7;
             let floor = this._latestFloor;
-            let loc = Location.fromXY({x: x, y: y, floor: floor});
+            let loc = LocalPoint.fromXY({x: x, y: y, floor: floor});
             let res = {
                 location: loc,
                 source: modeName(this._currentMode),

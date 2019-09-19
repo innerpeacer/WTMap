@@ -1,19 +1,13 @@
 import {coord_projection as CoordProjection} from '../utils/coord_projection'
-import {local_point as TYLocalPoint, lnglat_point as TYLngLatPoint} from './local_point'
+import {local_point as TYLocalPoint} from './local_point'
 
 class entity_utils {
     constructor() {
     }
 }
 
-entity_utils.localPoint2LngLatPoint = function (localPoint) {
-    let m = CoordProjection.mercatorToLngLat(localPoint.x, localPoint.y);
-    return new TYLngLatPoint(m.lng, m.lat, localPoint.floor);
-};
-
 entity_utils.lngLatPoint2LocalPoint = function (lngLatPoint) {
-    let m = CoordProjection.lngLatToMercator(lngLatPoint.lng, lngLatPoint.lat);
-    return new TYLocalPoint(m.x, m.y, lngLatPoint.floor);
+    return TYLocalPoint.fromLngLat(lngLatPoint);
 };
 
 entity_utils.getBounds = function (mapInfo) {

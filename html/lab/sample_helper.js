@@ -76,7 +76,7 @@ function pbfParserToGeojson(parser, map) {
     {
         var samplePoints = [];
         var lp = new wtmap.LocalPoint(location.x, location.y, location.floor);
-        var lngLat = lp.toLngLatPoint();
+        var lngLat = lp.getLngLat();
         lngLat.properties = {
             timestamp: sample.timestamp,
             sampleID: sample.sampleID,
