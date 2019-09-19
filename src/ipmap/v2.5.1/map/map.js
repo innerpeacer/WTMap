@@ -11,7 +11,7 @@ import IPDataManager from '../data/data_manager'
 import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
 
 import IndoorLayers from '../layers/indoor_layers'
-import {coord_projection as CoordProjection} from '../utils/coord_projection'
+import {local_point as LocalPoint} from "../entity/local_point";
 import WtWgs84Converter from '../utils/wt_wgs84_converter'
 import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 
@@ -174,9 +174,9 @@ class IPMap extends BoxMap {
         // console.log('indoor_layer.showLocation');
         let loc = {};
         if (location && location.lng && location.lat) {
-            loc = {lng: location.lng, lat: location.lat};
+            loc = LocalPoint.fromLngLat(location);
         } else if (location && location.x && location.y) {
-            loc = CoordProjection.mercatorToLngLat(location.x, location.y);
+            loc = LocalPoint.fromXY(location);
         } else {
             return;
         }
@@ -479,7 +479,7 @@ class IPMap extends BoxMap {
             let c = map.currentMapInfo.getCenter();
             // console.log('requestAnimationFrame');
             // console.log(c);
-            let lngLat = CoordProjection.mercatorToLngLat(c.x, c.y);
+            let lngLat = c.getLngLat();
 
             let maxBounds = result.mapInfo.getExtendedBounds(0.2);
             map.setMaxBounds(maxBounds);

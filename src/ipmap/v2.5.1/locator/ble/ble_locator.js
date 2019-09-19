@@ -2,7 +2,6 @@ import {Evented} from '../../utils/ip_evented'
 import Parser from '../pbf-parse/t_y_beacon_parser';
 import {local_point as LocalPoint} from '../../entity/local_point';
 import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from '../beacon';
-import {coord_projection as CoordProjection} from '../../utils/coord_projection';
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
 import InnerEventManager from "../../utils/inner_event_manager"
@@ -201,7 +200,7 @@ function _calculateLocation(options) {
         weightingArray.push(weighting);
         pointArray.push(location);
 
-        let lnglat = CoordProjection.mercatorToLngLat(location.x, location.y);
+        let lnglat = LocalPoint.fromXY(location);
         let desc = '';
         if (i === 0) desc = 'First';
         if (i === 1) desc = 'Second';
@@ -285,7 +284,7 @@ function _calculateLocation(options) {
         res.beaconPool = _locatorObject.beaconPool.size;
         res.debugData = GeojsonUtils.createPointFeatureCollection(debugArray);
         if (resultLocation) {
-            let debugLocation = CoordProjection.mercatorToLngLat(resultLocation.x, resultLocation.y);
+            let debugLocation = LocalPoint.fromXY(resultLocation);
             let text = '';
             text += 'maxIndex: ' + index + '\n';
             text += 'maxRssi: ' + maxRssi + '\n';
@@ -316,7 +315,7 @@ function _getLocatingBeaconGeojson() {
     if (_locatorObject._locatingGeojson == null) {
         let beacons = [];
         BeaconDict.forEach(function (lb) {
-            let lngLat = CoordProjection.mercatorToLngLat(lb.location.x, lb.location.y);
+            let lngLat = LocalPoint.fromXY(lb.location);
             beacons.push({
                 lng: lngLat.lng,
                 lat: lngLat.lat,

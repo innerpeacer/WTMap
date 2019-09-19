@@ -54,7 +54,7 @@ function samplePointsToGeojson(samplePoints) {
     for (var i = 0; i < samplePoints.length; ++i) {
         var sp = samplePoints[i];
         var lp = new wtmap.LocalPoint(sp.x, sp.y, sp.floor);
-        var lngLat = lp.toLngLatPoint();
+        var lngLat = lp.getLngLat();
         lngLat.properties = {
             user: sp.user,
             sampleID: sp.sampleID,
