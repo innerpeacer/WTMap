@@ -1,5 +1,5 @@
 import TYMotionParser from './sensor/motion/pbf-parse/t_y_motion_parser';
-import {w_t_ble_sample_parser as WTBleSampleParser} from "./ble_sample/pbf-parse/w_t_ble_sample_parser";
+import {ble_sample as BleSample} from "./ble_sample/entity/ble_sample";
 
 import {simulator as Simulator} from "./simulator/simulator";
 import {
@@ -10,7 +10,7 @@ import {
 
 let lab = {};
 lab.TYMotionParser = TYMotionParser;
-lab.WTBleSampleParser = WTBleSampleParser;
+lab.BleSample = BleSample;
 
 lab.Simulator = Simulator;
 lab.SimulationData = SimulationData;

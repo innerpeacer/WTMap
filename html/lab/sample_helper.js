@@ -68,9 +68,8 @@ function samplePointsToGeojson(samplePoints) {
     return spArray;
 }
 
-function pbfParserToGeojson(parser, map) {
+function bleSampleToGeojson(sample, map) {
     var result = {};
-    var sample = parser.data;
     var location = sample.location;
 
     {

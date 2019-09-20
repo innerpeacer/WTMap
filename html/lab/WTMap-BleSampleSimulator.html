@@ -67,15 +67,13 @@
 
     function getData() {
         if (!mapStatus.map || !mapStatus.ble) return;
-        http.requestBlobData(getSamplePbfUrl(sampleID), function (data) {
-            var parser = new lab.WTBleSampleParser(data);
-            var result = pbfParserToGeojson(parser, map);
+        http.requestBlobData(getSamplePbfUrl(sampleID), function (bytes) {
+            var bleSample = new lab.BleSample().fromPbf(bytes);
+            var result = bleSampleToGeojson(bleSample, map);
             sampleLayer.showLabelData(result.samplePoints);
 
-            simulator.loadSimulationData(parser.toSimulatingData());
+            simulator.loadSimulationData(bleSample.toSimulatingData());
             simulator.start();
-        }, function (error) {
-
         });
     }
 
