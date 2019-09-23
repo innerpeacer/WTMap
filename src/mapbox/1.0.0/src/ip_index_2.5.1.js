@@ -15,6 +15,7 @@ import {
     TileCoord,
     AgentUtil,
     CustomPointLabelLayer,
+    CustomSegmentLineLayer,
     HttpRequest,
     Utils,
 } from '../../../ipmap/v2.5.1/config/output'
@@ -50,6 +51,7 @@ const exported = {
     TileCoord,
     AgentUtil,
     CustomPointLabelLayer,
+    CustomSegmentLineLayer,
     HttpRequest,
     Utils,
 

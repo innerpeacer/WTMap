@@ -536,6 +536,10 @@ class IPMap extends BoxMap {
         }
         return null;
     }
+
+    _hideLabels() {
+        this._layerGroup._hideLabels();
+    }
 }
 
 export default IPMap;

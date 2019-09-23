@@ -1,23 +1,4 @@
-function sourceIdentifier(name) {
-    return `${name}-source`;
-}
-
-function circleLayerIdentifier(name) {
-    return `${name}-circle-layer`;
-}
-
-function lineLayerIdentifier(name) {
-    return `${name}-line-layer`;
-}
-
-function fillLayerIdentifier(name) {
-    return `${name}-fill-layer`;
-}
-
-function symbolLayerIdentifier(name) {
-    return `${name}-symbol-layer`;
-}
-
+import {layerIdentifier, sourceIdentifier} from "./layer_identifier";
 import {extend, clone} from '../../utils/ip_util'
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
@@ -56,12 +37,12 @@ class custom_point_label_layer {
         let labelSource = GeojsonUtils.emptySource;
         this.labelSource = labelSource;
 
-        let labelCircleLayerID = circleLayerIdentifier(name);
+        let labelCircleLayerID = layerIdentifier(name, "circle");
         this.labelCircleLayerID = labelCircleLayerID;
         let circleLayer = extend({id: labelCircleLayerID, source: labelSourceID}, clone(defaultCircleLayer));
         this.labelCircleLayer = circleLayer;
 
-        let labelSymbolLayerID = symbolLayerIdentifier(name);
+        let labelSymbolLayerID = layerIdentifier(name, "symbol");
         this.labelSymbolLayerID = labelSymbolLayerID;
         let symbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
         this.labelSymbolLayer = symbolLayer;
@@ -86,7 +67,6 @@ class custom_point_label_layer {
     showLabelData(data) {
         let geojson = GeojsonUtils.createPointFeatureCollection(data);
         this.map.getSource(this.labelSourceID).setData(geojson);
-
     }
 
     setTextField(prop) {

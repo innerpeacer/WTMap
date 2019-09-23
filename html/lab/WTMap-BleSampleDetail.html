@@ -16,7 +16,8 @@
 <script>
     console.log(wtmap.version);
     console.log(wtmap);
-    var buildingID = "00270003";
+    var buildingID = wtmap.Utils.getParameter("buildingID");
+    buildingID = buildingID ? buildingID : "00270003";
     var sampleID = wtmap.Utils.getParameter("sampleID");
     var floor = wtmap.Utils.getParameter("floor");
     if (floor) floor = parseInt(floor);
@@ -37,23 +38,41 @@
 
     map.on("click", function (evt) {
         console.log("Zoom: " + map.getZoom());
+        console.log(evt.lngLat);
+
+        map.setCenter({lng: 114.43016640199966, lat: 30.61391053789542});
     });
 
-    var gpsLayer = createSingleGpsLayer("gps");
     var sampleLayer = createSingleSampleLayer("sample");
+
+    var gpsLayer = createSingleGpsLayer("gps");
+    var gpsText = ["concat", "G", ["get", "index"], ": ", ["get", "accuracy"], "m"];
+    gpsLayer.setTextField(gpsText);
+
+    var bleLayer = createSingleBleLayer("ble");
+    var bleText = ["concat", "B", ["get", "index"]];
+    bleLayer.setTextField(bleText);
+
+    var gpsErrorLayer = createGpsErrorLineLayer("gps-error");
+    var bleErrorLayer = createBleErrorLineLayer("ble-error");
 
     var mapStatus = {map: false, locator: false};
     map.on("mapready", function (evt) {
         // console.log("mapready");
         initFloorSwitch(map);
 
+        gpsErrorLayer.addToMap(map);
+        bleErrorLayer.addToMap(map);
+
         sampleLayer.addToMap(map);
         gpsLayer.addToMap(map);
+        bleLayer.addToMap(map);
 
         mapStatus.map = true;
-        getData();
 
         if (floor) map.setFloor(floor);
+
+        getData();
     });
 
     map.on("locator-ready", function () {
@@ -64,11 +83,20 @@
 
     function getData() {
         if (!mapStatus.map || !mapStatus.ble) return;
+
+        map._hideLabels();
         http.requestBlobData(getSamplePbfUrl(sampleID), function (bytes) {
             var bleSample = new lab.BleSample().fromPbf(bytes);
             var result = bleSampleToGeojson(bleSample, map);
             sampleLayer.showLabelData(result.samplePoints);
             gpsLayer.showLabelData(result.gpsPoints);
+            bleLayer.showLabelData(result.blePoints);
+
+            gpsErrorLayer.showLineData(result.gpsErrorLines);
+            bleErrorLayer.showLineData(result.bleErrorLines);
+
+            map.setZoom(20);
+            map.setCenter(result.samplePoint);
         });
     }
 

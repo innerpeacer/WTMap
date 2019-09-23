@@ -211,6 +211,11 @@ class indoor_layers {
         if (subLayer === 'label') return this._labelLayer._getLayerIDs();
         if (subLayer === 'extrusion') return this._extrusionLayer._getLayerIDs();
     }
+
+    _hideLabels() {
+        this._facilityLayer.hide();
+        this._labelLayer.hide();
+    }
 }
 
 export default indoor_layers

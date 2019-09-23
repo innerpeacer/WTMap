@@ -23,7 +23,7 @@
     var map = new wtmap.WTMap({
         container: 'map',
         buildingID: buildingID,
-        floorID: buildingID + "F03",
+        // floorID: buildingID + "F03",
         use3D: false,
         _disableCache: true,
         __disableGps: true,
@@ -60,7 +60,6 @@
         }
     });
 
-
     var layer = createMultiSampleLayer("all-sample");
 
     map.on("mapready", function (evt) {
@@ -77,9 +76,12 @@
 
     function getData() {
         http.requestData(getAllSampleUrl(buildingID), function (res) {
+            console.log(res);
             var samplePoints = res.data.SamplePoints;
             var spArray = samplePointsToGeojson(samplePoints);
             layer.showLabelData(spArray);
+        }, function (error) {
+            console.log(error);
         });
     }
 

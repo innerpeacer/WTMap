@@ -50,6 +50,10 @@ class local_point {
     getLngLat() {
         return {lng: this.lng, lat: this.lat, floor: this.floor};
     }
+
+    distanceTo(lp) {
+        return Math.sqrt(Math.pow(this.x - lp.x, 2) + Math.pow(this.y - lp.y, 2));
+    }
 }
 
 local_point.fromXY = function (obj) {

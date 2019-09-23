@@ -16,7 +16,8 @@
 <script>
     console.log(wtmap.version);
     console.log(wtmap);
-    var buildingID = "00270003";
+    var buildingID = wtmap.Utils.getParameter("buildingID");
+    buildingID = buildingID ? buildingID : "00270003";
     var sampleID = wtmap.Utils.getParameter("sampleID");
     var floor = wtmap.Utils.getParameter("floor");
     if (floor) floor = parseInt(floor);
@@ -32,7 +33,7 @@
         __disableGps: true,
         _debugBeacon: true,
         maxZoom: 22,
-        usePbf: true,
+        usePbf: false,
         sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
         // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
         // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
@@ -42,13 +43,21 @@
         console.log("Zoom: " + map.getZoom());
     });
 
+    var samplePoint;
+
     var sampleLayer = createSingleSampleLayer("sample");
     var gpsLayer = createSingleGpsLayer("gps");
+
+    var gpsErrorLayer = createGpsErrorLineLayer("gps-error");
+    var bleErrorLayer = createBleErrorLineLayer("ble-error");
 
     var mapStatus = {map: false, locator: false};
     map.on("mapready", function (evt) {
         // console.log("mapready");
         initFloorSwitch(map);
+
+        gpsErrorLayer.addToMap(map);
+        bleErrorLayer.addToMap(map);
 
         sampleLayer.addToMap(map);
         gpsLayer.addToMap(map);
@@ -65,15 +74,22 @@
         getData();
     });
 
+
     function getData() {
+        console.log(map);
         if (!mapStatus.map || !mapStatus.ble) return;
         http.requestBlobData(getSamplePbfUrl(sampleID), function (bytes) {
             var bleSample = new lab.BleSample().fromPbf(bytes);
+            console.log(bleSample);
             var result = bleSampleToGeojson(bleSample, map);
+            samplePoint = result.samplePoint;
             sampleLayer.showLabelData(result.samplePoints);
 
             simulator.loadSimulationData(bleSample.toSimulatingData());
             simulator.start();
+
+            map.setZoom(20);
+            map.setCenter(result.samplePoint);
         });
     }
 
@@ -91,11 +107,30 @@
 
         if (dataType == lab.SimulationDataType.Gps) {
             gpsLayer.showLabelData(gpsToGeojson(value, map));
+
+            var gps = map._wtWgs84Converter.convertGPS(value);
+            var gpsErrorLine = [samplePoint.getLngLat(), gps.getLngLat()];
+            gpsErrorLine.properties = {
+                timestamp: value.timestamp,
+                accuracy: wtmap.Utils.round(value.accuracy, 2),
+                index: index,
+                error: wtmap.Utils.round(samplePoint.distanceTo(gps), 2),
+            };
+            gpsErrorLayer.showLineData([gpsErrorLine]);
         }
 
         if (dataType == lab.SimulationDataType.Ble) {
             var res = map.didRangeBeacons(value.beacons);
-            map.showLocation(res.location);
+            var ble = res.location;
+            map.showLocation(ble);
+
+            var bleErrorLine = [samplePoint.getLngLat(), ble.getLngLat()];
+            bleErrorLine.properties = {
+                timestamp: value.timestamp,
+                index: index,
+                error: wtmap.Utils.round(samplePoint.distanceTo(ble), 2),
+            };
+            bleErrorLayer.showLineData([bleErrorLine]);
         }
     });
 

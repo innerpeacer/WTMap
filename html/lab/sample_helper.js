@@ -4,24 +4,45 @@ function createSingleGpsLayer(name) {
     var gpsLayer = new wtmap.CustomPointLabelLayer(name);
     var gpsText = ["concat", "index: ", ["get", "index"], "\nAccuracy: ", ["get", "accuracy"]];
     gpsLayer.setTextField(gpsText);
-    gpsLayer.setTextColor("#000000");
+    gpsLayer.setTextColor("#3e4145");
     gpsLayer.setCircleRadius(3);
-    // gpsLayer.setCircleColor("#00ff00");
     gpsLayer.setCircleColor("#00cccc");
     gpsLayer.setTextLayoutProperty("text-allow-overlap", true);
     return gpsLayer;
 }
 
+function createSingleBleLayer(name) {
+    var bleLayer = new wtmap.CustomPointLabelLayer(name);
+    var bleText = ["concat", "index: ", ["get", "index"]];
+    bleLayer.setTextField(bleText);
+    bleLayer.setTextColor("#3e4145");
+    bleLayer.setCircleColor("#f47920");
+    bleLayer.setCircleRadius(3);
+    bleLayer.setTextLayoutProperty("text-allow-overlap", true);
+    return bleLayer;
+}
+
+function createMultiBleLayer(name) {
+
+}
+
+function createGpsErrorLineLayer(name) {
+    var gpsErrorLayer = new wtmap.CustomSegmentLineLayer(name);
+    gpsErrorLayer.setLineTextField(["concat", ["get", "error"], "m"]);
+    return gpsErrorLayer;
+}
+
+function createBleErrorLineLayer(name) {
+    var bleErrorLayer = new wtmap.CustomSegmentLineLayer(name);
+    bleErrorLayer.setLineTextField(["concat", ["get", "error"], "m"]);
+    return bleErrorLayer;
+}
+
 function createSingleSampleLayer(name) {
     var sampleLayer = new wtmap.CustomPointLabelLayer(name);
-    // sampleLayer.setTextProperty("user");
-    // sampleLayer.setTextField(["get", "sampleID"]);
     var sampleText = ["concat", ["get", "sampleID"], "\nble(", ["get", "ble"], "), gps(", ["get", "gps"], ")"];
     sampleLayer.setTextField(sampleText);
-    // sampleLayer.setTextColor("#ff0000");
     sampleLayer.setTextColor("#48d448");
-    // sampleLayer.setTextSize(20);
-    // sampleLayer.setCircleColor("#ff0000");
     sampleLayer.setCircleColor("#c4a000");
     sampleLayer.setCircleRadius(5);
     sampleLayer.setTextLayoutProperty("text-allow-overlap", true);
@@ -30,12 +51,7 @@ function createSingleSampleLayer(name) {
 
 function createMultiSampleLayer(name) {
     var layer = new wtmap.CustomPointLabelLayer(name);
-    // layer.setTextProperty("user");
     layer.setTextField(["get", "sampleID"]);
-    // layer.setTextColor("#000000");
-    // layer.setTextSize(20);
-    // layer.setCircleColor("#ff0000");
-    // layer.setCircleRadius(20);
     return layer;
 }
 
@@ -71,54 +87,77 @@ function samplePointsToGeojson(samplePoints) {
 function bleSampleToGeojson(sample, map) {
     var result = {};
     var location = sample.location;
+    var samplePoint = new wtmap.LocalPoint(location.x, location.y, location.floor);
 
     {
-        var samplePoints = [];
-        var lp = new wtmap.LocalPoint(location.x, location.y, location.floor);
-        var lngLat = lp.getLngLat();
-        lngLat.properties = {
+        samplePoint.properties = {
             timestamp: sample.timestamp,
             sampleID: sample.sampleID,
             ble: sample.bleList.length,
             gps: sample.gpsList.length,
             platform: sample.platform,
         };
-        samplePoints.push(lngLat);
-
-        result.samplePoints = samplePoints
+        result.samplePoint = samplePoint;
+        result.samplePoints = [samplePoint];
     }
 
     {
         var gpsPoints = [];
+        var gpsErrorLines = [];
         var gpsData = sample.gpsList;
         for (var i = 0; i < gpsData.length; ++i) {
-            var gps = gpsData[i];
-            var lngLat = map._wtWgs84Converter.convertGPS(gps);
-            lngLat.properties = {
-                timestamp: gps.timestamp,
-                accuracy: wtmap.Utils.round(gps.accuracy, 2),
+            var gData = gpsData[i];
+            console.log(gpsData);
+            console.log(gData);
+            var gps = map._wtWgs84Converter.convertGPS(gData);
+            console.log(gps);
+            gps.properties = {
+                timestamp: gData.timestamp,
+                accuracy: wtmap.Utils.round(gData.accuracy, 2),
                 index: i + 1,
             };
-            gpsPoints.push(lngLat);
+            gpsPoints.push(gps);
+
+            var gpsErrorLine = [samplePoint.getLngLat(), gps.getLngLat()];
+            gpsErrorLine.properties = {
+                timestamp: gData.timestamp,
+                accuracy: wtmap.Utils.round(gData.accuracy, 2),
+                index: i + 1,
+                error: wtmap.Utils.round(samplePoint.distanceTo(gps), 2),
+            };
+            gpsErrorLines.push(gpsErrorLine);
         }
 
         result.gpsPoints = gpsPoints;
+        result.gpsErrorLines = gpsErrorLines;
     }
 
     {
         var blePoints = [];
+        var bleErrorLines = [];
         var bleData = sample.bleList;
         for (var i = 0; i < bleData.length; ++i) {
-            var ble = bleData[i];
-            var bleRes = map.didRangeBeacons(ble.beacons);
-            var lngLat = bleRes.location;
-            lngLat.properties = {
-                timestamp: ble.timestamp,
+            var bData = bleData[i];
+            var bleRes = map.didRangeBeacons(bData.beacons);
+            console.log(bleRes);
+            var ble = bleRes.location;
+            if (ble == null) continue;
+            ble.properties = {
+                timestamp: bData.timestamp,
                 index: i + 1,
             };
-            blePoints.push(lngLat);
+            blePoints.push(ble);
+
+            var bleErrorLine = [samplePoint.getLngLat(), ble.getLngLat()];
+            bleErrorLine.properties = {
+                timestamp: bleData.timestamp,
+                index: i + 1,
+                error: wtmap.Utils.round(samplePoint.distanceTo(ble), 2),
+            };
+            bleErrorLines.push(bleErrorLine);
         }
         result.blePoints = blePoints;
+        result.bleErrorLines = bleErrorLines;
     }
     return result;
 }
@@ -129,13 +168,15 @@ var samplePbfUrl = "/WTMapService/lab/GetSamplePbf";
 var sampleSimulatorHtml = "WTMap-BleSampleSimulator.html";
 
 function getAllSampleUrl(buildingID) {
-    return allSampleUrl + "?buildingID=" + buildingID;
-    // return "http://192.168.100.18:16666/backend/map/api/queryAllBleSample?buildingID=0027003";
+    // return allSampleUrl + "?buildingID=" + buildingID;
+    // return "http://192.168.100.18:16666/backend/map/api/queryAllBleSample?buildingId="+buildingID;
+    return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID;
 }
 
 function getSamplePbfUrl(sampleID) {
-    return samplePbfUrl + "?sampleID=" + sampleID;
+    // return samplePbfUrl + "?sampleID=" + sampleID;
     // return "http://192.168.100.18:16666/backend/map/api/getBeaconAndGps?sampleId=" + sampleID;
+    return "http://gis.cx9z.com/backend/map/api/getBeaconAndGps?sampleId=" + sampleID;
 }
 
 function getSampleSimulatorHtml(buildingID, sampleID, floor) {
