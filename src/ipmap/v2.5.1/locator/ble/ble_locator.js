@@ -182,6 +182,7 @@ function _calculateLocation(options) {
     let totalWeightingX = 0.0;
     let totalWeightingY = 0.0;
 
+    let minAccuracy = 10000;
     let maxRssi = -100;
     let sumRssi = 0;
 
@@ -192,6 +193,7 @@ function _calculateLocation(options) {
     for (let i = 0; i < index; ++i) {
         let sb = beaconList[i];
         maxRssi = Math.max(maxRssi, sb.rssi);
+        minAccuracy = Math.min(minAccuracy, sb.accuracy);
         sumRssi += Number(sb.rssi);
         let location = _locatorObject.locatingBeaconDict.get(sb.key).location;
 
@@ -271,6 +273,7 @@ function _calculateLocation(options) {
         timestamp: now,
         location: resultLocation,
         maxRssi: maxRssi,
+        minAccuracy: minAccuracy,
         averageRssi: sumRssi / index,
         averageRssi2: sumRssi2 / NumOfBeacons,
         beaconCount: beaconList.length,

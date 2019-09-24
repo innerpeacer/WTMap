@@ -127,7 +127,7 @@ function bleSampleToGeojson(sample, map) {
             };
             gpsErrorLines.push(gpsErrorLine);
 
-            console.log(accuracy + " -> " + error);
+            console.log(accuracy + " --> " + error);
         }
 
         result.gpsPoints = gpsPoints;
@@ -151,6 +151,7 @@ function bleSampleToGeojson(sample, map) {
             blePoints.push(ble);
 
             var error = wtmap.Utils.round(samplePoint.distanceTo(ble), 2);
+            var minAccuracy = wtmap.Utils.round(bleRes.minAccuracy, 2);
             var bleErrorLine = [samplePoint.getLngLat(), ble.getLngLat()];
             bleErrorLine.properties = {
                 timestamp: bleData.timestamp,
@@ -158,8 +159,7 @@ function bleSampleToGeojson(sample, map) {
                 error: error,
             };
             bleErrorLines.push(bleErrorLine);
-            console.log(bleRes);
-            console.log(error);
+            console.log(minAccuracy + " ==> " + error);
         }
         result.blePoints = blePoints;
         result.bleErrorLines = bleErrorLines;

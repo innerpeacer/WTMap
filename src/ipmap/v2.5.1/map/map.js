@@ -214,6 +214,7 @@ class IPMap extends BoxMap {
         };
 
         if (this._debugBeacon) {
+            result.minAccuracy = data.minAccuracy;
             result.maxIndex = data.maxIndex;
             result.totalWeighting = data.totalWeighting;
             result.beaconList = data.beaconList;
