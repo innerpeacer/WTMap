@@ -24,6 +24,7 @@
 
     var http = new wtmap.HttpRequest();
     var simulator = new lab.Simulator();
+    simulator.setReplaySpeed(5.0);
 
     var map = new wtmap.WTMap({
         container: 'map',
@@ -51,10 +52,19 @@
     var gpsErrorLayer = createGpsErrorLineLayer("gps-error");
     var bleErrorLayer = createBleErrorLineLayer("ble-error");
 
+    var gpsTraceLayer = new wtmap.CustomTraceLayer("gps");
+    gpsTraceLayer.setCirclePaintProperty("circle-color", "#d71345");
+
+    var bleTraceLayer = new wtmap.CustomTraceLayer("ble");
+    bleTraceLayer.setCirclePaintProperty("circle-color", "#274d3d");
+
     var mapStatus = {map: false, locator: false};
     map.on("mapready", function (evt) {
         // console.log("mapready");
         initFloorSwitch(map);
+
+        gpsTraceLayer.addToMap(map);
+        bleTraceLayer.addToMap(map);
 
         gpsErrorLayer.addToMap(map);
         bleErrorLayer.addToMap(map);
@@ -78,6 +88,8 @@
     function getData() {
         console.log(map);
         if (!mapStatus.map || !mapStatus.ble) return;
+
+        map._hideLabels();
         http.requestBlobData(getSamplePbfUrl(sampleID), function (bytes) {
             var bleSample = new lab.BleSample().fromPbf(bytes);
             console.log(bleSample);
@@ -88,7 +100,7 @@
             simulator.loadSimulationData(bleSample.toSimulatingData());
             simulator.start();
 
-            map.setZoom(20);
+            map.setZoom(18);
             map.setCenter(result.samplePoint);
         });
     }
@@ -97,6 +109,8 @@
         // map.showLocation(res.location);
     });
 
+    var gpsPoints = [];
+    var blePoints = [];
     simulator.on("replay", function (event) {
         var replay = event.data;
 
@@ -117,6 +131,9 @@
                 error: wtmap.Utils.round(samplePoint.distanceTo(gps), 2),
             };
             gpsErrorLayer.showLineData([gpsErrorLine]);
+
+            gpsPoints.push(gps);
+            gpsTraceLayer.showTraceData(gpsPoints);
         }
 
         if (dataType == lab.SimulationDataType.Ble) {
@@ -131,6 +148,9 @@
                 error: wtmap.Utils.round(samplePoint.distanceTo(ble), 2),
             };
             bleErrorLayer.showLineData([bleErrorLine]);
+
+            blePoints.push(ble);
+            bleTraceLayer.showTraceData(blePoints);
         }
     });
 

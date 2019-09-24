@@ -107,25 +107,27 @@ function bleSampleToGeojson(sample, map) {
         var gpsData = sample.gpsList;
         for (var i = 0; i < gpsData.length; ++i) {
             var gData = gpsData[i];
-            console.log(gpsData);
-            console.log(gData);
+
+            var accuracy = wtmap.Utils.round(gData.accuracy, 2);
             var gps = map._wtWgs84Converter.convertGPS(gData);
-            console.log(gps);
             gps.properties = {
                 timestamp: gData.timestamp,
-                accuracy: wtmap.Utils.round(gData.accuracy, 2),
+                accuracy: accuracy,
                 index: i + 1,
             };
             gpsPoints.push(gps);
 
+            var error = wtmap.Utils.round(samplePoint.distanceTo(gps), 2);
             var gpsErrorLine = [samplePoint.getLngLat(), gps.getLngLat()];
             gpsErrorLine.properties = {
                 timestamp: gData.timestamp,
                 accuracy: wtmap.Utils.round(gData.accuracy, 2),
                 index: i + 1,
-                error: wtmap.Utils.round(samplePoint.distanceTo(gps), 2),
+                error: error,
             };
             gpsErrorLines.push(gpsErrorLine);
+
+            console.log(accuracy + " -> " + error);
         }
 
         result.gpsPoints = gpsPoints;
@@ -138,8 +140,8 @@ function bleSampleToGeojson(sample, map) {
         var bleData = sample.bleList;
         for (var i = 0; i < bleData.length; ++i) {
             var bData = bleData[i];
+
             var bleRes = map.didRangeBeacons(bData.beacons);
-            console.log(bleRes);
             var ble = bleRes.location;
             if (ble == null) continue;
             ble.properties = {
@@ -148,13 +150,16 @@ function bleSampleToGeojson(sample, map) {
             };
             blePoints.push(ble);
 
+            var error = wtmap.Utils.round(samplePoint.distanceTo(ble), 2);
             var bleErrorLine = [samplePoint.getLngLat(), ble.getLngLat()];
             bleErrorLine.properties = {
                 timestamp: bleData.timestamp,
                 index: i + 1,
-                error: wtmap.Utils.round(samplePoint.distanceTo(ble), 2),
+                error: error,
             };
             bleErrorLines.push(bleErrorLine);
+            console.log(bleRes);
+            console.log(error);
         }
         result.blePoints = blePoints;
         result.bleErrorLines = bleErrorLines;
@@ -168,16 +173,16 @@ var samplePbfUrl = "/WTMapService/lab/GetSamplePbf";
 var sampleSimulatorHtml = "WTMap-BleSampleSimulator.html";
 
 function getAllSampleUrl(buildingID) {
-    // return allSampleUrl + "?buildingID=" + buildingID;
+    return allSampleUrl + "?buildingID=" + buildingID;
     // return "http://192.168.100.18:16666/backend/map/api/queryAllBleSample?buildingId="+buildingID;
     // return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID;
-    return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID + "&user=oGGal";
+    // return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID + "&user=oGGal";
 }
 
 function getSamplePbfUrl(sampleID) {
-    // return samplePbfUrl + "?sampleID=" + sampleID;
+    return samplePbfUrl + "?sampleID=" + sampleID;
     // return "http://192.168.100.18:16666/backend/map/api/getBeaconAndGps?sampleId=" + sampleID;
-    return "http://gis.cx9z.com/backend/map/api/getBeaconAndGps?sampleId=" + sampleID;
+    // return "http://gis.cx9z.com/backend/map/api/getBeaconAndGps?sampleId=" + sampleID;
 }
 
 function getSampleSimulatorHtml(buildingID, sampleID, floor) {

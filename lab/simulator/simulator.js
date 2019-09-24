@@ -48,6 +48,10 @@ class simulator extends Evented {
         // console.log(this.simulationInterval.toString());
     }
 
+    setReplaySpeed(speed) {
+        this.simulatingSpeed = speed;
+    }
+
     _calculateCurrentSimulationTime() {
         let now = getNow();
         return statusObject.startTimeOfSimulation + (now - statusObject.startTimeOfReal) * 0.001 * this.simulatingSpeed;

@@ -8,6 +8,7 @@ import {ip_tile_coord as TileCoord} from '../utils/ip_tile_coord';
 import {ip_agent_utils as AgentUtil} from "../utils/ip_agent_utils";
 import {custom_point_label_layer as CustomPointLabelLayer} from "../layers/custom/custom_point_label_layer";
 import {custom_segment_line_layer as CustomSegmentLineLayer} from "../layers/custom/custom_segment_line_layer";
+import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_trace_layer";
 import {http_request as HttpRequest} from "../utils/http_request";
 import {utils as Utils} from "../utils/utils";
 
@@ -22,6 +23,7 @@ export {
     AgentUtil,
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
+    CustomTraceLayer,
     HttpRequest,
     Utils,
 }

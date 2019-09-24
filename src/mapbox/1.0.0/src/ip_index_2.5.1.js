@@ -16,6 +16,7 @@ import {
     AgentUtil,
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
+    CustomTraceLayer,
     HttpRequest,
     Utils,
 } from '../../../ipmap/v2.5.1/config/output'
@@ -52,6 +53,7 @@ const exported = {
     AgentUtil,
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
+    CustomTraceLayer,
     HttpRequest,
     Utils,
 
