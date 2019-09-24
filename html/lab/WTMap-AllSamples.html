@@ -75,8 +75,8 @@
     });
 
     function getData() {
+        map._hideLabels();
         http.requestData(getAllSampleUrl(buildingID), function (res) {
-            console.log(res);
             var samplePoints = res.data.SamplePoints;
             var spArray = samplePointsToGeojson(samplePoints);
             layer.showLabelData(spArray);

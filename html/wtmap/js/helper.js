@@ -66,7 +66,8 @@ function initFloorSwitch(aMap) {
         }
         outerDiv.appendChild(innerDiv);
     }
-    aMap.getContainer().appendChild(outerDiv);
+    // aMap.getContainer().appendChild(outerDiv);
+    document.body.appendChild(outerDiv);
 
 
     floorSwitch.onchange = function () {

@@ -170,7 +170,8 @@ var sampleSimulatorHtml = "WTMap-BleSampleSimulator.html";
 function getAllSampleUrl(buildingID) {
     // return allSampleUrl + "?buildingID=" + buildingID;
     // return "http://192.168.100.18:16666/backend/map/api/queryAllBleSample?buildingId="+buildingID;
-    return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID;
+    // return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID;
+    return "http://gis.cx9z.com/backend/map/api/queryAllBleSample?buildingId=" + buildingID + "&user=oGGal";
 }
 
 function getSamplePbfUrl(sampleID) {
