@@ -42,7 +42,9 @@ class indoor_layer_location extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ['all', ['==', 'floor', mapInfo.floorNumber]]);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all', ['==', 'floor', mapInfo.floorNumber]]);
+            }
         }
     }
 }

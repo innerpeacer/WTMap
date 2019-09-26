@@ -149,16 +149,20 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let currentFloorLayers = this.currentFloorLayers;
         for (let layerID in currentFloorLayers) {
-            this.map.setFilter(layerID, ['all',
-                ['==', 'floor', mapInfo.floorNumber]
-            ]);
+            if (currentFloorLayers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all',
+                    ['==', 'floor', mapInfo.floorNumber]
+                ]);
+            }
         }
 
         let otherFloorLayers = this.otherFloorLayers;
         for (let layerID in otherFloorLayers) {
-            this.map.setFilter(layerID, ['all',
-                ['!=', 'floor', mapInfo.floorNumber]
-            ]);
+            if (otherFloorLayers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all',
+                    ['!=', 'floor', mapInfo.floorNumber]
+                ]);
+            }
         }
     }
 }

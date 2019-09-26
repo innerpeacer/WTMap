@@ -74,7 +74,7 @@ local_point.toStopParams = function (stops) {
     let str = 'stops=';
     for (let i = 0; i < stops.length; ++i) {
         let sp = stops[i];
-        if (i != 0) {
+        if (i !== 0) {
             str += ',';
         }
         str += (sp.x + ',' + sp.y + ',' + sp.floor);

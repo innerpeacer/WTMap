@@ -46,34 +46,29 @@ class custom_trace_layer {
         let typeName = "trace";
         let traceLineSourceID = sourceIdentifier(`${name}-${typeName}-line`);
         this.traceLineSourceID = traceLineSourceID;
-        let traceLineSource = GeojsonUtils.emptySource;
-        this.traceLineSource = traceLineSource;
+        this.traceLineSource = GeojsonUtils.emptySource;
 
         let traceLineLayerID = layerIdentifier(`${name}-${typeName}`, "line");
         this.traceLineLayerID = traceLineLayerID;
-        let traceLineLayer = extend({id: traceLineLayerID, source: traceLineSourceID}, clone(defaultLineLayer));
-        this.traceLineLayer = traceLineLayer;
+        this.traceLineLayer = extend({id: traceLineLayerID, source: traceLineSourceID}, clone(defaultLineLayer));
 
         let tracePointSourceID = sourceIdentifier(`${name}-${typeName}-point`);
         this.tracePointSourceID = tracePointSourceID;
-        let tracePointSource = GeojsonUtils.emptySource;
-        this.tracePointSource = tracePointSource;
+        this.tracePointSource = GeojsonUtils.emptySource;
 
         let tracePointCircleLayerID = layerIdentifier(`${name}-${typeName}-point`, "circle");
         this.tracePointCircleLayerID = tracePointCircleLayerID;
-        let tracePointCircleLayer = extend({
+        this.tracePointCircleLayer = extend({
             id: tracePointCircleLayerID,
             source: tracePointSourceID
         }, clone(defaultCircleLayer));
-        this.tracePointCircleLayer = tracePointCircleLayer;
 
         let tracePointSymbolLayerID = layerIdentifier(`${name}-${typeName}-point`, "symbol");
         this.tracePointSymbolLayerID = tracePointSymbolLayerID;
-        let tracePointSymbolLayer = extend({
+        this.tracePointSymbolLayer = extend({
             id: tracePointSymbolLayerID,
             source: tracePointSourceID
         }, clone(defaultTextSymbolLayer));
-        this.tracePointSymbolLayer = tracePointSymbolLayer;
     }
 
     addToMap(map) {
@@ -87,7 +82,7 @@ class custom_trace_layer {
         this.map.addLayer(this.tracePointSymbolLayer);
     }
 
-    removeFromMap(map) {
+    removeFromMap() {
         this.map.removeLayer(this.tracePointCircleLayer);
         this.map.removeLayer(this.tracePointSymbolLayer);
         this.map.removeSource(this.tracePointSourceID);

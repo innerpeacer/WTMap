@@ -68,7 +68,7 @@ class indoor_layers {
     }
 
     _switch3D(use3D) {
-        this._3dLayerArray.forEach(function (layer, index) {
+        this._3dLayerArray.forEach(function (layer) {
             layer._switch3D(use3D);
         });
     }
@@ -87,13 +87,13 @@ class indoor_layers {
     }
 
     switchLanguage(options) {
-        this._labelIconLayerArray.forEach(function (layer, index) {
+        this._labelIconLayerArray.forEach(function (layer) {
             layer.switchLanguage(options);
         });
     }
 
     _setLabelIconVisibleRange(minZoom, maxZoom) {
-        this._labelIconLayerArray.forEach(function (layer, index) {
+        this._labelIconLayerArray.forEach(function (layer) {
             layer._setLabelIconVisibleRange(minZoom, maxZoom);
         });
     }
@@ -135,25 +135,25 @@ class indoor_layers {
     }
 
     setFont(fontName) {
-        this._labelIconLayerArray.forEach(function (layer, index) {
+        this._labelIconLayerArray.forEach(function (layer) {
             layer.setFont(fontName);
         });
     }
 
     _updateFontIconSize(minZoom) {
-        this._labelIconLayerArray.forEach(function (layer, index) {
+        this._labelIconLayerArray.forEach(function (layer) {
             layer._updateFontIconSize(minZoom);
         });
     }
 
     hideLayers() {
-        this._baseLayerArray.forEach(function (layer, index) {
+        this._baseLayerArray.forEach(function (layer) {
             layer.hide();
         });
     }
 
     showLayers() {
-        this._baseLayerArray.forEach(function (layer, index) {
+        this._baseLayerArray.forEach(function (layer) {
             layer.show();
         });
     }
@@ -189,8 +189,7 @@ class indoor_layers {
     }
 
     _updateMapInfo(mapInfo) {
-        let floor = mapInfo.floorNumber;
-        this._baseLayerArray.forEach(function (layer, index) {
+        this._baseLayerArray.forEach(function (layer) {
             layer._setMapInfo(mapInfo);
         });
     }

@@ -36,19 +36,15 @@ class custom_segment_line_layer {
 
         let lineSourceID = sourceIdentifier(name);
         this.lineSourceID = lineSourceID;
-
-        let lineSource = GeojsonUtils.emptySource;
-        this.lineSource = lineSource;
+        this.lineSource = GeojsonUtils.emptySource;
 
         let lineLayerID = layerIdentifier(name, "line");
         this.lineLayerID = lineLayerID;
-        let lineLayer = extend({id: lineLayerID, source: lineSourceID}, clone(defaultLineLayer));
-        this.lineLayer = lineLayer;
+        this.lineLayer = extend({id: lineLayerID, source: lineSourceID}, clone(defaultLineLayer));
 
         let lineSymbolLayerID = layerIdentifier(name, 'symbol');
         this.lineSymbolLayerID = lineSymbolLayerID;
-        let lineSymbolLayer = extend({id: lineSymbolLayerID, source: lineSourceID}, clone(defaultTextSymbolLayer));
-        this.lineSymbolLayer = lineSymbolLayer;
+        this.lineSymbolLayer = extend({id: lineSymbolLayerID, source: lineSourceID}, clone(defaultTextSymbolLayer));
     }
 
     addToMap(map) {
@@ -59,7 +55,7 @@ class custom_segment_line_layer {
         this.map.addLayer(this.lineSymbolLayer);
     }
 
-    removeFromMap(map) {
+    removeFromMap() {
         this.map.removeLayer(this.lineLayerID);
         this.map.removeLayer(this.lineSymbolLayerID);
 

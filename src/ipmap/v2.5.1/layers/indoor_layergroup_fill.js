@@ -86,12 +86,12 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
             }
 
             let levelMin = symbol.levelMin;
-            if (levelMin && levelMin != 0) {
+            if (levelMin && levelMin !== 0) {
                 layer.minzoom = baseZoom + levelMin;
                 outlineLayer.minzoom = baseZoom + levelMin;
             }
             let levelMax = symbol.levelMax;
-            if (levelMax && levelMax != 0) {
+            if (levelMax && levelMax !== 0) {
                 layer.maxzoom = baseZoom + levelMax;
                 outlineLayer.maxzoom = baseZoom + levelMax;
             }
@@ -101,11 +101,15 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
         }
 
         for (let layerID in _fillArray) {
-            this.styleLayers[layerID] = _fillArray[layerID];
+            if (_fillArray.hasOwnProperty(layerID)) {
+                this.styleLayers[layerID] = _fillArray[layerID];
+            }
         }
 
         for (let layerID in _outlineArray) {
-            this.styleLayers[layerID] = _outlineArray[layerID];
+            if (_outlineArray.hasOwnProperty(layerID)) {
+                this.styleLayers[layerID] = _outlineArray[layerID];
+            }
         }
 
         // console.log(subLayerName + ' Layer: ' + symbolIDArray.length);
@@ -114,11 +118,13 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ['all',
-                ['==', 'floor', mapInfo.floorNumber],
-                ['==', 'layer', this._layerNumber],
-                ['==', 'symbolID', layers[layerID].symbolID]
-            ]);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all',
+                    ['==', 'floor', mapInfo.floorNumber],
+                    ['==', 'layer', this._layerNumber],
+                    ['==', 'symbolID', layers[layerID].symbolID]
+                ]);
+            }
         }
     }
 }

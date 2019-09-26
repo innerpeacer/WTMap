@@ -9,7 +9,7 @@ class indoor_layer_highlight extends IndoorGroupLayer {
 
         let layerID = `${subLayerName}-fill`;
         this.highlightLayerID = layerID;
-        let layer = {
+        this.styleLayers[layerID] = {
             'id': layerID,
             'type': 'fill',
             'source': this.sourceID,
@@ -18,7 +18,6 @@ class indoor_layer_highlight extends IndoorGroupLayer {
             'paint': {},
             "filter": ["==", "POI_ID", "not exist"]
         };
-        this.styleLayers[layerID] = layer;
 
         this.pois = [];
     }
@@ -43,7 +42,7 @@ class indoor_layer_highlight extends IndoorGroupLayer {
         this.map.setFilter(this.highlightLayerID, ["==", "POI_ID", "not exist"]);
     }
 
-    _setMapInfo(mapInfo) {
+    _setMapInfo() {
         let filter = ['all'];
         filter.push(['==', 'floor', this.map.currentMapInfo.floorNumber]);
         filter.push(['in', 'POI_ID'].concat(this.pois));

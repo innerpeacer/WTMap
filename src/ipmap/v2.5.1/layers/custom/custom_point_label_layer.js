@@ -33,19 +33,15 @@ class custom_point_label_layer {
 
         let labelSourceID = sourceIdentifier(name);
         this.labelSourceID = labelSourceID;
-
-        let labelSource = GeojsonUtils.emptySource;
-        this.labelSource = labelSource;
+        this.labelSource = GeojsonUtils.emptySource;
 
         let labelCircleLayerID = layerIdentifier(name, "circle");
         this.labelCircleLayerID = labelCircleLayerID;
-        let circleLayer = extend({id: labelCircleLayerID, source: labelSourceID}, clone(defaultCircleLayer));
-        this.labelCircleLayer = circleLayer;
+        this.labelCircleLayer = extend({id: labelCircleLayerID, source: labelSourceID}, clone(defaultCircleLayer));
 
         let labelSymbolLayerID = layerIdentifier(name, "symbol");
         this.labelSymbolLayerID = labelSymbolLayerID;
-        let symbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
-        this.labelSymbolLayer = symbolLayer;
+        this.labelSymbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
     }
 
     addToMap(map) {
@@ -56,7 +52,7 @@ class custom_point_label_layer {
         this.map.addLayer(this.labelSymbolLayer);
     }
 
-    removeFromMap(map) {
+    removeFromMap() {
         this.map.removeLayer(this.labelCircleLayerID);
         this.map.removeLayer(this.labelSymbolLayerID);
 

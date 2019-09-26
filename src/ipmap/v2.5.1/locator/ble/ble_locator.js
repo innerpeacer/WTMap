@@ -15,7 +15,6 @@ class ble_locator extends Evented {
     constructor(buildingID, options) {
         super();
         // console.log("ble_locator.constructor");
-        let self = this;
         this._buildingID = buildingID;
         this._uuid = null;
         this._url = 'https://gis.cx9z.com/map-server/beacon/getBeaconPbf';
@@ -90,7 +89,7 @@ class ble_locator extends Evented {
         return this.currentLocation;
     }
 
-    _biteMe(methodName, params) {
+    _biteMe(methodName) {
         // console.log("ble_locator._biteMe");
         if ('_getLocatingBeaconGeojson' === methodName) {
             return _getLocatingBeaconGeojson();

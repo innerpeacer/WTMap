@@ -55,9 +55,8 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
             extrusionLayer.paint['fill-extrusion-color'] = symbol.fillColor;
             extrusionLayer.paint['fill-extrusion-opacity'] = symbol.fillOpacity;
 
-            var useIpExtrusion = false;
+            let useIpExtrusion = false;
             useIpExtrusion = true;
-            let random = Math.random() * 10;
             if (useIpExtrusion) {
                 extrusionLayer = extend({
                     'id': extrusionLayerID,
@@ -74,11 +73,11 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
             }
 
             let levelMin = symbol.levelMin;
-            if (levelMin && levelMin != 0) {
+            if (levelMin && levelMin !== 0) {
                 extrusionLayer.minzoom = baseZoom + levelMin;
             }
             let levelMax = symbol.levelMax;
-            if (levelMax && levelMax != 0) {
+            if (levelMax && levelMax !== 0) {
                 extrusionLayer.maxzoom = baseZoom + levelMax;
             }
 
@@ -90,12 +89,14 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ['all',
-                ['has', 'extrusion'],
-                ['==', 'extrusion', true],
-                ['==', 'floor', mapInfo.floorNumber],
-                ['==', 'symbolID', layers[layerID].symbolID]
-            ]);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all',
+                    ['has', 'extrusion'],
+                    ['==', 'extrusion', true],
+                    ['==', 'floor', mapInfo.floorNumber],
+                    ['==', 'symbolID', layers[layerID].symbolID]
+                ]);
+            }
         }
     }
 

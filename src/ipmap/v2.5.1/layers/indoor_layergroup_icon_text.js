@@ -14,6 +14,10 @@ let defaultSymbolLayer = {
     },
 };
 
+function _getHeight(use3D) {
+    return use3D ? ['/', ['get', 'extrusion-height'], 10] : 0;
+}
+
 class indoor_layergroup_icon_text extends IndoorGroupLayer {
     constructor(map, name) {
         super(map);
@@ -23,7 +27,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
         this.buildingID = map.building.buildingID;
         let baseZoom = map.getBaseZoom();
 
-        let height = this._getHeight(map._options.use3D);
+        let height = _getHeight(map._options.use3D);
         let symbolUIDArray = map._layerSymbolMap[subLayerName];
         for (let i = 0; i < symbolUIDArray.length; ++i) {
             let symbolUID = symbolUIDArray[i];
@@ -62,22 +66,26 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
 
             if (symbol.otherLayout) {
                 for (let key in symbol.otherLayout) {
-                    layer.layout[key] = symbol.otherLayout[key];
+                    if (symbol.otherLayout.hasOwnProperty(key)) {
+                        layer.layout[key] = symbol.otherLayout[key];
+                    }
                 }
             }
 
             if (symbol.otherPaint) {
                 for (let key in symbol.otherPaint) {
-                    layer.paint[key] = symbol.otherPaint[key];
+                    if (symbol.otherPaint.hasOwnProperty(key)) {
+                        layer.paint[key] = symbol.otherPaint[key];
+                    }
                 }
             }
 
             let levelMin = symbol.levelMin;
-            if (levelMin && levelMin != 0) {
+            if (levelMin && levelMin !== 0) {
                 layer.minzoom = baseZoom + levelMin;
             }
             let levelMax = symbol.levelMax;
-            if (levelMax && levelMax != 0) {
+            if (levelMax && levelMax !== 0) {
                 layer.maxzoom = baseZoom + levelMax;
             }
             this.styleLayers[layerID] = layer;
@@ -85,14 +93,13 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
         // console.log(subLayerName + ' Layer: ' + symbolUIDArray.length);
     }
 
-    _getHeight(use3D) {
-        return use3D ? ['/', ['get', 'extrusion-height'], 10] : 0;
-    }
 
     _switch3D(use3D) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setPaintProperty(layerID, 'symbol-height', this._getHeight(use3D));
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setPaintProperty(layerID, 'symbol-height', _getHeight(use3D));
+            }
         }
     }
 
@@ -100,16 +107,18 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
         if (!options || !options.lang) return;
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            let layerDef = layers[layerID];
-            let symbol = layerDef.symbol;
-            if (symbol.textVisible) {
-                if (options.lang === 'cn') {
-                    this.map.setLayoutProperty(layerID, 'text-field', ['get', 'NAME']);
-                    this.map.setLayoutProperty(layerID, 'text-font', [`${symbol.textFont}-${this.buildingID}`]);
-                } else if (options.lang === 'en') {
-                    this.map.setLayoutProperty(layerID, 'text-field', ['get', 'NAME_EN']);
-                    let enFont = options.font || 'simhei';
-                    this.map.setLayoutProperty(layerID, 'text-font', [`${enFont}-${this.buildingID}`]);
+            if (layers.hasOwnProperty(layerID)) {
+                let layerDef = layers[layerID];
+                let symbol = layerDef.symbol;
+                if (symbol.textVisible) {
+                    if (options.lang === 'cn') {
+                        this.map.setLayoutProperty(layerID, 'text-field', ['get', 'NAME']);
+                        this.map.setLayoutProperty(layerID, 'text-font', [`${symbol.textFont}-${this.buildingID}`]);
+                    } else if (options.lang === 'en') {
+                        this.map.setLayoutProperty(layerID, 'text-field', ['get', 'NAME_EN']);
+                        let enFont = options.font || 'simhei';
+                        this.map.setLayoutProperty(layerID, 'text-font', [`${enFont}-${this.buildingID}`]);
+                    }
                 }
             }
         }
@@ -122,7 +131,9 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     _setLabelVisibleRange(minZoom, maxZoom) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setLayerZoomRange(layerID, minZoom, maxZoom);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setLayerZoomRange(layerID, minZoom, maxZoom);
+            }
         }
     }
 
@@ -134,28 +145,36 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     _updateFontSize(minZoom) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setLayoutProperty(layerID, 'text-size', {stops: [[minZoom, 12], [minZoom + 1, 18], [minZoom + 2, 24]]});
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setLayoutProperty(layerID, 'text-size', {stops: [[minZoom, 12], [minZoom + 1, 18], [minZoom + 2, 24]]});
+            }
         }
     }
 
     updateLayoutProperty(property, value) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setLayoutProperty(layerID, property, value);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setLayoutProperty(layerID, property, value);
+            }
         }
     }
 
     updatePaintProperty(property, value) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setPaintProperty(layerID, property, value);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setPaintProperty(layerID, property, value);
+            }
         }
     }
 
     setFont(fontName) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setLayoutProperty(layerID, 'text-font', [`${fontName}-${this.buildingID}`]);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setLayoutProperty(layerID, 'text-font', [`${fontName}-${this.buildingID}`]);
+            }
         }
     }
 
@@ -166,10 +185,12 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     _setMapInfo(mapInfo) {
         let layers = this.styleLayers;
         for (let layerID in layers) {
-            this.map.setFilter(layerID, ['all',
-                ['==', 'floor', mapInfo.floorNumber],
-                ['==', 'symbolID', layers[layerID].symbolID]
-            ]);
+            if (layers.hasOwnProperty(layerID)) {
+                this.map.setFilter(layerID, ['all',
+                    ['==', 'floor', mapInfo.floorNumber],
+                    ['==', 'symbolID', layers[layerID].symbolID]
+                ]);
+            }
         }
     }
 }

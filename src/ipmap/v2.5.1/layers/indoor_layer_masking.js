@@ -14,7 +14,7 @@ class indoor_layer_masking extends IndoorGroupLayer {
         this.styleLayers = {};
 
         let layerID = `${subLayerName}-fill`;
-        let layer = {
+        this.styleLayers[layerID] = {
             'id': layerID,
             'type': 'fill',
             'source': this.sourceID,
@@ -27,7 +27,6 @@ class indoor_layer_masking extends IndoorGroupLayer {
             },
             "filter": ["all"]
         };
-        this.styleLayers[layerID] = layer;
     }
 
     _setMaskingData(data) {

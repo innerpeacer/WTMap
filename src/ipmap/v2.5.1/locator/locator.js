@@ -1,24 +1,13 @@
 import {Evented} from '../utils/ip_evented'
-import Parser from './pbf-parse/t_y_beacon_parser';
 import {local_point as LocalPoint} from '../entity/local_point';
-import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from './beacon';
-import {coord_projection as CoordProjection} from '../utils/coord_projection';
-import {geojson_utils as GeojsonUtils} from '../utils/geojson_utils';
 import GpsLocator from "./gps/gps_locator"
 import BleLocator from "./ble/ble_locator"
-
 import InnerEventManager from "../utils/inner_event_manager"
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
 let InnerBleEvent = InnerEventManager.BleEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
-
-import EventManager from "../utils/event_manager"
-
-let LocatorEvent = EventManager.LocatorEvent;
-
 let status = {};
-
 let LocatorParams = {
     ModeSwitchInterval: 4000,
     ResultValidInterval: 6000,
@@ -83,13 +72,13 @@ class locator extends Evented {
         }
 
         this._bleLocator = new BleLocator(buildingID, options);
-        this._bleLocator.on(InnerBleEvent.BleReady, (error) => {
+        this._bleLocator.on(InnerBleEvent.BleReady, () => {
             // console.log("ble ready");
             status._bleReady = true;
             this._processStatus();
         });
 
-        this._bleLocator.on(InnerBleEvent.BleFailed, (error) => {
+        this._bleLocator.on(InnerBleEvent.BleFailed, () => {
             // console.log("ble failed");
             // console.log(error);
             status._bleReady = false;
@@ -220,7 +209,7 @@ class locator extends Evented {
         if (this._currentMode == null || this._modeChangeTime == null) {
             this._currentMode = this._targetMode;
             this._modeChangeTime = now;
-        } else if (this._currentMode == this._targetMode) {
+        } else if (this._currentMode === this._targetMode) {
             this._modeChangeTime = now;
         } else {
             if (Math.abs(now - this._modeChangeTime) > LocatorParams.ModeSwitchInterval) {

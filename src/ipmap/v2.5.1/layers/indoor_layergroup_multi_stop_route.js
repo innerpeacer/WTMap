@@ -15,7 +15,7 @@ function dist2(c1, c2) {
 }
 
 function showAnimatedArrows(time) {
-    if (routeAnimationObject.lastTime == -1) {
+    if (routeAnimationObject.lastTime === -1) {
         routeAnimationObject.lastTime = time;
     }
 
@@ -79,7 +79,6 @@ class indoor_layergroup_multi_stop_route {
 
     showRoute(multiResult, location, segment) {
         // this.clearSource();
-        var that = this;
         if (!location) this.clearSource();
         // console.log('showRoute');
         // console.log('segment: ' + segment);
