@@ -6,7 +6,7 @@ class orientation_handler extends Evented {
         super();
         this._target = target;
         this._agent = ip_agent_utils.getAgent().type;
-        this._threhold = (options && options.threhold) || 2;
+        this._threhold = (options && options["threhold"]) || 2;
 
         this._lastHeading = 1000;
         this._isBinded = false;
@@ -23,7 +23,7 @@ class orientation_handler extends Evented {
         if (this._isBinded) return;
 
         this._isBinded = true;
-        if (this._agent == 1) {
+        if (this._agent === 1) {
             window.addEventListener("deviceorientationabsolute", this.absoluteOrientationEventCallbackForAndroid, false);
         } else {
             window.addEventListener('deviceorientation', this.orientationEventCallback, false);
@@ -34,7 +34,7 @@ class orientation_handler extends Evented {
         if (!this._isBinded) return;
 
         this._isBinded = false;
-        if (this._agent == 1) {
+        if (this._agent === 1) {
             window.removeEventListener('deviceorientationabsolute', this.absoluteOrientationEventCallbackForAndroid, false);
         } else {
             window.removeEventListener('deviceorientation', this.orientationEventCallback, false);
@@ -43,7 +43,7 @@ class orientation_handler extends Evented {
 
     OnOrientationChange(event) {
         if (this._agent !== 1) {
-            if (event.webkitCompassHeading) {
+            if (event.hasOwnProperty("webkitCompassHeading")) {
                 this._NotifyAngle(360 - event.webkitCompassHeading);
             } else {
                 this._NotifyAngle(event.alpha);

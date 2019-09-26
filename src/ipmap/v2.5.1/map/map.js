@@ -1,6 +1,5 @@
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
 
-import {version} from '../config/config'
 import IPCity from '../entity/city'
 import IPBuilding from '../entity/building'
 import {mapinfo as IPMapInfo} from '../entity/mapinfo'
@@ -100,7 +99,7 @@ class IPMap extends BoxMap {
         this._iconTextSymbolMap = {};
         this._layerSymbolMap = {};
         this._resourceBuildingID = null;
-
+        this._wtWgs84Converter = null;
         this.__abort = false;
 
         let map = this;
@@ -282,7 +281,7 @@ class IPMap extends BoxMap {
     requestRoute(start, end, arg3, arg4, arg5, arg6) {
         // console.log('requestRoute');
         // console.log(stops);
-        if (arg3.constructor == Array) {
+        if (arg3.constructor === Array) {
             this.__requestRoute(start, end, arg3, arg4, arg5, arg6);
         } else {
             this.__requestRoute(start, end, [], arg3, arg4, arg5);
@@ -310,17 +309,16 @@ class IPMap extends BoxMap {
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
         map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
-        map._fillSymbolArray.forEach(function (fill, index) {
+        map._fillSymbolArray.forEach(function (fill) {
             map._fillSymbolMap[fill.UID] = fill;
         });
         map._iconTextSymbolArray = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
-        map._iconTextSymbolArray.forEach(function (iconText, index) {
+        map._iconTextSymbolArray.forEach(function (iconText) {
             map._iconTextSymbolMap[iconText.UID] = iconText;
         });
         map._layerSymbolMap = data['Symbols'];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
 
-        let initInfo = map.mapInfoArray[0];
         // console.log('initBounds');
         // console.log(initBounds);
 
@@ -533,7 +531,7 @@ class IPMap extends BoxMap {
         let infoArray = this.mapInfoArray;
         for (let i = 0; i < infoArray.length; ++i) {
             let mapInfo = infoArray[i];
-            if (mapInfo.floorNumber == floor) return mapInfo;
+            if (mapInfo.floorNumber === floor) return mapInfo;
         }
         return null;
     }

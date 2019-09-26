@@ -59,8 +59,7 @@ function calculateZoom(bounds, width, height) {
     let scaleX = width / pixelRatio * 180 / size_x / 512;
     let scaleY = height / pixelRatio * 85.05113 * 2 / size_y / 512;
 
-    let zoom = scaleToZoom(Math.min(scaleX, scaleY)) + 1;
-    return zoom;
+    return scaleToZoom(Math.min(scaleX, scaleY)) + 1;
 }
 
 function scaleToZoom(scale) {

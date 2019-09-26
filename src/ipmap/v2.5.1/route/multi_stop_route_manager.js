@@ -52,7 +52,7 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
     // console.log('getRoutePath: ');
     // console.log(params);
     let rearrange = true;
-    if (params && !params.rearrangeStops) {
+    if (params && !params["rearrangeStops"]) {
         rearrange = false;
     }
 
@@ -73,7 +73,7 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
     }
 
     let vehicle = false;
-    if (params && params.vehicle) vehicle = true;
+    if (params && params["vehicle"]) vehicle = true;
     if (vehicle) {
         url += `&vehicle=${vehicle}`;
     }
@@ -81,7 +81,7 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
     let sameFloorFirst = true;
     if (params.sameFloorFirst === undefined) {
     } else {
-        sameFloorFirst = new Boolean(params.sameFloorFirst);
+        sameFloorFirst = Boolean(params.sameFloorFirst);
     }
     url += `&sameFloorFirst=${sameFloorFirst}`;
 
@@ -91,9 +91,9 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
     }
 
     if (ignoreList.length > 0) {
-        var ignoreStr = '';
+        let ignoreStr = '';
         for (let i = 0; i < ignoreList.length; ++i) {
-            if (i != 0) ignoreStr += ',';
+            if (i !== 0) ignoreStr += ',';
             ignoreStr += ignoreList[i];
         }
         url += `&ignore=${ignoreStr}`;
@@ -106,7 +106,7 @@ let searchMapInfoFromArray = function (mapInfoArray, floor) {
     let info = null;
     for (let i = 0; i < mapInfoArray.length; ++i) {
         let mapInfo = mapInfoArray[i];
-        if (mapInfo.floorNumber == floor) {
+        if (mapInfo.floorNumber === floor) {
             info = mapInfo;
             break;
         }
@@ -120,8 +120,8 @@ function dist(c1, c2) {
 
 let parseSingleRouteResult = function (result, mapInfoArray, startPoint, endPoint) {
     let routePartArray = [];
-    for (let i = 0; i < result.routeResult.length; ++i) {
-        let part = result.routeResult[i];
+    for (let i = 0; i < result["routeResult"].length; ++i) {
+        let part = result["routeResult"][i];
         let processedCoordinates = [];
         if (part.coordinates.length >= 3) {
             processedCoordinates.push(part.coordinates[0]);
@@ -164,8 +164,7 @@ let parseSingleRouteResult = function (result, mapInfoArray, startPoint, endPoin
         }
     }
 
-    let routeResult = new IPRouteResult(convertPoint(startPoint), convertPoint(endPoint), routePartArray);
-    return routeResult;
+    return new IPRouteResult(convertPoint(startPoint), convertPoint(endPoint), routePartArray);
 };
 
 function convertPoint(localPoint) {
@@ -174,16 +173,14 @@ function convertPoint(localPoint) {
     point.y = localPoint.y;
     point.floor = localPoint.floor;
     return point;
-};
+}
 
 function checkMultiStopResult(msr) {
     let success = msr.success;
     if (!success) return false;
     let t = (parseInt(msr.code) - parseInt(msr.start.y)) / parseInt(msr.start.x);
     let delta = (new Date()).valueOf() / 1000 - t;
-    if (Math.abs(delta) > 3600)
-        return false;
-    return true;
+    return Math.abs(delta) <= 3600;
 }
 
 let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPoint, endPoint, stopPoints, callback, errorCallback) {
@@ -196,7 +193,7 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
         return;
     }
 
-    let completeRoute = parseSingleRouteResult(multiStopResult.completeRoute, mapInfoArray, startPoint, endPoint);
+    let completeRoute = parseSingleRouteResult(multiStopResult["completeRoute"], mapInfoArray, startPoint, endPoint);
     let detailArray = multiStopResult.details;
     let detailRoutes = [];
     for (let i = 0; i < detailArray.length; ++i) {
@@ -212,7 +209,7 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
 
     let stopArray = multiStopResult.stops;
     let resStops = [];
-    if (stopArray != null && stopArray.length != 0) {
+    if (stopArray !== null && stopArray.length !== 0) {
         for (let i = 0; i < stopArray.length; ++i) {
             resStops.push(convertPoint(stopArray[i]));
         }
@@ -224,10 +221,10 @@ let parseMultiStopRouteResult = function (multiStopResult, mapInfoArray, startPo
     // let color = '#EEEE00';
     // let color = '#000';
     let color = '#00f';
-    let rearrangedStopArray = multiStopResult.rearrangedStop;
+    let rearrangedStopArray = multiStopResult["rearrangedStop"];
     let rearrangedStopFeatures = [];
     let rearrangedStops = [];
-    if (rearrangedStopArray != null && rearrangedStopArray.length != 0) {
+    if (rearrangedStopArray !== null && rearrangedStopArray.length !== 0) {
         for (let i = 0; i < rearrangedStopArray.length; ++i) {
             let rp = convertPoint(rearrangedStopArray[i]);
             rearrangedStops.push(rp);

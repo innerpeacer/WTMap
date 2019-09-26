@@ -12,8 +12,8 @@ class http_request extends Evented {
         let httpRequest = new XMLHttpRequest();
         httpRequest.open('GET', url, true);
         httpRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
                     if (callback) callback(JSON.parse(httpRequest.responseText));
                 } else {
                     if (errorCallback) errorCallback({status: httpRequest.status, statusText: httpRequest.statusText});
@@ -28,8 +28,8 @@ class http_request extends Evented {
         httpRequest.open('GET', url, true);
         httpRequest.responseType = 'arraybuffer';
         httpRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
                     if (callback) callback(httpRequest.response);
                 } else {
                     if (errorCallback) errorCallback({status: httpRequest.status, statusText: httpRequest.statusText});
@@ -44,8 +44,8 @@ class http_request extends Evented {
         httpRequest.open('GET', url, true);
         let that = this;
         httpRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
                     let json = JSON.parse(httpRequest.responseText);
                     that.fire(HttpEvent.HttpResult, json);
                 } else {
@@ -62,8 +62,8 @@ class http_request extends Evented {
         httpRequest.responseType = 'arraybuffer';
         let that = this;
         httpRequest.onreadystatechange = function () {
-            if (this.readyState == 4) {
-                if (this.status == 200) {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
                     let bytes = httpRequest.response;
                     that.fire(HttpEvent.HttpResult, {bytes: bytes});
                 } else {

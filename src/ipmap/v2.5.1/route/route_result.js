@@ -2,22 +2,21 @@ import ipTurf from '../utils/ip_turf'
 
 let Point = ipTurf.point;
 let Bearing = ipTurf.bearing;
-let LineString = ipTurf.lineString;
 let FeatureCollection = ipTurf.featureCollection;
 
 
-function sliceLength(zoom) {
-    let defaultLength = 5;
-    let defaultZoom = 20;
-    let deltaZoom = defaultZoom - zoom;
-    let scale = Math.pow(2, deltaZoom);
-    console.log(scale);
-
-    let length = defaultLength * scale;
-    console.log('zoom: ' + zoom);
-    console.log('length: ' + length);
-    return length;
-}
+// function sliceLength(zoom) {
+//     let defaultLength = 5;
+//     let defaultZoom = 20;
+//     let deltaZoom = defaultZoom - zoom;
+//     let scale = Math.pow(2, deltaZoom);
+//     console.log(scale);
+//
+//     let length = defaultLength * scale;
+//     console.log('zoom: ' + zoom);
+//     console.log('length: ' + length);
+//     return length;
+// }
 
 function sliceLength2(zoom) {
     if (zoom >= 19) return 6;
@@ -60,7 +59,7 @@ class route_result {
 
             let lineLength = ipTurf.lineDistance(line, 'meters');
             line = ipTurf.lineSliceAlong(line, offset, lineLength, 'meters');
-            if (line.geometry.coordinates.length == 2) continue;
+            if (line.geometry.coordinates.length === 2) continue;
 
             let chunks = ipTurf.lineChunk(line, sliceLength2(zoom), 'meters');
             chunks.features.forEach(function (segment) {
@@ -86,7 +85,6 @@ class route_result {
             let minRP = null;
             let minNP = null;
             features.forEach(function (rp) {
-                // let line = LineString(rp.route);
                 let line = rp.getGeometry();
                 let p = Point([location.x, location.y]);
                 let npOnLine = ipTurf.pointOnLine(line, p, 'meters');

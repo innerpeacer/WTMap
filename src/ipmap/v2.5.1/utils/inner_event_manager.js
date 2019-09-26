@@ -1,5 +1,3 @@
-import event_manager from "./event_manager";
-
 class inner_event_manager {
 
 }

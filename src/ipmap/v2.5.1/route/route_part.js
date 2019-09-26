@@ -5,13 +5,13 @@ class route_part {
         this.route = route;
         // Special Treatment for single coordinate route part. (Such as starting from a Elevator to another floor)
         this._isSinglePointLine = false;
-        if (this.route.length == 1) {
+        if (this.route.length === 1) {
             this.route = [this.route[0], this.route[0]];
             this._isSinglePointLine = true;
         }
 
-        if (this.route.length == 2) {
-            if (this.route[0][0] == this.route[1][0] && this.route[0][1] == this.route[1][1]) {
+        if (this.route.length === 2) {
+            if (this.route[0][0] === this.route[1][0] && this.route[0][1] === this.route[1][1]) {
                 this._isSinglePointLine = true;
             }
         }
@@ -37,7 +37,7 @@ class route_part {
     }
 
     getFirstPoint() {
-        var point = null;
+        let point = null;
         if (this.route != null) {
             point = this.route[0];
         }
@@ -45,7 +45,7 @@ class route_part {
     }
 
     getLastPoint() {
-        var point = null;
+        let point = null;
         if (this.route != null) {
             point = this.route[this.route.length - 1];
         }

@@ -7,7 +7,7 @@ class wt_wgs84_converter {
         // console.log(wgs84Points);
         // console.log(wtPoints);
 
-        if (!wgs84Points || wgs84Points.length != 6 || !wtPoints || wtPoints.length != 6) {
+        if (!wgs84Points || wgs84Points.length !== 6 || !wtPoints || wtPoints.length !== 6) {
             this._valid = false;
             return;
         }

@@ -1,7 +1,9 @@
 export function extend(dest, ...sources) {
     for (const src of sources) {
         for (const k in src) {
-            dest[k] = src[k];
+            if (src.hasOwnProperty(k)) {
+                dest[k] = src[k];
+            }
         }
     }
     return dest;
@@ -10,7 +12,9 @@ export function extend(dest, ...sources) {
 export function mapObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
-        output[key] = iterator.call(context || this, input[key], key, input);
+        if (input.hasOwnProperty(key)) {
+            output[key] = iterator.call(context || this, input[key], key, input);
+        }
     }
     return output;
 }
