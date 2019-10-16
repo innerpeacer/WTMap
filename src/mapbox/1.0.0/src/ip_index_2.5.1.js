@@ -19,6 +19,7 @@ import {
     CustomTraceLayer,
     HttpRequest,
     Utils,
+    GeojsonUtils,
 } from '../../../ipmap/v2.5.1/config/output'
 
 import NavigationControl from './ui/control/navigation_control';
@@ -56,6 +57,7 @@ const exported = {
     CustomTraceLayer,
     HttpRequest,
     Utils,
+    GeojsonUtils,
 
     NavigationControl,
     GeolocateControl,

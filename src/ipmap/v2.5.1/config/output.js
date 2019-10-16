@@ -11,6 +11,7 @@ import {custom_segment_line_layer as CustomSegmentLineLayer} from "../layers/cus
 import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_trace_layer";
 import {http_request as HttpRequest} from "../utils/http_request";
 import {utils as Utils} from "../utils/utils";
+import {geojson_utils as GeojsonUtils} from "../utils/geojson_utils";
 
 export {
     version,
@@ -26,4 +27,5 @@ export {
     CustomTraceLayer,
     HttpRequest,
     Utils,
+    GeojsonUtils,
 }
