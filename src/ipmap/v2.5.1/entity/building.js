@@ -21,4 +21,4 @@ class building {
     }
 }
 
-export default building
+export {building}

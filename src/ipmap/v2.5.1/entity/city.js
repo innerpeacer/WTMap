@@ -13,4 +13,4 @@ class city {
     }
 }
 
-export default city
+export {city}

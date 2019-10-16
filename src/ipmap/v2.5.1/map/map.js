@@ -1,7 +1,7 @@
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
 
-import IPCity from '../entity/city'
-import IPBuilding from '../entity/building'
+import {city as IPCity} from '../entity/city'
+import {building as IPBuilding} from '../entity/building'
 import {mapinfo as IPMapInfo} from '../entity/mapinfo'
 import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from '../entity/symbol';
 
