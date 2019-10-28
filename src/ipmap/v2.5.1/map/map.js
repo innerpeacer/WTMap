@@ -48,7 +48,7 @@ const defaultOptions = {
     enableMotion: false,
     enableOrientation: false,
 
-    _dataVersion: null,
+    // _dataVersion: null,
     _disableCache: false,
 
     _useFile: true,
@@ -69,8 +69,8 @@ class IPMap extends BoxMap {
         super(options);
         this._options = options;
 
-        let dataVersion = options._dataVersion;
-        let disableCache = options._disableCache;
+        // let dataVersion = options._dataVersion;
+        this.__disableCache = options._disableCache;
 
         this.buildingID = options.buildingID;
         if (this.buildingID == null) {
@@ -125,16 +125,16 @@ class IPMap extends BoxMap {
             map.fire(MapEvent.Error, error);
         });
 
-        if (dataVersion) {
-            CacheVersion.useVersion(dataVersion);
-        }
-        TileCacheDB.init();
-        GlyphCacheDB.init();
-        if (disableCache) {
-            TileCacheDB.disable();
-            GlyphCacheDB.disable();
-        }
-        console.log('CacheVersion: ' + CacheVersion.getVersionName());
+        // if (dataVersion) {
+        //     CacheVersion.useVersion(dataVersion);
+        // }
+        // TileCacheDB.init();
+        // GlyphCacheDB.init();
+        // if (disableCache) {
+        //     TileCacheDB.disable();
+        //     GlyphCacheDB.disable();
+        // }
+        // console.log('CacheVersion: ' + CacheVersion.getVersionName());
 
         this.on('load', function () {
             // console.log('on load');
@@ -306,6 +306,19 @@ class IPMap extends BoxMap {
         let map = this;
         map.city = new IPCity(data['Cities'][0]);
         map.building = new IPBuilding(data['Buildings'][0]);
+
+        let dataVersion = this.dataVersion = map.building.dataVersion || "1.0";
+        if (dataVersion) {
+            CacheVersion.useVersion(dataVersion);
+        }
+        TileCacheDB.init();
+        GlyphCacheDB.init();
+        if (this.__disableCache) {
+            TileCacheDB.disable();
+            GlyphCacheDB.disable();
+        }
+        console.log('CacheVersion: ' + CacheVersion.getVersionName());
+
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
         map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);

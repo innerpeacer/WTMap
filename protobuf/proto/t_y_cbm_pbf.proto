@@ -38,6 +38,7 @@ message BuildingPbf {
     required uint32 initFloorIndex = 14;
     repeated double wgs84CalibrationPoint = 15;
     repeated double wtCalibrationPoint = 16;
+    optional string dataVersion = 17;
 }
 
 message MapInfoPbf {
