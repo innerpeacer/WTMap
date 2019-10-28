@@ -53,7 +53,7 @@ CityPbf.write = function (obj, pbf) {
 var BuildingPbf = exports.BuildingPbf = {};
 
 BuildingPbf.read = function (pbf, end) {
-    return pbf.readFields(BuildingPbf._readField, {id: "", cityID: "", name: "", longitude: 0, latitude: 0, address: "", initAngle: 0, routeURL: "", xmin: 0, ymin: 0, xmax: 0, ymax: 0, initFloorIndex: 0, wgs84CalibrationPoint: [], wtCalibrationPoint: [], dataVersion: ""}, end);
+    return pbf.readFields(BuildingPbf._readField, {id: "", cityID: "", name: "", longitude: 0, latitude: 0, address: "", initAngle: 0, routeURL: "", xmin: 0, ymin: 0, xmax: 0, ymax: 0, initFloorIndex: 0, wgs84CalibrationPoint: [], wtCalibrationPoint: [], dataVersion: "", centerX: 0, centerY: 0}, end);
 };
 BuildingPbf._readField = function (tag, obj, pbf) {
     if (tag === 1) obj.id = pbf.readString();
@@ -72,6 +72,8 @@ BuildingPbf._readField = function (tag, obj, pbf) {
     else if (tag === 15) obj.wgs84CalibrationPoint.push(pbf.readDouble());
     else if (tag === 16) obj.wtCalibrationPoint.push(pbf.readDouble());
     else if (tag === 17) obj.dataVersion = pbf.readString();
+    else if (tag === 18) obj.centerX = pbf.readDouble();
+    else if (tag === 19) obj.centerY = pbf.readDouble();
 };
 BuildingPbf.write = function (obj, pbf) {
     if (obj.id) pbf.writeStringField(1, obj.id);
@@ -90,6 +92,8 @@ BuildingPbf.write = function (obj, pbf) {
     if (obj.wgs84CalibrationPoint) for (var i = 0; i < obj.wgs84CalibrationPoint.length; i++) pbf.writeDoubleField(15, obj.wgs84CalibrationPoint[i]);
     if (obj.wtCalibrationPoint) for (i = 0; i < obj.wtCalibrationPoint.length; i++) pbf.writeDoubleField(16, obj.wtCalibrationPoint[i]);
     if (obj.dataVersion) pbf.writeStringField(17, obj.dataVersion);
+    if (obj.centerX) pbf.writeDoubleField(18, obj.centerX);
+    if (obj.centerY) pbf.writeDoubleField(19, obj.centerY);
 };
 
 // MapInfoPbf ========================================

@@ -39,6 +39,8 @@ message BuildingPbf {
     repeated double wgs84CalibrationPoint = 15;
     repeated double wtCalibrationPoint = 16;
     optional string dataVersion = 17;
+    optional double centerX = 18;
+    optional double centerY = 19;
 }
 
 message MapInfoPbf {

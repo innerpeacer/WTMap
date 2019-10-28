@@ -10,14 +10,14 @@ let HttpEvent = InnerEventManager.HttpEvent;
 
 let getCBMJson = function (bID, options) {
     if (options._useFile) {
-        return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json`;
+        return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json` + "?t=" + Date.now();
     } else {
         return `${options._apiHost}/${options._apiPath}/web/GetCBM?buildingID=${bID}`;
     }
 };
 
 let getCBMPbf = function (bID, options) {
-    return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf`;
+    return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf` + "?t=" + Date.now();
 };
 
 let getTilePbf = function (bID, options) {

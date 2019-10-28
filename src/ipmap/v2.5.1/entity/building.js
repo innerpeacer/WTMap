@@ -15,6 +15,8 @@ class building {
         this.wgs84CalibrationPoint = obj.wgs84CalibrationPoint || null;
         this.wtCalibrationPoint = obj.wtCalibrationPoint || null;
         this.dataVersion = obj.dataVersion || "1.0.0";
+        this.centerX = obj.centerX || 0;
+        this.centerY = obj.centerY || 0;
     }
 
     toString() {
