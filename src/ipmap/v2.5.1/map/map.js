@@ -404,6 +404,14 @@ class IPMap extends BoxMap {
         });
     }
 
+    startLocating() {
+        this._locator && this._locator.start();
+    }
+
+    stopLocating() {
+        this._locator && this._locator.stop();
+    }
+
     highlightPoi(pois, options) {
         this._layerGroup._highlightPoi(pois, options);
     }

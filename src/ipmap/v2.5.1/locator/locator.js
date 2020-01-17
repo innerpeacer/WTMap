@@ -87,6 +87,8 @@ class locator extends Evented {
     }
 
     _notifyResult(res) {
+        let now = new Date().valueOf();
+        // console.log("Fire LocationUpdate: ", now - this._initTime);
         this.fire(InnerLocatorEvent.LocationUpdate, res);
         this._newBleResult = false;
         this._newGpsResult = false;
@@ -197,6 +199,13 @@ class locator extends Evented {
     _doFusion() {
         // console.log("doFusion");
         let now = new Date().valueOf();
+        let bleValid = !!(this._bleResult && this._bleResult.location && Math.abs(now - this._bleResult.timestamp) < LocatorParams.ResultValidInterval);
+        if (Math.abs(now - this._initTime) < LocatorParams.WaitingBleInterval && !bleValid) {
+            // console.log("_doFusion: ", now);
+            // console.log("delta: ", now - this._initTime);
+            console.log("Waiting BLE Result 2!");
+            return;
+        }
         if (!this._newGpsResult && !this._newBleResult) {
             // console.log("No New Result!");
             if (this._lastTimeLocationUpdated != null && Math.abs(now - this._lastTimeLocationUpdated) > LocatorParams.LocationValidInterval) {
@@ -261,13 +270,20 @@ class locator extends Evented {
             gps: status._gpsReady,
             description: `Ble: ${status._bleReady}, Gps: ${status._gpsReady}`
         });
+    }
 
+    start() {
         let self = this;
         this._initTime = new Date().valueOf();
+        // console.log("locator start time: ", this._initTime);
         this._lastTimeLocationUpdated = this._initTime;
         this._timeHandler = setInterval(() => {
             self._doFusion()
         }, 900);
+    }
+
+    stop() {
+        clearInterval(this._timeHandler);
     }
 
     getLocation() {
