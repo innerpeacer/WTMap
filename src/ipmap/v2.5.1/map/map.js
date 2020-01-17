@@ -5,7 +5,7 @@ import {building as IPBuilding} from '../entity/building'
 import {mapinfo as IPMapInfo} from '../entity/mapinfo'
 import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from '../entity/symbol';
 
-import IPDataManager from '../data/data_manager'
+import {data_manager as IPDataManager} from '../data/data_manager'
 
 import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
 

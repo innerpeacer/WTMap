@@ -97,4 +97,4 @@ class data_manager extends Evented {
     };
 }
 
-export default data_manager;
+export {data_manager};
