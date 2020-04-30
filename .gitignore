@@ -1,0 +1,14 @@
+.idea/
+node_modules/
+dist/
+build
+protobuf/js-lite/
+protobuf/signal/
+BRTLocation.debug.js
+Device2.html
+
+inertial.js
+t_y_motion_pbf.js
+*.pbf
+stupid.js
+2stupid.js
