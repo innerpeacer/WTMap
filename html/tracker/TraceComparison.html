@@ -20,10 +20,11 @@
     var buildingID = wtmap.Utils.getParameter("buildingID");
     buildingID = buildingID ? buildingID : "05712001";
 
-    var userID = wtmap.Utils.getParameter("userID");
-    userID = userID ? userID : "innerpeacer";
+    var userID1 = wtmap.Utils.getParameter("userID1");
+    userID1 = userID1 ? userID1 : "innerpeacer";
 
-    var isFilter = wtmap.Utils.getParameter("filter") != null;
+    var userID2 = wtmap.Utils.getParameter("userID2");
+    userID2 = userID2 ? userID2 : "innerpeacer-2";
 
     var floor = wtmap.Utils.getParameter("floor");
     if (floor) floor = parseInt(floor);
@@ -49,13 +50,24 @@
         console.log(evt.lngLat);
     });
 
-    var traceLayer = createTraceLayer("trace");
+    var traceLayer1 = createTraceLayer("trace1");
+    traceLayer1.setCirclePaintProperty("circle-color", "#426ab3");
+    var traceText = ["concat", "", ["get", "index"]];
+    traceLayer1.setTextLayoutProperty("text-field", traceText);
+    traceLayer1.setTextPaintProperty("text-color", "#ff0000");
+
+    var traceLayer2 = createTraceLayer("trace2");
+    traceLayer2.setCirclePaintProperty("circle-color", "#f58220");
+    var traceText2 = ["concat", "", ["get", "index"]];
+    traceLayer2.setTextLayoutProperty("text-field", traceText2);
+    traceLayer2.setTextPaintProperty("text-color", "#0000ff");
 
     map.on("mapready", function (evt) {
         // console.log("mapready");
         initFloorSwitch(map);
 
-        traceLayer.addToMap(map);
+        traceLayer1.addToMap(map);
+        traceLayer2.addToMap(map);
 
         if (floor) map.setFloor(floor);
 
@@ -65,11 +77,13 @@
     function getData() {
         // console.log("getData");
 
-        http.requestData(getQueryTraceUrl(userID, isFilter), function (res) {
-            // console.log("res");
-            // console.log(res.data);
+        http.requestData(getQueryTraceUrl(userID1), function (res) {
+            traceLayer1.showTraceData(tracePointsToGeojson(res.data.points))
+        });
 
-            traceLayer.showTraceData(tracePointsToGeojson(res.data.points))
+        // http.requestData(getQueryTraceUrl(userID1, true), function (res) {
+        http.requestData(getQueryTraceUrl(userID2), function (res) {
+            traceLayer2.showTraceData(tracePointsToGeojson(res.data.points))
         });
     }
 
