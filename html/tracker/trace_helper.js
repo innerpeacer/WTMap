@@ -7,6 +7,11 @@ function createTraceLayer(name) {
     return traceLayer;
 }
 
+function createTraceComparsionLayer(name) {
+    var traceComparisionLayer = new wtmap.CustomSegmentLineLayer(name);
+    return traceComparisionLayer;
+}
+
 function tracePointsToGeojson(tracePoints) {
     var tpArray = [];
     for (var i = 0; i < tracePoints.length; ++i) {
