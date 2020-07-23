@@ -1,7 +1,8 @@
 .idea/
 node_modules/
 dist/
-build
+**/rollup/build
+**/ip_rollup/build
 protobuf/js-lite/
 protobuf/signal/
 BRTLocation.debug.js
