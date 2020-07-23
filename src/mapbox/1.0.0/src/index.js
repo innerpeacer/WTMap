@@ -1,3 +1,3 @@
-import exported from "./ip_index_2.5.1";
+import exported from "./ip_index_2.6.0";
 
 export default exported;

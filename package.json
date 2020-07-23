@@ -112,6 +112,8 @@
   },
   "esm": true,
   "scripts": {
+    "wt": "npm run build-wt-2.6.0",
+    "build-wt-2.6.0": "",
     "build-dev": "rollup -c --environment BUILD:dev",
     "watch-dev": "rollup -c --environment BUILD:dev --watch",
     "build-prod": "rollup -c --environment BUILD:production",
