@@ -12,8 +12,8 @@
   "devDependencies": {
   },
   "scripts": {
-    "wt": "npm run build-wt-2.6.0",
-    "build-wt-2.6.0": "echo build-wt-2.6.0"
+    "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
+    "wt": "npm run build-wt-prod --prefix src/mapbox/1.0.0"
   },
   "files": [
   ]
