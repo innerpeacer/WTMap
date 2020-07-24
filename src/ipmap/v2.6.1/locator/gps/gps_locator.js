@@ -1,4 +1,4 @@
-import {Evented} from '../../utils/ip_evented'
+import {Evented} from "../../../dependencies.js";
 import InnerEventManager from "../../utils/inner_event_manager"
 
 let GpsEvent = InnerEventManager.GpsEvent;

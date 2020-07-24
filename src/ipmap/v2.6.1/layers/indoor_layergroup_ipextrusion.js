@@ -1,5 +1,5 @@
 import IndoorGroupLayer from './indoor_layer_base'
-import {extend, clone} from '../utils/ip_util'
+import {extend, clone} from "../../dependencies.js"
 
 let defaultExtrusionLayer = {
     'type': 'fill-extrusion',

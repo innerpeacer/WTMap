@@ -2,12 +2,6 @@ class inner_event_manager {
 
 }
 
-let HttpEvent = {
-    HttpResult: "inner-http-result",
-    HttpError: "inner-http-error"
-};
-inner_event_manager.HttpEvent = HttpEvent;
-
 let DataEvent = {
     CBMReady: "inner-cbm-ready",
     CBMError: "inner-cbm-error",

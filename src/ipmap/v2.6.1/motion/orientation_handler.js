@@ -1,4 +1,4 @@
-import {Evented} from '../utils/ip_evented'
+import {Evented} from "../../dependencies.js";
 import {ip_agent_utils} from '../utils/ip_agent_utils'
 
 class orientation_handler extends Evented {

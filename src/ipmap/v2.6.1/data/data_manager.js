@@ -1,12 +1,10 @@
-import {Evented} from '../utils/ip_evented'
-import {http_request as IPHttpRequest} from "../utils/http_request";
+import {Evented, http_request as IPHttpRequest, HttpEvent} from "../../dependencies.js";
 import {t_y_cbm_parser as CBMParser} from '../pbf-parse/t_y_cbm_parser';
 
 
 import InnerEventManager from "../utils/inner_event_manager"
 
 let InnerDataEvent = InnerEventManager.DataEvent;
-let HttpEvent = InnerEventManager.HttpEvent;
 
 let getCBMJson = function (bID, options) {
     if (options._useFile) {

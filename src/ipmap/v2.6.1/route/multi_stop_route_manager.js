@@ -1,4 +1,8 @@
-import {Evented} from '../utils/ip_evented'
+import {
+    Evented,
+    http_request as IPHttpRequest, HttpEvent,
+    coord_projection as CoordProjection,
+} from "../../dependencies.js";
 import ipTurf from '../utils/ip_turf'
 
 let Point = ipTurf.point;
@@ -6,15 +10,12 @@ let FeatureCollection = ipTurf.featureCollection;
 
 import IPRoutePart from './route_part'
 import IPRouteResult from './route_result'
-import IPMutliRouteResult from './multi_stop_route_result'
-import {http_request as IPHttpRequest} from "../utils/http_request";
-import {coord_projection as CoordProjection} from '../utils/coord_projection'
+import IPMutliRouteResult from './multi_stop_route_result';
 import {local_point as IPLocalPoint} from "../../dependencies.js";
 import {toStartParameter2, toEndParameter2, toStopParams} from "./route_utils";
 import InnerEventManager from "../utils/inner_event_manager"
 
 let RouteEvent = InnerEventManager.RouteEvent;
-let HttpEvent = InnerEventManager.HttpEvent;
 
 // let getRoutePath = function (bID, options, start, end, stops, params) {
 //     // console.log('getRoutePath: ');

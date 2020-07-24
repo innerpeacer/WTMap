@@ -1,5 +1,5 @@
 import {geojson_utils} from '../utils/geojson_utils';
-import {extend, clone} from '../utils/ip_util'
+import {extend, clone} from "../../dependencies.js"
 
 class layer_object {
     constructor(sourceID, layerID, layerID2) {

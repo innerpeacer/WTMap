@@ -1,5 +1,5 @@
 import {layerIdentifier, sourceIdentifier} from "./layer_identifier";
-import {extend, clone} from '../../utils/ip_util'
+import {extend, clone} from "../../../dependencies.js"
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
 let defaultCircleLayer = {

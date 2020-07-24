@@ -7,6 +7,7 @@
     "node": ">=6.4.0"
   },
   "dependencies": {
+    "@innerpeacer/ty-utils": "v1.1.0",
     "@innerpeacer/map-entity-base": "v1.0.0"
   },
   "devDependencies": {},

@@ -1,4 +1,4 @@
-import {clone} from '../utils/ip_util';
+import {clone} from "../../dependencies.js"
 
 const default_style = {
     'version': 8,
