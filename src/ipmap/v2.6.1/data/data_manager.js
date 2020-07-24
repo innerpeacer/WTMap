@@ -1,6 +1,4 @@
-import {Evented, http_request as IPHttpRequest, HttpEvent} from "../../dependencies.js";
-import {t_y_cbm_parser as CBMParser} from '../pbf-parse/t_y_cbm_parser';
-
+import {Evented, http_request as IPHttpRequest, HttpEvent, t_y_cbm_parser as CBMParser} from "../../dependencies.js";
 
 import InnerEventManager from "../utils/inner_event_manager"
 
