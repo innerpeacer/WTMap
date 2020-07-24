@@ -1,2 +1,2 @@
-let wtVersion = "v2.6.0";
+let wtVersion = "v2.6.1";
 export {wtVersion};
