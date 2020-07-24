@@ -1,13 +1,18 @@
 var IP_PROJECT_NAME = "WTMap";
 var IP_MAP_VERSION = "v2.6.0";
 
-var ipmapJSPath = '<script src="/' + IP_PROJECT_NAME + '/dist/wtmap-gl-' + IP_MAP_VERSION + '.js"></script>';
-var cssPath = '<link rel="stylesheet" type="text/css" href="/' + IP_PROJECT_NAME + '/dist/wtmap-gl-' + IP_MAP_VERSION + '.css"/>';
-document.write(ipmapJSPath);
-document.write(cssPath);
+injectScript(IP_PROJECT_NAME, IP_MAP_VERSION);
 
-var helperJSPath = '<script src="/' + IP_PROJECT_NAME + '/html/wtmap/js/helper.js"></script>';
-document.write(helperJSPath);
+function injectScript(projectName, version) {
+    console.log("injectScript: ", version);
+    var ipmapJSPath = '<script src="/' + projectName + '/dist/wtmap-gl-' + version + '.js"></script>';
+    var cssPath = '<link rel="stylesheet" type="text/css" href="/' + projectName + '/dist/wtmap-gl-' + version + '.css"/>';
+    document.write(ipmapJSPath);
+    document.write(cssPath);
 
-var defaultCssPath = '<link rel="stylesheet" type="text/css" href="/' + IP_PROJECT_NAME + '/html/wtmap/css/base.css"/>';
-document.write(defaultCssPath);
+    var helperJSPath = '<script src="/' + projectName + '/html/wtmap/js/helper.js"></script>';
+    document.write(helperJSPath);
+
+    var defaultCssPath = '<link rel="stylesheet" type="text/css" href="/' + projectName + '/html/wtmap/css/base.css"/>';
+    document.write(defaultCssPath);
+}

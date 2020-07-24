@@ -1,4 +1,4 @@
-import {version} from './config'
+import {version} from '../version.js'
 import WTMap from '../map/map'
 import {coord_projection as CoordProjection} from '../utils/coord_projection'
 import Turf from '../utils/ip_turf'

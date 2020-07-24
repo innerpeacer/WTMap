@@ -2,14 +2,11 @@ import fs from 'fs';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import {plugins} from './build/rollup_plugins';
 
-const ip_version = "v2.5.1";
+import {wtVersion as ip_version} from "../../ipmap/wt_version.js";
 
 const {BUILD, MINIFY} = process.env;
 const minified = MINIFY === 'true';
 const production = BUILD === 'production';
-// const outputFile =
-//     !production ? 'dist/mapbox-gl-dev.js' :
-//     minified ? 'dist/mapbox-gl.js' : 'dist/mapbox-gl-unminified.js';
 const outputFile =
     !production ? '../../../dist/wtmap-gl-dev.js' :
         minified ? '../../../dist/wtmap-gl-' + ip_version + '.js' : '../../../dist/wtmap-gl-' + ip_version + '.js';
@@ -25,8 +22,7 @@ export default [{
     // sources as strings, etc.
     input: ['src/index.js', 'src/source/worker.js'],
     output: {
-        // dir: 'rollup/build/mapboxgl',
-        dir: 'ip_rollup/build/ipmap-' + ip_version,
+        dir: 'ip_rollup/build/ipmap-wt',
         format: 'amd',
         sourcemap: 'inline',
         indent: false,
@@ -39,15 +35,14 @@ export default [{
     // into a single, final bundle. See rollup/bundle_prelude.js and
     // rollup/mapboxgl.js for details.
     // input: 'rollup/mapboxgl.js',
-    input: 'ip_rollup/ipmap-' + ip_version + '.js',
+    input: 'ip_rollup/ipmap-wt.js',
     output: {
         name: 'wtmap',
         file: outputFile,
         format: 'umd',
         sourcemap: production ? true : 'inline',
         indent: false,
-        intro: fs.readFileSync(require.resolve('./rollup/bundle_prelude.js'), 'utf8'),
-        // banner
+        intro: fs.readFileSync(require.resolve('./ip_rollup/bundle_prelude.js'), 'utf8'),
     },
     treeshake: false,
     plugins: [

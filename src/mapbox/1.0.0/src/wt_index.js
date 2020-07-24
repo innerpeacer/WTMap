@@ -5,7 +5,10 @@ import supported from '@mapbox/mapbox-gl-supported';
 
 // import { version } from '../package.json';
 import Map from './ui/map';
-import {
+
+import {wtExported} from "../../../ipmap/wt_export.js";
+
+let {
     version,
     WTMap,
     CoordProjection,
@@ -20,7 +23,7 @@ import {
     HttpRequest,
     Utils,
     GeojsonUtils,
-} from '../../../ipmap/v2.5.1/config/output'
+} = wtExported;
 
 import NavigationControl from './ui/control/navigation_control';
 import GeolocateControl from './ui/control/geolocate_control';
@@ -82,11 +85,11 @@ const exported = {
      * mapboxgl.accessToken = myAccessToken;
      * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
      */
-    get accessToken(): ?string {
+    get accessToken() {
         return config.ACCESS_TOKEN;
     },
 
-    set accessToken(token: string) {
+    set accessToken(token) {
         config.ACCESS_TOKEN = token;
     },
 
@@ -97,11 +100,11 @@ const exported = {
      * @example
      * mapboxgl.baseApiUrl = 'https://api.mapbox.com';
      */
-    get baseApiUrl(): ?string {
+    get baseApiUrl() {
         return config.API_URL;
     },
 
-    set baseApiUrl(url: string) {
+    set baseApiUrl(url) {
         config.API_URL = url;
     },
 
@@ -114,11 +117,11 @@ const exported = {
      * @example
      * mapboxgl.workerCount = 2;
      */
-    get workerCount(): number {
+    get workerCount() {
         return WorkerPool.workerCount;
     },
 
-    set workerCount(count: number) {
+    set workerCount(count) {
         WorkerPool.workerCount = count;
     },
 
@@ -130,11 +133,11 @@ const exported = {
      * @example
      * mapboxgl.maxParallelImageRequests = 10;
      */
-    get maxParallelImageRequests(): number {
+    get maxParallelImageRequests() {
         return config.MAX_PARALLEL_IMAGE_REQUESTS;
     },
 
-    set maxParallelImageRequests(numRequests: number) {
+    set maxParallelImageRequests(numRequests) {
         config.MAX_PARALLEL_IMAGE_REQUESTS = numRequests;
     },
 
