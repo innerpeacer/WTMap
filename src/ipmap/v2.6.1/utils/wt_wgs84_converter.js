@@ -1,4 +1,5 @@
-import {local_point as LocalPoint} from "../entity/local_point";
+import {local_point as LocalPoint} from "../../dependencies.js";
+
 import {coord_transform as CoordTransform} from "./coord_transform"
 
 class wt_wgs84_converter {

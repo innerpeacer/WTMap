@@ -2,19 +2,17 @@
   "name": "wtmap",
   "description": "wtmap library",
   "version": "1.0.0",
-  "repository": {
-  },
+  "repository": {},
   "engines": {
     "node": ">=6.4.0"
   },
   "dependencies": {
+    "@innerpeacer/map-entity-base": "v1.0.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
     "wt": "npm run build-wt-prod --prefix src/mapbox/1.0.0"
   },
-  "files": [
-  ]
+  "files": []
 }

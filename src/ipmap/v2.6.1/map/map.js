@@ -1,16 +1,17 @@
+import {
+    city as IPCity,
+    building as IPBuilding,
+    local_point as LocalPoint,
+    mapinfo as IPMapInfo,
+    fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
+} from "../../dependencies.js";
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
-
-import {city as IPCity} from '../entity/city'
-import {building as IPBuilding} from '../entity/building'
-import {mapinfo as IPMapInfo} from '../entity/mapinfo'
-import {fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol} from '../entity/symbol';
 
 import {data_manager as IPDataManager} from '../data/data_manager'
 
 import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
 
 import IndoorLayers from '../layers/indoor_layers'
-import {local_point as LocalPoint} from "../entity/local_point";
 import WtWgs84Converter from '../utils/wt_wgs84_converter'
 import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 

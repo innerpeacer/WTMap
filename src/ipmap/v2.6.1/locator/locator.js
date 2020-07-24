@@ -1,5 +1,5 @@
 import {Evented} from '../utils/ip_evented'
-import {local_point as LocalPoint} from '../entity/local_point';
+import {local_point as LocalPoint} from "../../dependencies.js";
 import GpsLocator from "./gps/gps_locator"
 import BleLocator from "./ble/ble_locator"
 import InnerEventManager from "../utils/inner_event_manager"

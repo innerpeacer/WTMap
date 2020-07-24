@@ -1,4 +1,4 @@
-import {local_point as LocalPoint} from '../entity/local_point'
+import {local_point as LocalPoint} from "../../dependencies.js";
 
 class beacon {
     constructor(uuid, major, minor) {

@@ -9,8 +9,8 @@ import IPRouteResult from './route_result'
 import IPMutliRouteResult from './multi_stop_route_result'
 import {http_request as IPHttpRequest} from "../utils/http_request";
 import {coord_projection as CoordProjection} from '../utils/coord_projection'
-import {local_point as IPLocalPoint} from '../entity/local_point'
-
+import {local_point as IPLocalPoint} from "../../dependencies.js";
+import {toStartParameter2, toEndParameter2, toStopParams} from "./route_utils";
 import InnerEventManager from "../utils/inner_event_manager"
 
 let RouteEvent = InnerEventManager.RouteEvent;
@@ -63,11 +63,11 @@ let getRoutePath = function (bID, options, start, end, stops, params) {
 
     let stopParams = null;
     if (stops != null && stops.length > 0) {
-        stopParams = IPLocalPoint.toStopParams(stops);
+        stopParams = toStopParams(stops);
     }
 
     // let url = `${options._apiRouteHost}/${options._apiRoute}/route/RouteService${routeVersion}?buildingID=${bID}&${start.toStartParameter2()}&${end.toEndParameter2()}&rearrangeStops=${rearrange}`;
-    let url = `${options._apiRouteHost}/${options._apiRoute}/route/routeService?buildingID=${bID}&${start.toStartParameter2()}&${end.toEndParameter2()}&rearrangeStops=${rearrange}`;
+    let url = `${options._apiRouteHost}/${options._apiRoute}/route/routeService?buildingID=${bID}&${toStartParameter2(start)}&${toEndParameter2(end)}&rearrangeStops=${rearrange}`;
     if (stopParams != null) {
         url += `&${stopParams}`;
     }
