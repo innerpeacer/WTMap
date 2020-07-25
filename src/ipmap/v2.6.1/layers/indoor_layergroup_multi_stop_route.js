@@ -1,5 +1,7 @@
-import ipTurf from '../utils/ip_turf'
-import {coord_projection as CoordProjection} from '../../dependencies.js'
+import {
+    coord_projection as CoordProjection,
+    IPTurf as ipTurf,
+} from '../../dependencies.js'
 import RouteLayerObject from './route_layer_object'
 import AnimationObject from '../utils/route_animation_object'
 

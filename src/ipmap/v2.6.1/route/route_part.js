@@ -1,4 +1,4 @@
-import ipTurf from '../utils/ip_turf'
+import {IPTurf as ipTurf} from "../../dependencies.js";
 
 class route_part {
     constructor(route, info, nodes) {

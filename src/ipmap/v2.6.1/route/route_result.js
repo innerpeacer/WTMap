@@ -1,4 +1,4 @@
-import ipTurf from '../utils/ip_turf'
+import {IPTurf as ipTurf} from "../../dependencies.js";
 
 let Point = ipTurf.point;
 let Bearing = ipTurf.bearing;
@@ -57,11 +57,12 @@ class route_result {
             }
             let line = rp.getGeometry();
 
-            let lineLength = ipTurf.lineDistance(line, 'meters');
-            line = ipTurf.lineSliceAlong(line, offset, lineLength, 'meters');
+            let lineLength = ipTurf.length(line, {units: 'meters'});
+            if (offset >= lineLength) continue;
+            line = ipTurf.lineSliceAlong(line, offset, lineLength, {units: 'meters'});
             if (line.geometry.coordinates.length === 2) continue;
 
-            let chunks = ipTurf.lineChunk(line, sliceLength2(zoom), 'meters');
+            let chunks = ipTurf.lineChunk(line, sliceLength2(zoom), {units: 'meters'});
             chunks.features.forEach(function (segment) {
                 let bearing = Bearing(segment.geometry.coordinates[0], segment.geometry.coordinates[1]);
                 arrowPoints.push(ipTurf.point(segment.geometry.coordinates[0], {angle: bearing, floor: floor}));
@@ -87,7 +88,7 @@ class route_result {
             features.forEach(function (rp) {
                 let line = rp.getGeometry();
                 let p = Point([location.x, location.y]);
-                let npOnLine = ipTurf.pointOnLine(line, p, 'meters');
+                let npOnLine = ipTurf.nearestPointOnLine(line, p, {units: 'meters'});
 
                 if (npOnLine.properties.dist < minDistance) {
                     minDistance = npOnLine.properties.dist;

@@ -2,8 +2,8 @@ import {
     Evented,
     http_request as IPHttpRequest, HttpEvent,
     coord_projection as CoordProjection,
+    IPTurf as ipTurf,
 } from "../../dependencies.js";
-import ipTurf from '../utils/ip_turf'
 
 let Point = ipTurf.point;
 let FeatureCollection = ipTurf.featureCollection;
