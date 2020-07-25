@@ -1,6 +1,10 @@
 import Parser from '../pbf-parse/t_y_beacon_parser';
-import {local_point as LocalPoint, Evented} from "../../../dependencies.js";
-import {locating_beacon as LocatingBeacon, scanned_beacon as ScannedBeacon} from '../beacon';
+import {
+    local_point as LocalPoint,
+    Evented,
+    locating_beacon as LocatingBeacon,
+    scanned_beacon as ScannedBeacon
+} from "../../../dependencies.js";
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
 import InnerEventManager from "../../utils/inner_event_manager"

@@ -4,6 +4,7 @@ export {
     local_point,
     mapinfo,
     fill_symbol, icon_text_symbol,
+    beacon, scanned_beacon, locating_beacon,
 } from "@innerpeacer/map-entity-base"
 
 export {
