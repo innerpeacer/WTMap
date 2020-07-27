@@ -1,10 +1,11 @@
-import {local_point as LocalPoint, Evented} from "../../dependencies.js";
+import {
+    local_point as LocalPoint, Evented,
+    BleLocator, BleEvent
+} from "../../dependencies.js";
 import GpsLocator from "./gps/gps_locator"
-import BleLocator from "./ble/ble_locator"
 import InnerEventManager from "../utils/inner_event_manager"
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
-let InnerBleEvent = InnerEventManager.BleEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 let status = {};
 let LocatorParams = {
@@ -71,13 +72,13 @@ class locator extends Evented {
         }
 
         this._bleLocator = new BleLocator(buildingID, options);
-        this._bleLocator.on(InnerBleEvent.BleReady, () => {
+        this._bleLocator.on(BleEvent.BleReady, () => {
             // console.log("ble ready");
             status._bleReady = true;
             this._processStatus();
         });
 
-        this._bleLocator.on(InnerBleEvent.BleFailed, () => {
+        this._bleLocator.on(BleEvent.BleFailed, () => {
             // console.log("ble failed");
             // console.log(error);
             status._bleReady = false;
@@ -250,7 +251,7 @@ class locator extends Evented {
 
     _didRangeBeacons(beacons) {
         this._newBleResult = true;
-        this._bleResult = this._bleLocator._didRangeBeacons(beacons);
+        this._bleResult = this._bleLocator.didRangeBeacons(beacons);
         if (this._bleResult && this._bleResult.location != null) {
             this._latestFloor = this._bleResult.location.floor;
         }

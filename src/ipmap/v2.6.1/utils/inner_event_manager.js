@@ -22,13 +22,6 @@ let GpsEvent = {
 };
 inner_event_manager.GpsEvent = GpsEvent;
 
-let BleEvent = {
-    BleReady: "inner-ble-ready",
-    BleFailed: "inner-ble-failed",
-    BleResult: "inner-ble-result"
-};
-inner_event_manager.BleEvent = BleEvent;
-
 let LocatorEvent = {
     LocatorReady: "inner-locator-ready",
     LocatorFailed: "innner-locator-failed",

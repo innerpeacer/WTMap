@@ -21,3 +21,8 @@ export {
     t_y_cbm_parser,
     t_y_beacon_parser,
 } from "@innerpeacer/map-pbf";
+
+export {
+    BleLocator,
+    BleEvent
+} from "@innerpeacer/locator";
