@@ -4,8 +4,8 @@ import {
     locating_beacon as LocatingBeacon,
     scanned_beacon as ScannedBeacon,
     t_y_beacon_parser as Parser,
+    geojson_utils as GeojsonUtils,
 } from "../../../dependencies.js";
-import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 
 import InnerEventManager from "../../utils/inner_event_manager"
 

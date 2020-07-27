@@ -12,6 +12,8 @@ export {
     Event, Evented, ErrorEvent,
     http_request, HttpEvent,
     coord_projection,
+    utils,
+    geojson_utils,
     IPTurf
 } from "@innerpeacer/ty-utils"
 

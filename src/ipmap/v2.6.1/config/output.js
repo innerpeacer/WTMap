@@ -4,6 +4,8 @@ import {
     http_request as HttpRequest,
     coord_projection as CoordProjection,
     IPTurf as Turf,
+    utils as Utils,
+    geojson_utils as GeojsonUtils,
 } from "../../dependencies.js";
 import {version} from '../version.js'
 import WTMap from '../map/map'
@@ -12,8 +14,6 @@ import {ip_agent_utils as AgentUtil} from "../utils/ip_agent_utils";
 import {custom_point_label_layer as CustomPointLabelLayer} from "../layers/custom/custom_point_label_layer";
 import {custom_segment_line_layer as CustomSegmentLineLayer} from "../layers/custom/custom_segment_line_layer";
 import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_trace_layer";
-import {utils as Utils} from "../utils/utils";
-import {geojson_utils as GeojsonUtils} from "../utils/geojson_utils";
 
 export {
     version,

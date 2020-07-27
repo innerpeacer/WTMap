@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@innerpeacer/map-pbf": "v1.0.1",
-    "@innerpeacer/ty-utils": "v1.1.1",
+    "@innerpeacer/ty-utils": "v1.1.2",
     "@innerpeacer/map-entity-base": "v1.0.1"
   },
   "devDependencies": {},
