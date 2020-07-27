@@ -7,7 +7,7 @@
     "node": ">=6.4.0"
   },
   "dependencies": {
-    "@innerpeacer/map-pbf": "v1.0.0",
+    "@innerpeacer/map-pbf": "v1.0.1",
     "@innerpeacer/ty-utils": "v1.1.1",
     "@innerpeacer/map-entity-base": "v1.0.1"
   },

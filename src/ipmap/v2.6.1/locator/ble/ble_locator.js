@@ -1,9 +1,9 @@
-import Parser from '../pbf-parse/t_y_beacon_parser';
 import {
     local_point as LocalPoint,
     Evented,
     locating_beacon as LocatingBeacon,
-    scanned_beacon as ScannedBeacon
+    scanned_beacon as ScannedBeacon,
+    t_y_beacon_parser as Parser,
 } from "../../../dependencies.js";
 import {geojson_utils as GeojsonUtils} from '../../utils/geojson_utils';
 

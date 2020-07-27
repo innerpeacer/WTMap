@@ -16,5 +16,6 @@ export {
 } from "@innerpeacer/ty-utils"
 
 export {
-    t_y_cbm_parser
+    t_y_cbm_parser,
+    t_y_beacon_parser,
 } from "@innerpeacer/map-pbf";

@@ -3,7 +3,7 @@
     <meta charset='utf-8'/>
     <title>WTMap-Locator</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
-    <script src="js/config-dev-2.5.1.js"></script>
+    <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
     <script src="vconsole.min.js"></script>
 </head>
@@ -155,9 +155,10 @@
     }
 
     function scan(data) {
-        // console.log("scan called");
-        // console.log(data);
-        map.didRangeBeacons(data);
+        console.log("scan called");
+        console.log(data);
+        let res = map.didRangeBeacons(data);
+        console.log(res);
 
         // var res = map.didRangeBeacons(data);
         // if (res && res.location) {
@@ -174,7 +175,7 @@
     function showHint(hint) {
         hintLabel.innerHTML = hint;
     }
-    
+
     function round(num, n) {
         return parseInt(num * Math.pow(10, n)) / Math.pow(10, n);
     }
