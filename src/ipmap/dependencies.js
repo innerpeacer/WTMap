@@ -26,3 +26,11 @@ export {
     BleLocator,
     BleEvent
 } from "@innerpeacer/locator";
+
+export {
+    MultiStopRouteManager,
+    MultiStopRouteResult,
+    RouteResult,
+    RoutePart,
+    RouteEvent
+} from "@innerpeacer/navigation";

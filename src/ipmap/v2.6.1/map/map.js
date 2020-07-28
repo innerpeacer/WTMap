@@ -4,12 +4,12 @@ import {
     local_point as LocalPoint,
     mapinfo as IPMapInfo,
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
+    MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
 } from "../../dependencies.js";
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
 
 import {data_manager as IPDataManager} from '../data/data_manager'
 
-import IPMultiStopRouteManager from '../route/multi_stop_route_manager'
 
 import IndoorLayers from '../layers/indoor_layers'
 import WtWgs84Converter from '../utils/wt_wgs84_converter'
@@ -109,10 +109,10 @@ class IPMap extends BoxMap {
 
 
         this._msRouteManager = new IPMultiStopRouteManager(options);
-        this._msRouteManager.on(InnerRouteEvent.RouteResult, function (result) {
+        this._msRouteManager.on(RouteEvent.RouteResult, function (result) {
             map.__routeReady(result);
         });
-        this._msRouteManager.on(InnerRouteEvent.RouteError, function (error) {
+        this._msRouteManager.on(RouteEvent.RouteError, function (error) {
             map.__routeError(error);
         });
 

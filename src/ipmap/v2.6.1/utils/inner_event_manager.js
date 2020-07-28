@@ -8,12 +8,6 @@ let DataEvent = {
 };
 inner_event_manager.DataEvent = DataEvent;
 
-let RouteEvent = {
-    RouteError: "inner-route-error",
-    RouteResult: "inner-route-result"
-};
-inner_event_manager.RouteEvent = RouteEvent;
-
 let GpsEvent = {
     GpsReady: "inner-gps-ready",
     GpsFailed: "inner-gps-failed",
