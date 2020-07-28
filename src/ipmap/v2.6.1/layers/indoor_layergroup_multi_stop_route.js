@@ -90,7 +90,7 @@ class indoor_layergroup_multi_stop_route {
         let wholeResult = multiResult.completeResult;
         if (wholeResult != null) {
             this.map.getSource(this.wholeRouteObject.sourceID).setData(wholeResult.data);
-            this.map.getSource(this.routeStopObject.sourceID).setData(multiResult.rearrengedStopData);
+            this.map.getSource(this.routeStopObject.sourceID).setData(multiResult.rearrangedStopData);
 
             routeAnimationObject.globalWholeRouteResult = wholeResult;
             routeAnimationObject.globalWholeRouteArrowSourceID = this.wholeArrowObject.sourceID;
