@@ -11,7 +11,7 @@
     "@innerpeacer/locator": "v1.0.0",
     "@innerpeacer/map-pbf": "v1.0.1",
     "@innerpeacer/ty-utils": "v1.1.2",
-    "@innerpeacer/map-entity-base": "v1.0.2"
+    "@innerpeacer/map-entity-base": "^1.0.2"
   },
   "devDependencies": {},
   "scripts": {

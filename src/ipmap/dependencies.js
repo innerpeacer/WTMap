@@ -5,6 +5,7 @@ export {
     mapinfo,
     fill_symbol, icon_text_symbol,
     beacon, scanned_beacon, locating_beacon,
+    cbm_data as CBMData,
 } from "@innerpeacer/map-entity-base"
 
 export {

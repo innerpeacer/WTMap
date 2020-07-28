@@ -5,11 +5,11 @@ import {
     mapinfo as IPMapInfo,
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
+    CBMData,
 } from "../../dependencies.js";
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
 
-import {data_manager as IPDataManager} from '../data/data_manager'
-
+import {getCBMPath, getTilePath} from "../data/path_manager"
 
 import IndoorLayers from '../layers/indoor_layers'
 import WtWgs84Converter from '../utils/wt_wgs84_converter'
@@ -29,8 +29,6 @@ let LocatorEvent = EventManager.LocatorEvent;
 import InnerEventManager from "../utils/inner_event_manager"
 import {extend} from "../../../mapbox/1.0.0/src/util/util";
 
-let InnerDataEvent = InnerEventManager.DataEvent;
-let InnerRouteEvent = InnerEventManager.RouteEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
 let defaultHost = window.location.protocol + '//' + window.location.host;
@@ -114,16 +112,6 @@ class IPMap extends BoxMap {
         });
         this._msRouteManager.on(RouteEvent.RouteError, function (error) {
             map.__routeError(error);
-        });
-
-        this._dataManager = new IPDataManager(this.resourceBuildingID, options);
-        this.on(InnerDataEvent.CBMReady, this.__cbmReady);
-        this._dataManager.on(InnerDataEvent.CBMReady, function (data) {
-            map.fire(InnerDataEvent.CBMReady, data);
-        });
-
-        this._dataManager.on(InnerDataEvent.CBMError, function (error) {
-            map.fire(MapEvent.Error, error);
         });
 
         // if (dataVersion) {
@@ -295,11 +283,13 @@ class IPMap extends BoxMap {
 
     _requestCBM() {
         // console.log('requestCBM');
-        if (this._options.usePbf) {
-            this._dataManager.getCBMPbf();
-        } else {
-            this._dataManager.getCBM();
-        }
+        let url = getCBMPath(this.resourceBuildingID, this._options);
+
+        CBMData.fetchCBM({url: url, usePbf: this._options.usePbf}, (data) => {
+            this.__cbmReady(data);
+        }, (error) => {
+            this.fire(MapEvent.Error, error);
+        });
     }
 
     __cbmReady(data) {
@@ -348,7 +338,7 @@ class IPMap extends BoxMap {
         let initBounds = maxInfo.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map.addSource('innerpeacer', {
-            'tiles': map._dataManager.getTilePath(),
+            'tiles': getTilePath(this.resourceBuildingID, this._options),
             'type': 'vector',
             'bounds': initBounds
         });

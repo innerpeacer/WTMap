@@ -2,12 +2,6 @@ class inner_event_manager {
 
 }
 
-let DataEvent = {
-    CBMReady: "inner-cbm-ready",
-    CBMError: "inner-cbm-error",
-};
-inner_event_manager.DataEvent = DataEvent;
-
 let GpsEvent = {
     GpsReady: "inner-gps-ready",
     GpsFailed: "inner-gps-failed",
