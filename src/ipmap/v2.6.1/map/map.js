@@ -1,4 +1,5 @@
 import {
+    extend,
     city as IPCity,
     building as IPBuilding,
     local_point as LocalPoint,
@@ -27,7 +28,6 @@ let MapEvent = EventManager.MapEvent;
 let LocatorEvent = EventManager.LocatorEvent;
 
 import InnerEventManager from "../utils/inner_event_manager"
-import {extend} from "../../../mapbox/1.0.0/src/util/util";
 
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
@@ -173,7 +173,7 @@ class IPMap extends BoxMap {
         this._layerGroup._showLocation(this.location, options);
         if (options && options.center) {
             if (targetFloor && targetFloor !== map.currentMapInfo.floorNumber) {
-                map._setFloorNumber(map.location.properties.floor, function () {
+                map.setFloor(map.location.properties.floor, function () {
                     map.easeTo({center: map.location});
                 });
             } else {
@@ -428,40 +428,22 @@ class IPMap extends BoxMap {
         this.setPaintProperty('background', 'background-color', color);
     }
 
-    _setFloorNumber(floor, outerCallback) {
-        let map = this;
-        map._outerFloorCallback = outerCallback;
-
-        let targetInfo = this._getInfoByFloorNumber(floor);
-        if (targetInfo == null) {
-            map.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
-            return;
-        }
-        map._loadFloorData({mapInfo: targetInfo}, {rezoom: false});
-    }
-
-    setFloor(floor, outerCallback) {
+    setFloor(floor, callback, errorCallback) {
         // console.log('setFloor: ' + floorID);
         let map = this;
         map._targetFloor = floor;
-        map._outerFloorCallback = outerCallback;
 
-        let targetInfo = null;
-        if (typeof floor === "number") {
-            targetInfo = this._getInfoByFloorNumber(floor);
-        } else if (typeof floor === "string") {
-            targetInfo = this._getInfoByFloorID(floor);
-        }
-
+        let targetInfo = IPMapInfo.searchMapInfo(this.mapInfoArray, floor);
         if (targetInfo == null) {
             map.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
+            errorCallback && errorCallback({'description': 'Floor not exist: ' + floor});
             return;
         }
 
-        map._loadFloorData({mapInfo: targetInfo});
+        map._loadFloorData({mapInfo: targetInfo}, null, callback);
     }
 
-    _loadFloorData(result, options) {
+    _loadFloorData(result, options, callback) {
         // console.log('_loadFloorData');
         let map = this;
         map.fire(MapEvent.FloorStart, {});
@@ -491,11 +473,7 @@ class IPMap extends BoxMap {
             }
 
             map.fire(MapEvent.FloorEnd, {mapInfo: result.mapInfo});
-
-            if (map._outerFloorCallback != null) {
-                map._outerFloorCallback();
-                map._outerFloorCallback = null;
-            }
+            callback && callback(result.mapInfo);
         });
     }
 
@@ -513,24 +491,6 @@ class IPMap extends BoxMap {
 
     getLayerIDs(subLayer) {
         return this._layerGroup.getLayerIDs(subLayer);
-    }
-
-    _getInfoByFloorID(floorID) {
-        let infoArray = this.mapInfoArray;
-        for (let i = 0; i < infoArray.length; ++i) {
-            let mapInfo = infoArray[i];
-            if (mapInfo.mapID === floorID) return mapInfo;
-        }
-        return null;
-    }
-
-    _getInfoByFloorNumber(floor) {
-        let infoArray = this.mapInfoArray;
-        for (let i = 0; i < infoArray.length; ++i) {
-            let mapInfo = infoArray[i];
-            if (mapInfo.floorNumber === floor) return mapInfo;
-        }
-        return null;
     }
 
     _hideLabels() {
