@@ -7,7 +7,7 @@
     "node": ">=6.4.0"
   },
   "dependencies": {
-    "@innerpeacer/navigation": "v1.0.0",
+    "@innerpeacer/navigation": "^1.0.0",
     "@innerpeacer/locator": "v1.0.0",
     "@innerpeacer/map-pbf": "v1.0.1",
     "@innerpeacer/ty-utils": "v1.1.2",

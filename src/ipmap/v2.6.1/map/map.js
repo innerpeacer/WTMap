@@ -107,12 +107,6 @@ class IPMap extends BoxMap {
 
 
         this._msRouteManager = new IPMultiStopRouteManager(options);
-        this._msRouteManager.on(RouteEvent.RouteResult, function (result) {
-            map.__routeReady(result);
-        });
-        this._msRouteManager.on(RouteEvent.RouteError, function (error) {
-            map.__routeError(error);
-        });
 
         // if (dataVersion) {
         //     CacheVersion.useVersion(dataVersion);
@@ -220,28 +214,6 @@ class IPMap extends BoxMap {
         this._layerGroup._switch3D(use3D);
     }
 
-    __routeError(error) {
-        if (this._outerRouteErrorCallback != null) {
-            this._outerRouteErrorCallback(error);
-        }
-    }
-
-    __routeReady(result) {
-        this._routeResult = result;
-        // console.log(result);
-        if (this._outerRouteCallback != null) this._outerRouteCallback({
-            startPoint: result.startPoint,
-            endPoint: result.endPoint,
-            startRoomID: result.startRoomID,
-            endRoomID: result.endRoomID,
-            stopPoints: result.stopPoints,
-            rearrangedPoints: result.rearrangedPoints,
-            indices: result.indices,
-            completeResult: result.completeResult,
-            detailedResult: result.detailedResult
-        });
-    }
-
     showRoute(location, segment) {
         // console.log('showRoute');
         let map = this;
@@ -262,9 +234,22 @@ class IPMap extends BoxMap {
     __requestRoute(start, end, stops, callback, errorCallback, params) {
         // console.log('__requestRoute');
         // console.log(stops);
-        this._outerRouteCallback = callback;
-        this._outerRouteErrorCallback = errorCallback;
-        this._msRouteManager.getRouteData(start, end, stops, callback, errorCallback, params);
+        this._msRouteManager.getRouteData(start, end, stops, (result) => {
+            this._routeResult = result;
+            callback && callback({
+                startPoint: result.startPoint,
+                endPoint: result.endPoint,
+                startRoomID: result.startRoomID,
+                endRoomID: result.endRoomID,
+                stopPoints: result.stopPoints,
+                rearrangedPoints: result.rearrangedPoints,
+                indices: result.indices,
+                completeResult: result.completeResult,
+                detailedResult: result.detailedResult
+            });
+        }, (error) => {
+            errorCallback && errorCallback(error);
+        }, params);
     }
 
     requestRoute(start, end, arg3, arg4, arg5, arg6) {
