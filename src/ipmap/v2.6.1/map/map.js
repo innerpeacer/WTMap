@@ -311,16 +311,8 @@ class IPMap extends BoxMap {
         // console.log('initBounds');
         // console.log(initBounds);
 
-        let maxInfo = new IPMapInfo(data['MapInfo'][0]);
-        for (let i = 0; i < map.mapInfoArray.length; ++i) {
-            let info = map.mapInfoArray[i];
-            maxInfo.mapExtent.xmin = Math.min(info.mapExtent.xmin, maxInfo.mapExtent.xmin);
-            maxInfo.mapExtent.ymin = Math.min(info.mapExtent.ymin, maxInfo.mapExtent.ymin);
-            maxInfo.mapExtent.xmax = Math.max(info.mapExtent.xmax, maxInfo.mapExtent.xmax);
-            maxInfo.mapExtent.ymax = Math.max(info.mapExtent.ymax, maxInfo.mapExtent.ymax);
-        }
-
-        let initBounds = maxInfo.getExtendedBounds2(0.2);
+        let buildingExtent = map.building.buildingExtent;
+        let initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map.addSource('innerpeacer', {
             'tiles': getTilePath(this.resourceBuildingID, this._options),
@@ -328,11 +320,8 @@ class IPMap extends BoxMap {
             'bounds': initBounds
         });
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        let maskingBounds = maxInfo.getExtendedBounds2(10);
-        let lng1 = maskingBounds[0];
-        let lat1 = maskingBounds[1];
-        let lng2 = maskingBounds[2];
-        let lat2 = maskingBounds[3];
+        let maskingBounds = buildingExtent.getExtendedBounds2(10);
+        let [lng1, lat1, lng2, lat2] = maskingBounds;
         let maskingData = {
             "type": "FeatureCollection",
             "features": [{
