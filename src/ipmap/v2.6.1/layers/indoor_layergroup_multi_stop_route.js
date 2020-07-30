@@ -32,7 +32,7 @@ function showAnimatedArrows(time) {
             while (routeAnimationObject.globalSegmentOffset > maxOffset) {
                 routeAnimationObject.globalSegmentOffset -= maxOffset;
             }
-            routeAnimationObject.globalMap.getSource(routeAnimationObject.globalSegmentRouteArrowSourceID).setData(routeAnimationObject.globalSegmentRouteResult.getArrowPoints(routeAnimationObject.globalMap.getZoom(), routeAnimationObject.globalSegmentOffset));
+            routeAnimationObject.globalMap.getSource(routeAnimationObject.globalSegmentRouteArrowSourceID).setData(routeAnimationObject.globalSegmentRouteResult.getGeojsonArrowPoints(routeAnimationObject.globalMap.getZoom(), routeAnimationObject.globalSegmentOffset));
         }
 
         if (routeAnimationObject.globalWholeRouteResult != null) {
@@ -41,7 +41,7 @@ function showAnimatedArrows(time) {
             while (routeAnimationObject.globalWholeOffset > maxOffset) {
                 routeAnimationObject.globalWholeOffset -= maxOffset;
             }
-            routeAnimationObject.globalMap.getSource(routeAnimationObject.globalWholeRouteArrowSourceID).setData(routeAnimationObject.globalWholeRouteResult.getArrowPoints(routeAnimationObject.globalMap.getZoom(), routeAnimationObject.globalWholeOffset));
+            routeAnimationObject.globalMap.getSource(routeAnimationObject.globalWholeRouteArrowSourceID).setData(routeAnimationObject.globalWholeRouteResult.getGeojsonArrowPoints(routeAnimationObject.globalMap.getZoom(), routeAnimationObject.globalWholeOffset));
         }
     }
     routeAnimationObject.globalAnimationID = requestAnimationFrame(showAnimatedArrows);
@@ -89,7 +89,7 @@ class indoor_layergroup_multi_stop_route {
 
         let wholeResult = multiResult.completeResult;
         if (wholeResult != null) {
-            this.map.getSource(this.wholeRouteObject.sourceID).setData(wholeResult.data);
+            this.map.getSource(this.wholeRouteObject.sourceID).setData(wholeResult.getGeojsonFeatures());
             this.map.getSource(this.routeStopObject.sourceID).setData(multiResult.rearrangedStopData);
 
             routeAnimationObject.globalWholeRouteResult = wholeResult;
@@ -100,7 +100,7 @@ class indoor_layergroup_multi_stop_route {
         if (segment != null) {
             segmentResult = multiResult.detailedResult[segment];
         }
-        this.map.getSource(this.segmentRouteObject.sourceID).setData(segmentResult.data);
+        this.map.getSource(this.segmentRouteObject.sourceID).setData(segmentResult.getGeojsonFeatures());
         routeAnimationObject.globalSegmentRouteResult = segmentResult;
         routeAnimationObject.globalSegmentRouteArrowSourceID = this.segmentArrowObject.sourceID;
 
@@ -119,7 +119,7 @@ class indoor_layergroup_multi_stop_route {
             let points = [];
             points.push(ipTurf.point([location.x, location.y]));
 
-            let npResult = segmentResult.getNearestPoint(location);
+            let npResult = segmentResult.getNearestGeojsonPoint(location);
             if (npResult != null) {
                 let targetPart = npResult.routePart;
                 let passedLineArray = [];
@@ -128,12 +128,12 @@ class indoor_layergroup_multi_stop_route {
                 routeParts.forEach(function (rp) {
                     if (rp.partIndex < targetPart.partIndex) {
                         passedRouteParts.push(rp);
-                        passedLineArray.push(rp.getGeometry());
+                        passedLineArray.push(rp.getGeojsonGeometry());
                     }
                 });
 
 
-                let sliced = ipTurf.lineSlice(ipTurf.point(targetPart.getFirstPoint()), npResult.point, targetPart.getGeometry());
+                let sliced = ipTurf.lineSlice(ipTurf.point(targetPart.getFirstPoint().getCoord()), npResult.point, targetPart.getGeojsonGeometry());
                 let allCoords = sliced.geometry.coordinates;
 
                 // Fix a bug here. Duplicate coordinates cause the segment disappear.
@@ -147,7 +147,7 @@ class indoor_layergroup_multi_stop_route {
                 }
 
                 sliced = ipTurf.lineString(allCoords);
-                sliced.properties = targetPart.getGeometry().properties;
+                sliced.properties = targetPart.getGeojsonGeometry().properties;
                 passedLineArray.push(sliced);
 
                 this.map.getSource(this.passedSegmentRouteObject.sourceID).setData(ipTurf.featureCollection(passedLineArray));
