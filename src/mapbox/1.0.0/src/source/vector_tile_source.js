@@ -168,10 +168,12 @@ class VectorTileSource extends Evented implements Source {
             pixelRatio: browser.devicePixelRatio,
             showCollisionBoxes: this.map.showCollisionBoxes,
         };
+        params.key = params.request.url;
+        params.request.url += "?t=" + Date.now();
         params.request.collectResourceTiming = this._collectResourceTiming;
 
         let that = this;
-        TileCacheDB.get(params.request.url, function (data) {
+        TileCacheDB.get(params.key, function (data) {
             params.rawData = data.data;
             if (tile.workerID === undefined || tile.state === 'expired') {
                 tile.workerID = that.dispatcher.send('loadTileFromCache', params, cacheDone.bind(that));
@@ -217,7 +219,7 @@ class VectorTileSource extends Evented implements Source {
                 if (this.map._refreshExpiredTiles && data) tile.setExpiryData(data);
                 tile.loadVectorData(data, this.map.painter);
 
-                TileCacheDB.put(params.request.url, data.rawTileData);
+                TileCacheDB.put(params.key, data.rawTileData);
                 callback(null);
 
                 if (tile.reloadCallback) {
@@ -251,7 +253,7 @@ class VectorTileSource extends Evented implements Source {
                 if (that.map._refreshExpiredTiles && data) tile.setExpiryData(data);
                 tile.loadVectorData(data, that.map.painter);
 
-                TileCacheDB.put(params.request.url, data.rawTileData);
+                TileCacheDB.put(params.key, data.rawTileData);
 
                 callback(null);
 
