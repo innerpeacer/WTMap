@@ -15,7 +15,9 @@
     console.log(wtmap);
     console.log(wtmap.version);
     console.log(wtmap.Navigation);
+    console.log(wtmap.WebSocketManager);
     let GpsEvent = wtmap.GpsEvent;
+    let SocketManager = wtmap.WebSocketManager;
     console.log(GpsEvent)
     var buildingID = "05372001";
     var use3D = true;
@@ -34,6 +36,11 @@
         console.log("BaseZoom: " + map.getBaseZoom());
         initFloorSwitch(map);
 
+        initGps();
+        initWebSocket();
+    });
+
+    function initGps() {
         let gpsManager = map.getGpsManager();
         gpsManager.on(GpsEvent.GpsFailed, () => {
             console.log(GpsEvent.GpsFailed);
@@ -47,7 +54,24 @@
             console.log(error);
         });
         gpsManager.startUpdateGps();
-    });
+    }
+
+    function initWebSocket() {
+        console.log('initWebSocket')
+        let userID = 'innerpeacer';
+        let socketUrl = 'wss://gis.cx9z.com/map-location/websocket/queryLocationSocket';
+        let url = socketUrl + "/" + userID + "/" + buildingID;
+        let socketManager = new SocketManager(url);
+        socketManager.startUseSocket();
+        socketManager.onMessage = (res) => {
+            console.log('onMessage');
+            let obj = JSON.parse(res.data);
+            console.log(obj);
+            let data = JSON.parse(obj.data);
+            console.log(data);
+            console.log(data.beacons);
+        };
+    }
 
 </script>
 

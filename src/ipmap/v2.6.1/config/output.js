@@ -7,6 +7,7 @@ import {
     utils as Utils,
     geojson_utils as GeojsonUtils,
     Navigation,
+    WebSocketManager,
 } from "../../dependencies.js";
 import {version} from '../version.js'
 import WTMap from '../map/map'
@@ -21,6 +22,7 @@ export {
     version,
     WTMap,
     Navigation,
+    WebSocketManager,
     CoordProjection,
     Turf,
     MapInfo,

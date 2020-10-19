@@ -13,6 +13,7 @@ let {
     WTMap,
     Navigation,
     CoordProjection,
+    WebSocketManager,
     Turf,
     MapInfo,
     LocalPoint,
@@ -52,6 +53,7 @@ const exported = {
 
     WTMap,
     Navigation,
+    WebSocketManager,
     CoordProjection,
     Turf,
     MapInfo,

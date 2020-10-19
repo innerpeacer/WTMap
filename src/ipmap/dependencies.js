@@ -17,6 +17,7 @@ export {
     wt_wgs84_converter,
     utils,
     geojson_utils,
+    WebSocketManager,
     IPTurf
 } from "@innerpeacer/ty-utils"
 
