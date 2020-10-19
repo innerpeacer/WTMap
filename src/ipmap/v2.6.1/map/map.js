@@ -7,16 +7,17 @@ import {
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
     CBMData,
+    wt_wgs84_converter as WtWgs84Converter,
 } from "../../dependencies.js";
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
 
 import {getCBMPath, getTilePath} from "../data/path_manager"
 
 import IndoorLayers from '../layers/indoor_layers'
-import WtWgs84Converter from '../utils/wt_wgs84_converter'
 import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
 
 import IndoorLocator from '../locator/locator'
+import {web_gps_updater} from "../locator/web_gps_updater";
 
 import {getStyle} from '../config/default_style'
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
@@ -53,7 +54,7 @@ const defaultOptions = {
     _useFile: true,
     _debugBeacon: false,
 
-    __disableGps: false,
+    __disableGps: true,
 };
 
 class IPMap extends BoxMap {
@@ -340,6 +341,9 @@ class IPMap extends BoxMap {
         };
         map._layerGroup._setMaskingData(maskingData);
         // map._layerGroup._updateLocator(map._locator);
+
+        map._gpsManager = new web_gps_updater(map._wtWgs84Converter);
+
         map.fire(MapEvent.MapReady);
 
         if (this._targetFloor != null) {
@@ -367,6 +371,10 @@ class IPMap extends BoxMap {
         map._locator.on(InnerLocatorEvent.LocationUpdateFailed, function (error) {
             map.fire(LocatorEvent.LocationUpdateFailed, error);
         });
+    }
+
+    getGpsManager() {
+        return this._gpsManager;
     }
 
     startLocating() {

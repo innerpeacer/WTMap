@@ -11,6 +11,7 @@ import {version} from '../version.js'
 import WTMap from '../map/map'
 import {ip_tile_coord as TileCoord} from '../utils/ip_tile_coord';
 import {ip_agent_utils as AgentUtil} from "../utils/ip_agent_utils";
+import {web_gps_updater, GpsEvent} from "../locator/web_gps_updater";
 import {custom_point_label_layer as CustomPointLabelLayer} from "../layers/custom/custom_point_label_layer";
 import {custom_segment_line_layer as CustomSegmentLineLayer} from "../layers/custom/custom_segment_line_layer";
 import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_trace_layer";
@@ -24,6 +25,8 @@ export {
     LocalPoint,
     TileCoord,
     AgentUtil,
+    web_gps_updater,
+    GpsEvent,
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
     CustomTraceLayer,

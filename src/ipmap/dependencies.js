@@ -13,6 +13,8 @@ export {
     Event, Evented, ErrorEvent,
     http_request, HttpEvent,
     coord_projection,
+    coord_transform,
+    wt_wgs84_converter,
     utils,
     geojson_utils,
     IPTurf

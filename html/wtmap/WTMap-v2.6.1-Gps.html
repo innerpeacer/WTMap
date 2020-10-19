@@ -1,0 +1,54 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>WTMap</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src="js/config-dev.js"></script>
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<div id='map'></div>
+
+<script>
+    console.log(wtmap);
+    console.log(wtmap.version);
+    let GpsEvent = wtmap.GpsEvent;
+    console.log(GpsEvent)
+    var buildingID = "05372001";
+    var use3D = true;
+
+    var map = new wtmap.WTMap({
+        container: 'map',
+        buildingID: buildingID,
+        use3D: use3D,
+    });
+
+    map.on("click", function (evt) {
+    });
+
+    map.on("mapready", function (evt) {
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
+        initFloorSwitch(map);
+
+        let gpsManager = map.getGpsManager();
+        gpsManager.on(GpsEvent.GpsFailed, () => {
+            console.log(GpsEvent.GpsFailed);
+        });
+        gpsManager.on(GpsEvent.GpsResult, (res) => {
+            console.log(GpsEvent.GpsResult);
+            console.log(res);
+        });
+        gpsManager.on(GpsEvent.GpsError, (error) => {
+            console.log(GpsEvent.GpsError);
+            console.log(error);
+        });
+        gpsManager.startUpdateGps();
+    });
+
+</script>
+
+</body>
+</html>
