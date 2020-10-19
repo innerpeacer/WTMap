@@ -6,6 +6,7 @@ import {
     IPTurf as Turf,
     utils as Utils,
     geojson_utils as GeojsonUtils,
+    Navigation,
 } from "../../dependencies.js";
 import {version} from '../version.js'
 import WTMap from '../map/map'
@@ -19,6 +20,7 @@ import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_tr
 export {
     version,
     WTMap,
+    Navigation,
     CoordProjection,
     Turf,
     MapInfo,

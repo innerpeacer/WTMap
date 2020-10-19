@@ -31,6 +31,7 @@ export {
 } from "@innerpeacer/locator";
 
 export {
+    Navigation,
     MultiStopRouteManager,
     MultiStopRouteResult,
     RouteResult,

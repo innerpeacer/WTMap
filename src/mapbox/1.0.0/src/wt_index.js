@@ -11,6 +11,7 @@ import {wtExported} from "../../../ipmap/wt_export.js";
 let {
     version,
     WTMap,
+    Navigation,
     CoordProjection,
     Turf,
     MapInfo,
@@ -50,6 +51,7 @@ const exported = {
     Map,
 
     WTMap,
+    Navigation,
     CoordProjection,
     Turf,
     MapInfo,
