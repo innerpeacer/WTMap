@@ -133,20 +133,17 @@
 
     function simulateLocation0() {
         console.log("simulateLocation0");
-        locationPoint = {x: currentPoint.lng, y: currentPoint.lat, floor: currentPoint.floor};
-        map.showRoute(locationPoint);
+        map.showRoute(currentPoint);
     }
 
     function simulateLocation1() {
         console.log("simulateLocation1");
-        locationPoint = {x: currentPoint.lng, y: currentPoint.lat, floor: currentPoint.floor};
-        map.showRoute(locationPoint, 1);
+        map.showRoute(currentPoint, 1);
     }
 
     function simulateLocation2() {
         console.log("simulateLocation2");
-        locationPoint = {x: currentPoint.lng, y: currentPoint.lat, floor: currentPoint.floor};
-        map.showRoute(locationPoint, 2);
+        map.showRoute(currentPoint, 2);
     }
 
 
