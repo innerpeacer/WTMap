@@ -14,6 +14,7 @@
 <div id='map'></div>
 
 <script>
+    console.log(wtmap);
     var buildingID = getParameter("buildingID");
     if (buildingID == null) buildingID = "00270003";
 
@@ -71,7 +72,7 @@
         initFloorSwitch(map);
         initLayers(map);
         showParams();
-        console.clear();
+        // console.clear();
     });
 
     map.on("error", function (error) {

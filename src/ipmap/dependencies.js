@@ -33,6 +33,8 @@ export {
 
 export {
     Navigation,
+    SimulatedNavigation,
+    NavigationEvent, NavigationHintType,
     MultiStopRouteManager,
     MultiStopRouteResult,
     RouteResult,

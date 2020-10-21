@@ -7,6 +7,8 @@ import {
     utils as Utils,
     geojson_utils as GeojsonUtils,
     Navigation,
+    SimulatedNavigation,
+    NavigationEvent, NavigationHintType,
     WebSocketManager,
 } from "../../dependencies.js";
 import {version} from '../version.js'
@@ -22,6 +24,9 @@ export {
     version,
     WTMap,
     Navigation,
+    SimulatedNavigation,
+    NavigationEvent,
+    NavigationHintType,
     WebSocketManager,
     CoordProjection,
     Turf,
