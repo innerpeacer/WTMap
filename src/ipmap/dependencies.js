@@ -40,5 +40,5 @@ export {
     RouteResult,
     RoutePart,
     RouteEvent
-} from "@innerpeacer/navigation";
-// } from "../../../TY/navigation/index.js";
+// } from "@innerpeacer/navigation";
+} from "../../../TY/navigation/index.js";

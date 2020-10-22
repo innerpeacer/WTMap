@@ -13,7 +13,7 @@ if (targetVersion != null) {
     wtVersion = targetVersion;
 }
 
-document.title = "WTMap-" + wtVersion;
+document.title = document.title + "-" + wtVersion;
 injectScript(IP_PROJECT_NAME, wtVersion);
 
 function injectScript(projectName, version) {
