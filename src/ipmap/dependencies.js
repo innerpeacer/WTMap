@@ -35,10 +35,11 @@ export {
     Navigation,
     SimulatedNavigation,
     NavigationEvent, NavigationHintType,
+    Directions,
     MultiStopRouteManager,
     MultiStopRouteResult,
     RouteResult,
     RoutePart,
     RouteEvent
-// } from "@innerpeacer/navigation";
-} from "../../../TY/navigation/index.js";
+} from "@innerpeacer/navigation";
+// } from "../../../TY/navigation/index.js";

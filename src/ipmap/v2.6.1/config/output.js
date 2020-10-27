@@ -9,6 +9,7 @@ import {
     Navigation,
     SimulatedNavigation,
     NavigationEvent, NavigationHintType,
+    Directions,
     WebSocketManager,
 } from "../../dependencies.js";
 import {version} from '../version.js'
@@ -27,6 +28,7 @@ export {
     SimulatedNavigation,
     NavigationEvent,
     NavigationHintType,
+    Directions,
     WebSocketManager,
     CoordProjection,
     Turf,

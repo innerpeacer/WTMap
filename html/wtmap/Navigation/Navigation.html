@@ -16,7 +16,7 @@
 <div id='map'>
 </div>
 <div id="progress-container">
-    <img src="images/direction_continue_left.png" width="64" height="64">
+    <img id="direction" src="" width="64" height="64">
     <label id="progress"></label>
 </div>
 
@@ -39,9 +39,42 @@
 
 <script>
     console.log(wtmap);
-    let {LocalPoint, NavigationEvent, NavigationHintType} = wtmap;
+    let {LocalPoint, NavigationEvent, NavigationHintType, Directions} = wtmap;
     let buildingID = getParameter("buildingID");
     if (buildingID == null) buildingID = "00270007";
+
+    let directionImg = document.getElementById('direction');
+
+    function getDirectionImg(direction) {
+        let img = '';
+        switch (direction) {
+            case Directions.Straight:
+                img = 'images/direction_continue_straight.png';
+                break;
+            case Directions.RightForward:
+                img = 'images/direction_continue_slight_right.png';
+                break;
+            case Directions.TurnRight:
+                img = 'images/direction_continue_right.png';
+                break;
+            case Directions.RightBackward:
+                img = 'images/direction_new_name_sharp_right.png';
+                break;
+            case Directions.UTurn:
+                img = 'images/direction_continue_uturn.png';
+                break;
+            case Directions.LeftBackward:
+                img = 'images/direction_new_name_sharp_left.png';
+                break;
+            case Directions.TurnLeft:
+                img = 'images/direction_continue_left.png';
+                break;
+            case Directions.LeftForward:
+                img = 'images/direction_continue_slight_left.png';
+                break;
+        }
+        return img;
+    }
 
     let progressText = document.getElementById('progress');
     let hintText = document.getElementById('hint');
@@ -118,6 +151,7 @@
         simulatedNavigation.loadRoute(navigationRoute);
         isSimulatedNavigation = true;
         simulatedNavigation.start();
+        map.setZoom(19);
     }
 
     let isNavigationStarted = false;
@@ -142,20 +176,46 @@
         isUsingSample = !isUsingSample;
     }
 
+    let _currentCenter = null;
+
     function progressCallback(evt) {
         // console.log('Progress: ', evt.description);
         // console.log(evt);
+        if (evt.hintType === NavigationHintType.WillArrive) {
+            directionImg.src = 'images/direction_arrive.png';
+        }
+
         if (evt.hintType === NavigationHintType.DidSwitchFloor) {
+            // console.log('DidSwitchFloor')
             console.log(evt);
             if (map.currentMapInfo.floorNumber != evt.floor.floorNumber) {
                 map.setFloor(evt.floor);
             }
+            console.log(evt.part.routeLineString.geometry.coordinates);
+            console.log(evt.part.getBounds());
+            map.fitBounds(evt.part.getBounds(), {padding: 40});
         }
 
         if (evt.hintType === NavigationHintType.Along || evt.hintType === NavigationHintType.Turn || evt.hintType === NavigationHintType.PreTurn) {
+            // console.log(evt);
+            directionImg.src = getDirectionImg(evt.direction);
             if (isSimulatedNavigation) {
+                if (_currentCenter == null) {
+                    _currentCenter = evt.snappedLocation;
+                    map.setCenter(_currentCenter.getCoord());
+                } else {
+                    if (_currentCenter.distanceTo(evt.snappedLocation) > 15) {
+                        _currentCenter = evt.snappedLocation;
+                        map.setCenter(_currentCenter.getCoord());
+                    }
+                }
+
+                if (evt.snappedWayPoint.length > 10) {
+                    map.setBearing(evt.bearing);
+                }
+                // map.setCenter(evt.snappedLocation.getCoord());
                 map.showRoute(evt.snappedLocation);
-                map.showLocation(evt.snappedLocation);
+                map.showLocation(evt.snappedLocation, {angle: -evt.bearing});
             }
         }
         progressText.innerText = evt.description;
