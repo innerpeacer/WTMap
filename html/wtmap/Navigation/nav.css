@@ -1,3 +1,48 @@
+#realtime-progress-container {
+    position: absolute;
+    /*width: 100%;*/
+    border-radius: 10px;
+    background: rgba(100, 100, 100, .2);
+    padding: 10px;
+    right: 10px;
+    left: 10px;
+    top: 10px;
+}
+
+#realtime-controls-container {
+    position: absolute;
+    /*width: 200px;*/
+    width: 40%;
+    /*height: 200px;*/
+    border-radius: 10px;
+    background: rgba(100, 100, 100, .2);
+    padding: 10px;
+    left: 10px;
+    bottom: 50px;
+}
+
+#realtime-hint-container {
+    position: absolute;
+    /*width: 300px;*/
+    width: 40%;
+    /*height: 200px;*/
+    border-radius: 10px;
+    background: rgba(255, 100, 100, .5);
+    padding: 10px;
+    right: 10px;
+    bottom: 50px;
+    max-height: 70%;
+    overflow-y: scroll;
+}
+
+#status {
+    display: inline-block;
+    border-radius: 2px;
+    /*border: 1px solid grey;*/
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
 #progress-container {
     position: absolute;
     width: 300px;
@@ -35,6 +80,8 @@
 
 button {
     height: 26px;
+    border-radius: 5px;
+    margin-bottom: 5px;
 }
 
 #hint {

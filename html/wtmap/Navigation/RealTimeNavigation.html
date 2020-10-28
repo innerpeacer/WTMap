@@ -1,0 +1,362 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>实时导航</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+
+    <script src="/WTMap/dist/wtmap-gl-v2.6.1.js"></script>
+    <script src="/WTMap/html/wtmap/js/helper.js"></script>
+    <script src="/WTMap/html/wtmap/MultiRouteHelper.js"></script>
+    <script src="/WTMap/html/wtmap/Navigation/audio_utils.js"></script>
+    <link href="/WTMap/html/wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
+    <link href="/WTMap/html/wtmap/css/base.css" rel="stylesheet" type="text/css">
+    <link href="/WTMap/html/wtmap/Navigation/nav.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<div id='map'></div>
+<div id="realtime-progress-container">
+    <img id="direction" src="" width="64" height="64">
+    <label id="progress"></label>
+</div>
+<div id="realtime-hint-container">
+    <label id="hint"></label>
+</div>
+<div id="realtime-controls-container">
+    <label id="status">Status</label>
+    <br>
+    <button type="button" onclick="switchFloor()">楼层切换</button>
+    <button type="button" onclick="setLocationAsStart()">定位为起点</button>
+    <br>
+    <button type="button" onclick="setStart()">设为起点</button>
+    <button type="button" onclick="setEnd()">设为终点</button>
+    <br>
+    <button type="button" onclick="requestRoute()">请求路径</button>
+    <button type="button" onclick="startNavigation()">开始导航</button>
+    <br>
+    <button id="switchBtn" type="button" onclick="switchLocationSource()"></button>
+</div>
+<script>
+    console.log(wtmap.version);
+    let {LocalPoint, NavigationEvent, NavigationHintType, Directions, WebSocketManager} = wtmap;
+    let userID = 'a';
+    let buildingID = "00270007";
+    // let buildingID = "00278880";
+
+    let statusLabel = document.getElementById('status');
+    let directionImg = document.getElementById('direction');
+
+    function getDirectionImg(direction) {
+        let img = '';
+        switch (direction) {
+            case Directions.Straight:
+                img = 'images/direction_continue_straight.png';
+                break;
+            case Directions.RightForward:
+                img = 'images/direction_continue_slight_right.png';
+                break;
+            case Directions.TurnRight:
+                img = 'images/direction_continue_right.png';
+                break;
+            case Directions.RightBackward:
+                img = 'images/direction_new_name_sharp_right.png';
+                break;
+            case Directions.UTurn:
+                img = 'images/direction_continue_uturn.png';
+                break;
+            case Directions.LeftBackward:
+                img = 'images/direction_new_name_sharp_left.png';
+                break;
+            case Directions.TurnLeft:
+                img = 'images/direction_continue_left.png';
+                break;
+            case Directions.LeftForward:
+                img = 'images/direction_continue_slight_left.png';
+                break;
+        }
+        return img;
+    }
+
+    let progressText = document.getElementById('progress');
+    let hintText = document.getElementById('hint');
+    let hintArray = [];
+
+    let isLocal = false;
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    const _Cx9zHost = 'https://gis.cx9z.com';
+    let Settings = {
+        _apiHost: defaultHost,
+        _apiPath: 'backend-new',
+        _apiRouteHost: defaultHost,
+        _apiRoute: "map-server",
+        _resourceRootDir: 'backend-map/V4',
+        sprite: defaultHost + '/backend-map/V4/sprites/2.5.1/WTMapSprite',
+        glyphs: defaultHost + '/backend-map/V4/glyphs/{fontstack}/{range}.pbf',
+    };
+    if (defaultHost === 'http://localhost:8112') {
+        isLocal = true;
+        Settings = {
+            _apiHost: defaultHost,
+            _apiPath: 'WTMapService',
+            _apiRouteHost: defaultHost,
+            _apiRoute: 'WTRouteService',
+            _resourceRootDir: 'WTMapResource',
+        }
+    }
+    Settings.container = 'map';
+    Settings.buildingID = buildingID;
+
+    var map = new wtmap.WTMap(Settings);
+
+    let currentPoint;
+    map.on("click", function (evt) {
+        let lngLat = evt.lngLat;
+        currentPoint = LocalPoint.fromLngLat({
+            lng: lngLat.lng,
+            lat: lngLat.lat,
+            floor: map.currentMapInfo.floorNumber
+        });
+        console.log(currentPoint);
+
+        if (isNavigationStarted && isLocal) {
+            // if (isNavigationStarted) {
+            let res = navigation.updateLocation(currentPoint);
+            if (res && res.snappedLocation) {
+                map.showRoute(res.snappedLocation);
+                map.showLocation(res.snappedLocation);
+            }
+        }
+
+        map.getSource("hint").setData(createStartEndData(currentPoint));
+    });
+
+    map.on("mapready", function (evt) {
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
+        // initFloorSwitch(map);
+
+        initLayers(map);
+        initGps();
+    });
+</script>
+
+<script>
+    let socketManager;
+    let bleLocationCount = 0;
+    let currentBleLocation = null;
+
+    function initSocket() {
+        console.log('initSocket');
+        let url = "wss:gis.cx9z.com" + '/map-location/websocket/queryLocationSocket/' + userID + '/' + buildingID;
+        console.log(url);
+        socketManager = new WebSocketManager(url, {
+            onOpen: () => {
+                // console.log('on open');
+            },
+            onClose: () => {
+                console.log('on close');
+                map.hideLocation();
+            },
+            onMessage: (event) => {
+                let res = JSON.parse(event.data);
+                // console.log(res);
+                if (res.code === 0 && res.data !== null) {
+                    let content = JSON.parse(res.data);
+                    // console.log(content);
+                    console.log(content.ble);
+                    bleLocationCount++;
+                    if (content.ble && !isUsingGps) {
+                        currentBleLocation = LocalPoint.fromXY(content.ble);
+                        if (isNavigationStarted) {
+                            let res = navigation.updateLocation(currentBleLocation);
+                            if (res && res.snappedLocation) {
+                                map.showRoute(res.snappedLocation);
+                                map.showLocation(res.snappedLocation);
+                            }
+                        } else {
+                            map.showLocation(currentBleLocation);
+                        }
+                    }
+                    statusLabel.innerText = "Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+                }
+            }
+        });
+        socketManager.startUseSocket();
+    }
+
+    initSocket();
+</script>
+
+<script>
+    let GpsEvent = wtmap.GpsEvent;
+    let currentGpsLocation;
+    let gpsLocationCount = 0;
+
+    function initGps() {
+        let gpsManager = map.getGpsManager();
+        gpsManager.on(GpsEvent.GpsFailed, () => {
+            // console.log(GpsEvent.GpsFailed);
+        });
+        gpsManager.on(GpsEvent.GpsResult, (res) => {
+            // console.log(GpsEvent.GpsResult);
+            // console.log(res.location);
+            currentGpsLocation = LocalPoint.fromLngLat(res.location);
+            if (isUsingGps) {
+                if (isNavigationStarted) {
+                    let res = navigation.updateLocation(currentGpsLocation);
+                    if (res && res.snappedLocation) {
+                        map.showRoute(res.snappedLocation);
+                        map.showLocation(res.snappedLocation);
+                    }
+                } else {
+                    map.showLocation(currentGpsLocation);
+                }
+            }
+            gpsLocationCount++;
+            statusLabel.innerText = "Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+        });
+        gpsManager.on(GpsEvent.GpsError, (error) => {
+            // console.log(GpsEvent.GpsError);
+            // console.log(error);
+        });
+        gpsManager.startUpdateGps();
+    }
+</script>
+
+<script>
+    function switchFloor() {
+        console.log('switchFloor');
+    }
+
+    let stopPoints = [];
+    let startPoint = LocalPoint.fromXY({
+        x: 12727949.681106735,
+        y: 3575461.362442086,
+        floor: 1
+    });
+
+    function setStart() {
+        console.log('setStart');
+        startPoint = currentPoint;
+        showParams();
+    }
+
+    function setLocationAsStart() {
+        startPoint = isUsingGps ? currentGpsLocation : currentBleLocation;
+        showParams();
+    }
+
+    let endPoint = LocalPoint.fromXY({
+        x: 12728412.847571956,
+        y: 3575210.4437046284,
+        floor: 1
+    });
+
+    function setEnd() {
+        console.log('setEnd');
+        endPoint = currentPoint;
+        showParams();
+    }
+
+    function showParams() {
+        map.getSource("params").setData(createParamData(stopPoints));
+        map.getSource("startEnd").setData(createStartEndData(startPoint, endPoint));
+    }
+</script>
+
+<script>
+    let navigationRoute;
+
+    function requestRoute() {
+        showParams();
+
+        map.requestRoute(startPoint, endPoint, stopPoints, function (routeResult) {
+            console.log("routeResult");
+            console.log(routeResult);
+            navigationRoute = routeResult;
+            map.showRoute();
+        }, function (error) {
+            console.log("route error callback");
+            console.log(error);
+        });
+
+    }
+
+    let navigation = new wtmap.Navigation({});
+    navigation.on(NavigationEvent.Progress, progressCallback);
+    navigation.on(NavigationEvent.Hint, hintCallback);
+    navigation.on(NavigationEvent.DeviatingRoute, deviatingCallback);
+    let isNavigationStarted = false;
+
+    function startNavigation() {
+        console.log('startNavigation');
+        console.log('startNavigation');
+        navigation.loadRoute(navigationRoute);
+        navigation.start();
+        isNavigationStarted = true;
+    }
+
+    let progressIndex = 0;
+
+    function progressCallback(evt) {
+        // console.log('Progress: ', evt.description);
+        // console.log(evt);
+        progressIndex++;
+        if (evt.hintType === NavigationHintType.WillArrive) {
+            directionImg.src = 'images/direction_arrive.png';
+        }
+
+        if (evt.hintType === NavigationHintType.DidSwitchFloor) {
+            // console.log('DidSwitchFloor')
+            console.log(evt);
+            if (map.currentMapInfo.floorNumber != evt.floor.floorNumber) {
+                map.setFloor(evt.floor);
+            }
+            console.log(evt.part.routeLineString.geometry.coordinates);
+            console.log(evt.part.getBounds());
+            map.fitBounds(evt.part.getBounds(), {padding: 40});
+        }
+
+        if (evt.hintType === NavigationHintType.Along || evt.hintType === NavigationHintType.Turn || evt.hintType === NavigationHintType.PreTurn) {
+            // console.log(evt);
+            directionImg.src = getDirectionImg(evt.direction);
+        }
+        progressText.innerText = progressIndex + ": " + evt.description;
+    }
+
+    function deviatingCallback() {
+        console.log("deviatingCallback");
+        window.alert("偏离导航路线");
+    }
+
+    let hintIndex = 0;
+
+    function hintCallback(evt) {
+        // console.log(evt);
+        hintArray.push(++hintIndex + ": " + evt.description);
+        if (hintArray.length > 5) hintArray.shift();
+        hintText.innerText = hintArray.join('\n');
+        playAudio(evt.description);
+    }
+
+</script>
+
+<script>
+    let switchButton = document.getElementById('switchBtn');
+    let isUsingGps = true;
+
+    function updateSwitchButton() {
+        switchButton.innerHTML = '切换定位(当前' + (isUsingGps ? 'GPS' : "BLE") + ')';
+    }
+
+    function switchLocationSource() {
+        console.log('switchLocationSource');
+        isUsingGps = !isUsingGps;
+        updateSwitchButton();
+    }
+
+    updateSwitchButton();
+</script>
+</body>
+</html>
