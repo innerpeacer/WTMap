@@ -12,9 +12,9 @@ const GpsEventCode = {
 };
 
 const DefaultGpsOptions = {
-    enableHighAcuracy: true,
-    timeout: 5000,
-    maximumAge: 3000
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
 };
 
 class web_gps_updater extends Evented {
