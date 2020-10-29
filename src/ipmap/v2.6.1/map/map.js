@@ -37,9 +37,10 @@ const defaultOptions = {
     _apiHost: defaultHost,
     _apiRouteHost: defaultHost,
 
-    _apiPath: "WTMapService",
-    _apiRoute: "WTRouteService",
-    _resourceRootDir: "WTMapResource",
+    _apiPath: "backend-new",
+    _apiRoute: "map-server",
+    _resourceRootDir: "backend-map/V4",
+    spriteName: 'WTMapSprite',
 
     localIdeographFontFamily: false,
     // maxZoom: 22,
@@ -64,7 +65,8 @@ class IPMap extends BoxMap {
         options = extend({}, defaultOptions, options);
         if (options._cbmPath == null) options._cbmPath = defaultHost + options._apiPath + '/web/GetCBM';
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
-        options.style = getStyle(options._apiHost, options.sprite, options.glyphs);
+        if (options._apiRouteHost == null && options._apiHost != null) options._apiRouteHost = options._apiHost;
+        options.style = getStyle(options._apiHost, options._resourceRootDir, options.spriteName);
 
         super(options);
         this._options = options;

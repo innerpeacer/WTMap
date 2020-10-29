@@ -14,6 +14,7 @@ import {
 } from "../../dependencies.js";
 import {version} from '../version.js'
 import WTMap from '../map/map'
+import {debug_options} from "./debug_options";
 import {ip_tile_coord as TileCoord} from '../utils/ip_tile_coord';
 import {ip_agent_utils as AgentUtil} from "../utils/ip_agent_utils";
 import {web_gps_updater, GpsEvent} from "../locator/web_gps_updater";
@@ -24,6 +25,7 @@ import {custom_trace_layer as CustomTraceLayer} from "../layers/custom/custom_tr
 export {
     version,
     WTMap,
+    debug_options as DebugOptions,
     Navigation,
     SimulatedNavigation,
     NavigationEvent,

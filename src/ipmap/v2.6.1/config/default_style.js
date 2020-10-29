@@ -4,8 +4,6 @@ const default_style = {
     'version': 8,
     'name': 'WTMap',
     'sources': {},
-    'sprite': '/WTMapResource/sprites/WTMapSprite',
-    'glyphs': '/WTMapResource/glyphs/{fontstack}/{range}.pbf',
     'layers': [],
     'light': {
         'anchor': 'viewport',
@@ -14,10 +12,10 @@ const default_style = {
     },
 };
 
-function getStyle(host, sprite, glyphs) {
+function getStyle(host, resourceRoot, spriteName) {
     let style = clone(default_style);
-    style.sprite = sprite ? sprite : (host + style.sprite);
-    style.glyphs = glyphs ? glyphs : (host + style.glyphs);
+    style.sprite = `${host}/${resourceRoot}/sprites/${spriteName}`;
+    style.glyphs = `${host}/${resourceRoot}/glyphs/{fontstack}/{range}.pbf`;
     return style;
 }
 
