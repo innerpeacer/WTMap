@@ -13,16 +13,21 @@
 
 <script>
     console.log(wtmap.version);
-    var buildingID = "00270003";
+    console.log(wtmap.Utils);
+    var buildingID = "00270007";
     var use3D = true;
     // use3D = false;
 
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
         use3D: use3D,
-        // _dataVersion: "v5",
-    });
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
 
     var isEnglish = false;
     var ttt;

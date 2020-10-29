@@ -82,32 +82,43 @@
     let hintText = document.getElementById('hint');
     let hintArray = [];
 
+    // let isLocal = false;
+    // let defaultHost = window.location.protocol + '//' + window.location.host;
+    // const _Cx9zHost = 'https://gis.cx9z.com';
+    // let Settings = {
+    //     _apiHost: defaultHost,
+    //     _apiPath: 'backend-new',
+    //     _apiRouteHost: defaultHost,
+    //     _apiRoute: "map-server",
+    //     _resourceRootDir: 'backend-map/V4',
+    //     sprite: defaultHost + '/backend-map/V4/sprites/WTMapSprite',
+    //     glyphs: defaultHost + '/backend-map/V4/glyphs/{fontstack}/{range}.pbf',
+    // };
+    // if (defaultHost === 'http://localhost:8112') {
+    //     isLocal = true;
+    //     Settings = {
+    //         _apiHost: defaultHost,
+    //         _apiPath: 'WTMapService',
+    //         _apiRouteHost: defaultHost,
+    //         _apiRoute: 'WTRouteService',
+    //         _resourceRootDir: 'WTMapResource',
+    //     }
+    // }
+    // Settings.container = 'map';
+    // Settings.buildingID = buildingID;
+
     let isLocal = false;
-    let defaultHost = window.location.protocol + '//' + window.location.host;
-    const _Cx9zHost = 'https://gis.cx9z.com';
-    let Settings = {
-        _apiHost: defaultHost,
-        _apiPath: 'backend-new',
-        _apiRouteHost: defaultHost,
-        _apiRoute: "map-server",
-        _resourceRootDir: 'backend-map/V4',
-        sprite: defaultHost + '/backend-map/V4/sprites/2.5.1/WTMapSprite',
-        glyphs: defaultHost + '/backend-map/V4/glyphs/{fontstack}/{range}.pbf',
+    let mapOptions = {
+        container: 'map',
+        buildingID: buildingID,
     };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
     if (defaultHost === 'http://localhost:8112') {
         isLocal = true;
-        Settings = {
-            _apiHost: defaultHost,
-            _apiPath: 'WTMapService',
-            _apiRouteHost: defaultHost,
-            _apiRoute: 'WTRouteService',
-            _resourceRootDir: 'WTMapResource',
-        }
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    Settings.container = 'map';
-    Settings.buildingID = buildingID;
 
-    var map = new wtmap.WTMap(Settings);
+    var map = new wtmap.WTMap(mapOptions);
 
     let currentPoint;
     map.on("click", function (evt) {

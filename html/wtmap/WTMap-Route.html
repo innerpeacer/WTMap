@@ -43,12 +43,17 @@
     var locationPoint;
 
     console.log(wtmap.WTMap);
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
 //        use3D: false,
         floorID: "00270003F01",
-    });
+    }
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
     console.log(map);
 
     map.showTileBoundaries = true;

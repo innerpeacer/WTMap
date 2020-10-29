@@ -90,12 +90,16 @@
     let locationPoint;
 
     console.log(wtmap.WTMap);
-    let map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
-//        use3D: false,
-        floorID: "00270007F01",
-    });
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        isLocal = true;
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    let map = new wtmap.WTMap(mapOptions);
     map.on("click", function (evt) {
         let lngLat = evt.lngLat;
         currentPoint = LocalPoint.fromLngLat({
