@@ -135,7 +135,9 @@
             let res = navigation.updateLocation(currentPoint);
             if (res && res.snappedLocation) {
                 map.showRoute(res.snappedLocation);
-                map.showLocation(res.snappedLocation);
+                // map.showLocation(res.snappedLocation);
+                res.originalLocation.angle = 90;
+                map.showLocations([res.snappedLocation, res.originalLocation]);
             }
         }
 
@@ -183,7 +185,9 @@
                             let res = navigation.updateLocation(currentBleLocation);
                             if (res && res.snappedLocation) {
                                 map.showRoute(res.snappedLocation);
-                                map.showLocation(res.snappedLocation);
+                                // map.showLocation(res.snappedLocation);
+                                res.originalLocation.angle = 90;
+                                map.showLocations([res.snappedLocation, res.originalLocation]);
                             }
                         } else {
                             map.showLocation(currentBleLocation);
@@ -218,7 +222,9 @@
                     let res = navigation.updateLocation(currentGpsLocation);
                     if (res && res.snappedLocation) {
                         map.showRoute(res.snappedLocation);
-                        map.showLocation(res.snappedLocation);
+                        // map.showLocation(res.snappedLocation);
+                        res.originalLocation.angle = 90;
+                        map.showLocations([res.snappedLocation, res.originalLocation]);
                     }
                 } else {
                     map.showLocation(currentGpsLocation);
@@ -242,8 +248,8 @@
 
     let stopPoints = [];
     let startPoint = LocalPoint.fromXY({
-        x: 12727949.681106735,
-        y: 3575461.362442086,
+        x: 12738331.152030248,
+        y: 3582479.2943908214,
         floor: 1
     });
 
@@ -259,8 +265,8 @@
     }
 
     let endPoint = LocalPoint.fromXY({
-        x: 12728412.847571956,
-        y: 3575210.4437046284,
+        x: 12738398.313480735,
+        y: 3582711.6200009286,
         floor: 1
     });
 

@@ -157,17 +157,11 @@ class IPMap extends BoxMap {
 
     showLocation(location, options) {
         // console.log('indoor_layer.showLocation');
-        let loc = {};
-        if (location && location.lng && location.lat) {
-            loc = LocalPoint.fromLngLat(location);
-        } else if (location && location.x && location.y) {
-            loc = LocalPoint.fromXY(location);
-        } else {
-            return;
-        }
+        let loc = LocalPoint.fromObj(location);
+        if (!loc) return;
         let angle = -1 * (options && options.angle) || 0;
         loc.properties = {
-            angle: angle,
+            angle: angle || location.angle,
             floor: location.floor
         };
         let map = this;
@@ -183,6 +177,24 @@ class IPMap extends BoxMap {
                 map.easeTo({center: map.location});
             }
         }
+    };
+
+    showLocations(locations) {
+        // console.log('indoor_layer.showLocation');
+        if (locations == null) return;
+        let lpArray = [];
+        for (let i = 0; i < locations.length; ++i) {
+            let location = locations[i];
+            let lp = LocalPoint.fromObj(location);
+            if (lp) {
+                lp.properties = {
+                    angle: location.angle || 0,
+                    floor: location.floor
+                };
+                lpArray.push(lp);
+            }
+        }
+        this._layerGroup._showLocations(lpArray);
     };
 
     hideLocation() {

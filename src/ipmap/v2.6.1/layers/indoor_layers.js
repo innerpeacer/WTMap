@@ -198,6 +198,10 @@ class indoor_layers {
         this._locationLayer._showLocation(location);
     }
 
+    _showLocations(locations) {
+        this._locationLayer._showLocations(locations);
+    }
+
     _hideLocation() {
         this._locationLayer._hideLocation();
     }
