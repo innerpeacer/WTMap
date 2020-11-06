@@ -24,7 +24,7 @@ class indoor_layer_location extends IndoorGroupLayer {
         {
             let layerID = `${subLayerName}-symbol`;
             let layer = extend({id: layerID, source: this.sourceID}, clone(defaultSymbolLayer));
-            layer.layout['icon-image'] = 'icon_location';
+            layer.layout['icon-image'] = ['case', ['has', 'location-icon'], ['get', 'location-icon'], 'icon_location'];
             this.styleLayers[layerID] = layer;
         }
     }

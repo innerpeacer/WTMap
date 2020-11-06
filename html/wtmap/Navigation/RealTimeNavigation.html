@@ -136,7 +136,10 @@
             if (res && res.snappedLocation) {
                 map.showRoute(res.snappedLocation);
                 // map.showLocation(res.snappedLocation);
-                res.originalLocation.angle = 90;
+                res.originalLocation.properties = {angle: 90};
+                res.snappedLocation.properties = {
+                    'location-icon': 'icon_atm_normal'
+                }
                 map.showLocations([res.snappedLocation, res.originalLocation]);
             }
         }

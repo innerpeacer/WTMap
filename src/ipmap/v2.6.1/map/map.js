@@ -159,11 +159,12 @@ class IPMap extends BoxMap {
         // console.log('indoor_layer.showLocation');
         let loc = LocalPoint.fromObj(location);
         if (!loc) return;
-        let angle = -1 * (options && options.angle) || 0;
-        loc.properties = {
-            angle: angle || location.angle,
+        loc.properties = extend({}, location.properties, {
             floor: location.floor
-        };
+        });
+        if (options && options.angle != null) {
+            loc.properties.angle = -options.angle;
+        }
         let map = this;
         let targetFloor = location.floor;
         this.location = loc;
@@ -187,10 +188,9 @@ class IPMap extends BoxMap {
             let location = locations[i];
             let lp = LocalPoint.fromObj(location);
             if (lp) {
-                lp.properties = {
-                    angle: location.angle || 0,
+                lp.properties = extend({}, location.properties, {
                     floor: location.floor
-                };
+                });
                 lpArray.push(lp);
             }
         }

@@ -117,8 +117,8 @@ class custom_trace_layer {
     }
 
     showTraceData(tracePoints) {
-        console.log("showTraceData");
-        console.log(tracePoints);
+        // console.log("showTraceData");
+        // console.log(tracePoints);
 
         let pointGeojson = GeojsonUtils.createPointFeatureCollection(tracePoints);
         this.map.getSource(this.tracePointSourceID).setData(pointGeojson);
