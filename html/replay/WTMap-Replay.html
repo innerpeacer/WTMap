@@ -1,0 +1,232 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>Replay</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+
+    <script src="../../dist/wtmap-gl-v2.6.1.js"></script>
+    <link href="../../dist/wtmap-gl-v2.6.1.css" rel="stylesheet" type="text/css">
+    <script src="js/helper.js"></script>
+    <script src="js/replay_helper.js"></script>
+    <script src="js/data_process.js"></script>
+    <link href="css/floor-switch.css" rel="stylesheet" type="text/css">
+    <link href="css/base.css" rel="stylesheet" type="text/css">
+    <link href="css/replay.css" rel="stylesheet" type="text/css">
+    <!--    <script src="data/sample.js"></script>-->
+    <script src="data/sample2.js"></script>
+</head>
+<body>
+
+<div id='map'></div>
+<div id='params-container'>
+    <label id="params">Params</label>
+</div>
+<div id="hint-container">
+    <label id="hint">Hint</label>
+</div>
+<div id="controls-container">
+    <label>Sample Index:</label><label id="currentIndex"></label><br>
+    <label id="minIndex"></label>
+    <input id="range" oninput="rangeChange(this)" onchange="rangeChange(this)" type="range" name="points" value="0"
+           min="0" max="100" step="1"/>
+    <label id="maxIndex"></label>
+    <br>
+    <button onclick="showNextPoint()" type="button">Replay(1)</button>
+    <button onclick="replay10()" type="button">Replay(10)</button>
+    <br>
+    <button onclick="toggleTrace()" type="button">显示/隐藏轨迹</button>
+    <!--    <button onclick="setEnd()" type="button">设为终点</button>-->
+    <!--    <br>-->
+    <!--    <button onclick="requestRoute()" type="button">请求路径</button>-->
+    <!--    <button onclick="hideRoute()" type="button">隐藏路径</button>-->
+    <!--    <br>-->
+    <!--    <button onclick="startNavigation()" type="button">开始导航</button>-->
+    <!--    <button onclick="stopNavigation()" type="button">停止导航</button>-->
+    <!--    <button onclick="useSamplePoint()" type="button">使用采样点</button>-->
+    <!--    <br>-->
+    <!--    <button onclick="startSimulatedNavigation()" type="button">模拟导航</button>-->
+</div>
+
+<script>
+    let currentIndex = 0;
+
+    let layers = null;
+    let dataArray = [];
+    let modifiedDataArray = [];
+
+</script>
+
+<script>
+    let paramLabel = document.getElementById('params');
+    let hintLabel = document.getElementById('hint');
+    let rangeControl = document.getElementById('range')
+    rangeControl.value = 0;
+
+    let minIndexLabel = document.getElementById('minIndex');
+    let maxIndexLabel = document.getElementById('maxIndex');
+    let currentIndexLabel = document.getElementById('currentIndex');
+
+    function rangeChange(evt) {
+        console.log('rangeChange')
+        console.log(evt)
+        console.log(evt.value)
+        currentIndex = evt.value;
+        dataArray = [];
+        modifiedDataArray = [];
+        showReplayData([], [])
+        currentIndexLabel.innerHTML = currentIndex + '';
+    }
+</script>
+<script>
+    console.log(wtmap.version);
+    console.log(wtmap.Utils);
+    let sampleList = samples.bleList;
+    console.log("Sample Count: ", sampleList.length);
+    rangeControl.max = sampleList.length - 1;
+
+    minIndexLabel.innerHTML = 0 + '';
+    maxIndexLabel.innerHTML = (sampleList.length - 1) + '';
+
+    paramLabel.innerHTML = `参数：<br>采样点个数:${sampleList.length}<br>最大时间间隔:${ProcessParams.MaxTimeInterval}s<br>默认漂移速度:${ProcessParams.speed}`;
+
+    // var buildingID = "00270007";
+    var buildingID = "02502002";
+    // var buildingID = "05712010";
+    var use3D = true;
+    // use3D = false;
+
+    let mapOptions = {
+        container: 'map',
+        buildingID: buildingID,
+        _debugBeacon: true,
+        use3D: use3D,
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
+
+    map.on("click", function (evt) {
+        // setInterval(replay, 100);
+    });
+
+    let startTime = null;
+    let lastTimeStamp = null;
+
+    let currentModifiedLocation = null;
+
+    function showSample(sampleIndex) {
+        let sample = sampleList[sampleIndex];
+        let sampleTimestamp = sample.timestamp;
+        if (lastTimeStamp == null) {
+            startTime = sampleTimestamp
+            lastTimeStamp = sampleTimestamp
+            console.log("Start: ", sampleTimestamp);
+        } else {
+            let delta = sampleTimestamp - lastTimeStamp;
+            // console.log("Delta: ", (delta).toFixed(1), "s");
+            let date = new Date(sampleTimestamp * 1000);
+            // console.log(date);
+            let hintStr = 'Index: ' + sampleIndex + ', \n'
+            hintStr += '时间: ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '\n';
+            hintStr += '相对间隔: ' + (sampleTimestamp - startTime).toFixed(1) + 's \n';
+            hintStr += '时间间隔: ' + delta.toFixed(1) + 's \n';
+            hintStr += 'Beacon数: ' + sample.beacons.length
+            // console.log("Index: ", sampleIndex, ", \n时间: ", (sampleTimestamp - startTime).toFixed(1), "s， 间隔: ", (delta).toFixed(1), "s, Beacon数: ", sample.beacons.length);
+            lastTimeStamp = sampleTimestamp
+            // showHint("Index: ", sampleIndex, ", \n时间: ", (sampleTimestamp - startTime).toFixed(1), "s， 间隔: ", (delta).toFixed(1), "s, Beacon数: ", sample.beacons.length);
+            showHint(hintStr);
+        }
+        // console.log(sample)
+        let res = map.didRangeBeacons(sample.beacons);
+        if (res && res.location) {
+            // map.showLocation(res.location);
+            // map.showLocation(sample.location)
+            let currentOriginalLocation = res.location;
+            currentOriginalLocation.index = sampleIndex;
+            currentOriginalLocation.timestamp = sample.timestamp;
+            currentOriginalLocation.properties = {
+                // 'location-icon': 'icon_location_circle'
+            };
+            dataArray.push(currentOriginalLocation)
+            if (currentModifiedLocation == null || Math.abs(currentModifiedLocation.timestamp - currentOriginalLocation.timestamp) > ProcessParams.MaxTimeInterval) {
+                currentModifiedLocation = wtmap.LocalPoint.fromXY(currentOriginalLocation)
+                console.log('reset')
+            } else {
+                console.log('modify')
+                currentModifiedLocation = calculateModifiedLocation(currentModifiedLocation, currentOriginalLocation)
+            }
+            currentModifiedLocation.timestamp = currentOriginalLocation.timestamp;
+            currentModifiedLocation.index = sampleIndex;
+            currentModifiedLocation.properties = {
+                'location-icon': 'icon_location_course',
+                'angle': currentModifiedLocation.angle
+            };
+            modifiedDataArray.push(currentModifiedLocation);
+
+            map.showLocations([currentOriginalLocation, currentModifiedLocation])
+            // map.showLocations([currentModifiedLocation])
+            showReplayData(dataArray, modifiedDataArray);
+        }
+        // console.log(res);
+    }
+
+
+    function replay() {
+        // console.log('replay');
+        if (index < sampleList.length) {
+            showSample(index++)
+        }
+    }
+
+    map.on("mapready", function (evt) {
+        console.log("mapready");
+        console.log("BaseZoom: " + map.getBaseZoom());
+        map.fitBounds([[118.753009, 32.195824], [118.753854, 32.196112]]);
+        initFloorSwitch(map);
+
+        layers = initReplayLayers(map);
+
+    });
+
+    map.on("floorend", () => {
+        map.fitBounds([[118.753009, 32.195824], [118.753854, 32.196112]]);
+    })
+
+    let isTraceShown = true;
+
+    function toggleTrace() {
+        isTraceShown = !isTraceShown;
+        setLayerVisible(map, isTraceShown)
+    }
+
+
+    function showHint(...str) {
+        // console.log(str)
+        // console.log(str.join('').replace('\n', '<br>'))
+        hintLabel.innerHTML = str.join('').replace(/\n/g, '<br>');
+    }
+</script>
+
+<script>
+    function showNextPoint() {
+        // console.log('showNextPoint')
+        currentIndex++;
+        if (currentIndex >= sampleList.length) {
+            return;
+        }
+        showSample(currentIndex);
+        currentIndexLabel.innerHTML = currentIndex + '';
+        rangeControl.value = currentIndex;
+    }
+
+    function replay10() {
+        for (let i = 0; i < 10; ++i) {
+            showNextPoint();
+        }
+    }
+</script>
+
+</body>
+</html>
