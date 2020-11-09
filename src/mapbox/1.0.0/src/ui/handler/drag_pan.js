@@ -128,7 +128,7 @@ class DragPanHandler {
     _onMove(e) {
         e.preventDefault();
 
-        if (this._map.oneFingerZoom.isActive()) return;
+        // if (this._map.oneFingerZoom.isActive()) return;
 
         const pos = DOM.mousePos(this._el, e);
         if (this._lastPos.equals(pos) || (this._state === 'pending' && pos.dist(this._mouseDownPos) < this._clickTolerance)) {

@@ -113,7 +113,7 @@ const defaultOptions = {
     dragPan: true,
     keyboard: true,
     doubleClickZoom: true,
-    oneFingerZoom: true,
+    oneFingerZoom: false,
     touchZoomRotate: true,
 
     bearingSnap: 7,
