@@ -44,7 +44,7 @@ const ProcessParams = {
 function calculateModifiedLocation(lastModified, currentOriginal) {
     let deltaTime = Math.abs(currentOriginal.timestamp - lastModified.timestamp);
     deltaTime = deltaTime < 3 ? 3 : deltaTime;
-    console.log('delta: ', deltaTime);
+    // console.log('delta: ', deltaTime);
     let limitedRange = deltaTime * ProcessParams.speed;
     let vec = new Vector2(currentOriginal.x - lastModified.x, currentOriginal.y - lastModified.y);
     let vecLength = vec.length();

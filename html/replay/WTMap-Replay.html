@@ -13,7 +13,8 @@
     <link href="css/base.css" rel="stylesheet" type="text/css">
     <link href="css/replay.css" rel="stylesheet" type="text/css">
     <!--    <script src="data/sample.js"></script>-->
-    <script src="data/sample2.js"></script>
+    <!--    <script src="data/sample2.js"></script>-->
+    <script src="data/sample3.js"></script>
 </head>
 <body>
 
@@ -48,7 +49,8 @@
 </div>
 
 <script>
-    let currentIndex = 0;
+    // let currentIndex = 0;
+    let currentIndex = 235;
 
     let layers = null;
     let dataArray = [];
@@ -149,12 +151,11 @@
             currentOriginalLocation.properties = {
                 // 'location-icon': 'icon_location_circle'
             };
-            dataArray.push(currentOriginalLocation)
             if (currentModifiedLocation == null || Math.abs(currentModifiedLocation.timestamp - currentOriginalLocation.timestamp) > ProcessParams.MaxTimeInterval) {
                 currentModifiedLocation = wtmap.LocalPoint.fromXY(currentOriginalLocation)
-                console.log('reset')
+                // console.log('reset')
             } else {
-                console.log('modify')
+                // console.log('modify')
                 currentModifiedLocation = calculateModifiedLocation(currentModifiedLocation, currentOriginalLocation)
             }
             currentModifiedLocation.timestamp = currentOriginalLocation.timestamp;
@@ -163,6 +164,7 @@
                 'location-icon': 'icon_location_course',
                 'angle': currentModifiedLocation.angle
             };
+            dataArray.push(currentOriginalLocation)
             modifiedDataArray.push(currentModifiedLocation);
 
             map.showLocations([currentOriginalLocation, currentModifiedLocation])
