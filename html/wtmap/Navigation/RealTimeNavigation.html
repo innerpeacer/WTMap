@@ -40,8 +40,12 @@
 <script>
     console.log(wtmap.version);
     let {LocalPoint, NavigationEvent, NavigationHintType, Directions, WebSocketManager} = wtmap;
-    let userID = 'a';
-    let buildingID = "00270007";
+
+    let userID = getParameter('userID');
+    if (userID == null) userID = 'innerpeacer';
+    let buildingID = getParameter('buildingID');
+    if (buildingID == null) buildingID = "00270007";
+    document.title = userID;
     // let buildingID = "00278880";
 
     let statusLabel = document.getElementById('status');
@@ -175,14 +179,15 @@
                 map.hideLocation();
             },
             onMessage: (event) => {
+                console.log('on message')
                 let res = JSON.parse(event.data);
-                // console.log(res);
+                console.log(res);
                 if (res.code === 0 && res.data !== null) {
                     let content = JSON.parse(res.data);
                     // console.log(content);
                     console.log(content.ble);
-                    bleLocationCount++;
                     if (content.ble && !isUsingGps) {
+                        bleLocationCount++;
                         currentBleLocation = LocalPoint.fromXY(content.ble);
                         if (isNavigationStarted) {
                             let res = navigation.updateLocation(currentBleLocation);
@@ -196,7 +201,12 @@
                             map.showLocation(currentBleLocation);
                         }
                     }
-                    statusLabel.innerText = "Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+                    if (content.gps && map._wtWgs84Converter) {
+                        console.log('wx gps: ', content.gps)
+                        currentWxGpsLocation = LocalPoint.fromLngLat(map._wtWgs84Converter.convertGPS(content.gps));
+                        wxGpsLocationCount++;
+                    }
+                    statusLabel.innerText = "WxGgps: " + wxGpsLocationCount + ", Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
                 }
             }
         });
@@ -209,7 +219,9 @@
 <script>
     let GpsEvent = wtmap.GpsEvent;
     let currentGpsLocation;
+    let currentWxGpsLocation;
     let gpsLocationCount = 0;
+    let wxGpsLocationCount = 0;
 
     function initGps() {
         let gpsManager = map.getGpsManager();
@@ -230,11 +242,16 @@
                         map.showLocations([res.snappedLocation, res.originalLocation]);
                     }
                 } else {
-                    map.showLocation(currentGpsLocation);
+                    if (currentWxGpsLocation != null) {
+                        currentWxGpsLocation.properties = {
+                            angle: 90
+                        }
+                    }
+                    map.showLocations([currentGpsLocation, currentWxGpsLocation]);
                 }
             }
             gpsLocationCount++;
-            statusLabel.innerText = "Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+            statusLabel.innerText = "WxGgps: " + wxGpsLocationCount + ", Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
         });
         gpsManager.on(GpsEvent.GpsError, (error) => {
             // console.log(GpsEvent.GpsError);
