@@ -28,4 +28,7 @@ function injectScript(projectName, version) {
 
     var defaultCssPath = '<link rel="stylesheet" type="text/css" href="/' + projectName + '/html/wtmap/css/base.css"/>';
     document.write(defaultCssPath);
+
+    var floorSwitchCssPath = '<link rel="stylesheet" type="text/css" href="/' + projectName + '/html/wtmap/css/floor-switch.css" >';
+    document.write(floorSwitchCssPath)
 }
