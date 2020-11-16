@@ -98,8 +98,28 @@ class custom_segment_line_layer {
         this.lineSymbolLayer.layout[prop] = value;
     }
 
+    updateLineProperty(type, prop, value) {
+        if (type === 'paint') {
+            this.map.setPaintProperty(this.lineLayerID, prop, value);
+        } else if (type === 'layout') {
+            this.map.setLayoutProperty(this.lineLayerID, prop, value);
+        }
+    }
+
+    updateTextProperty(type, prop, value) {
+        if (type === 'paint') {
+            this.map.setPaintProperty(this.lineSymbolLayerID, prop, value);
+        } else if (type === 'layout') {
+            this.map.setLayoutProperty(this.lineSymbolLayerID, prop, value);
+        }
+    }
+
     showLineData(data) {
         let geojson = GeojsonUtils.createLineFeatureCollection(data);
+        this.map.getSource(this.lineSourceID).setData(geojson);
+    }
+
+    showGeojsonData(geojson) {
         this.map.getSource(this.lineSourceID).setData(geojson);
     }
 }

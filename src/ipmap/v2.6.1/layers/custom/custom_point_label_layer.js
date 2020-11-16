@@ -43,6 +43,14 @@ class custom_point_label_layer {
         this.labelSymbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
     }
 
+    cloneWithName(name) {
+        let layer = new custom_point_label_layer(name);
+        layer.labelCircleLayer.paint = clone(this.labelCircleLayer.paint);
+        layer.labelSymbolLayer.paint = clone(this.labelSymbolLayer.paint);
+        layer.labelSymbolLayer.layout = clone(this.labelSymbolLayer.layout);
+        return layer;
+    }
+
     addToMap(map) {
         this.map = map;
         this.map.addSource(this.labelSourceID, this.labelSource);
@@ -61,6 +69,10 @@ class custom_point_label_layer {
 
     showLabelData(data) {
         let geojson = GeojsonUtils.createPointFeatureCollection(data);
+        this.map.getSource(this.labelSourceID).setData(geojson);
+    }
+
+    showGeojsonData(geojson) {
         this.map.getSource(this.labelSourceID).setData(geojson);
     }
 
@@ -84,12 +96,32 @@ class custom_point_label_layer {
         this.labelCircleLayer.paint["circle-radius"] = radius;
     }
 
+    setCirclePaintProperty(prop, value) {
+        this.labelCircleLayer.paint[prop] = value;
+    }
+
     setTextPaintProperty(prop, value) {
         this.labelSymbolLayer.paint[prop] = value;
     }
 
     setTextLayoutProperty(prop, value) {
         this.labelSymbolLayer.layout[prop] = value;
+    }
+
+    updateCircleProperty(type, prop, value) {
+        if (type === 'paint') {
+            this.map.setPaintProperty(this.labelCircleLayerID, prop, value);
+        } else if (type === 'layout') {
+            this.map.setLayoutProperty(this.labelCircleLayerID, prop, value);
+        }
+    }
+
+    updateTextProperty(type, prop, value) {
+        if (type === 'paint') {
+            this.map.setPaintProperty(this.labelSymbolLayerID, prop, value);
+        } else if (type === 'layout') {
+            this.map.setLayoutProperty(this.labelSymbolLayerID, prop, value);
+        }
     }
 
     setFilter(filter) {
