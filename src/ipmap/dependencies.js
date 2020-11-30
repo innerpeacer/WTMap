@@ -27,7 +27,7 @@ export {
 } from "@innerpeacer/map-pbf";
 
 export {
-    BleLocator,
+    WebBleLocator,
     BleEvent
 } from "@innerpeacer/locator";
 

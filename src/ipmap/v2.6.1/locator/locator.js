@@ -1,6 +1,6 @@
 import {
     local_point as LocalPoint, Evented,
-    BleLocator, BleEvent
+    WebBleLocator as BleLocator, BleEvent
 } from "../../dependencies.js";
 import GpsLocator from "./gps/gps_locator"
 import InnerEventManager from "../utils/inner_event_manager"
@@ -251,7 +251,8 @@ class locator extends Evented {
 
     _didRangeBeacons(beacons) {
         this._newBleResult = true;
-        this._bleResult = this._bleLocator.didRangeBeacons(beacons);
+        this._bleLocator._didRangeBeacons(beacons);
+        this._bleResult = this._bleLocator.calculateLocation();
         if (this._bleResult && this._bleResult.location != null) {
             this._latestFloor = this._bleResult.location.floor;
         }
