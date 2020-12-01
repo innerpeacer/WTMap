@@ -46,6 +46,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
 
             if (symbol.iconVisible) {
                 layer.layout['icon-image'] = ['concat', ['get', 'ICON'], '_normal'];
+                layer.layout['icon-anchor'] = 'bottom';
                 layer.layout['icon-size'] = symbol.iconSize;
             }
 
@@ -56,7 +57,10 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 layer.layout['text-size'] = symbol.textSize;
                 if (symbol.iconVisible) {
                     layer.layout['text-variable-anchor'] = ['top', 'bottom', 'left', 'right'];
-                    layer.layout['text-radial-offset'] = 0.8;
+                    layer.layout['icon-anchor'] = 'bottom';
+                    layer.layout['text-radial-offset'] = 0.9;
+                    layer.paint['text-translate'] = [0, -12];
+                    layer.paint['text-translate-anchor'] = 'viewport';
                     layer.layout['text-justify'] = 'auto';
                 } else {
                     layer.layout['text-anchor'] = 'center';
