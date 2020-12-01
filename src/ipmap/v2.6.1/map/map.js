@@ -163,7 +163,7 @@ class IPMap extends BoxMap {
             floor: location.floor
         });
         if (options && options.angle != null) {
-            loc.properties.angle = -options.angle;
+            loc.properties.angle = options.angle;
         }
         let map = this;
         let targetFloor = location.floor;
