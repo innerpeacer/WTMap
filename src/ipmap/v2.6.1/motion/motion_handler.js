@@ -1,5 +1,5 @@
-import {Evented} from "../../dependencies.js";
-import {ip_agent_utils} from '../utils/ip_agent_utils'
+import {Evented} from '../../dependencies.js';
+import {ip_agent_utils} from '../utils/ip_agent_utils';
 
 let flag = true;
 
@@ -12,7 +12,7 @@ class motion_handler extends Evented {
         let self = this;
         this.motionEventCallback = (event) => {
             self.OnMotionEvent(event);
-        }
+        };
     }
 
     bind() {
@@ -38,7 +38,7 @@ class motion_handler extends Evented {
             flag = false;
         }
 
-        this._target.fire("motion", {
+        this._target.fire('motion', {
             acceleration: event.acceleration,
             gravity: event.accelerationIncludingGravity,
             rotationRate: event.rotationRate,
@@ -47,4 +47,4 @@ class motion_handler extends Evented {
     }
 }
 
-export {motion_handler}
+export {motion_handler};

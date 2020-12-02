@@ -1,31 +1,31 @@
-import IndoorGroupLayer from './indoor_layer_base'
-import {extend, clone} from "../../dependencies.js"
+import IndoorGroupLayer from './indoor_layer_base';
+import {extend, clone} from '../../dependencies.js';
 
 let defaultExtrusionLayer = {
     'type': 'fill-extrusion',
     'paint': {
         'fill-extrusion-base': ['/', ['get', 'extrusion-base'], 10],
-        'fill-extrusion-height': ['/', ['get', 'extrusion-height'], 10],
+        'fill-extrusion-height': ['/', ['get', 'extrusion-height'], 10]
     },
     'filter': ['all',
         ['has', 'extrusion'],
-        ['==', 'extrusion', true],
+        ['==', 'extrusion', true]
     ]
 };
 
 let defaultIPExtrusionLayer = {
     'type': 'ipfill-extrusion',
     'layout': {
-        'ipfill-extrusion-outline-join': 'round',
+        'ipfill-extrusion-outline-join': 'round'
     },
     'paint': {
         'ipfill-extrusion-base': ['/', ['get', 'extrusion-base'], 10],
         'ipfill-extrusion-height': ['/', ['get', 'extrusion-height'], 10],
-        'ipfill-extrusion-outline-height': ['/', ['get', 'extrusion-height'], 10],
+        'ipfill-extrusion-outline-height': ['/', ['get', 'extrusion-height'], 10]
     },
     'filter': ['all',
         ['has', 'extrusion'],
-        ['==', 'extrusion', true],
+        ['==', 'extrusion', true]
     ]
 };
 
@@ -50,7 +50,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                 'symbol': symbol,
                 'symbolID': symbol.symbolID,
                 'source': this.sourceID,
-                'source-layer': this.sourceLayer,
+                'source-layer': this.sourceLayer
             }, clone(defaultExtrusionLayer));
             extrusionLayer.paint['fill-extrusion-color'] = symbol.fillColor;
             extrusionLayer.paint['fill-extrusion-opacity'] = symbol.fillOpacity;
@@ -63,7 +63,7 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
                     'symbol': symbol,
                     'symbolID': symbol.symbolID,
                     'source': this.sourceID,
-                    'source-layer': this.sourceLayer,
+                    'source-layer': this.sourceLayer
                 }, clone(defaultIPExtrusionLayer));
                 extrusionLayer.paint['ipfill-extrusion-color'] = symbol.fillColor;
                 extrusionLayer.paint['ipfill-extrusion-opacity'] = symbol.fillOpacity;
@@ -105,4 +105,4 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_ipextrusion
+export default indoor_layergroup_ipextrusion;

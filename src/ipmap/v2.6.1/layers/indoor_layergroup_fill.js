@@ -1,5 +1,5 @@
-import IndoorGroupLayer from './indoor_layer_base'
-import {extend, clone} from "../../dependencies.js"
+import IndoorGroupLayer from './indoor_layer_base';
+import {extend, clone} from '../../dependencies.js';
 
 let defaultFillLayer = {
     'type': 'fill',
@@ -13,7 +13,7 @@ let defaultOutlineLayer = {
     'type': 'line',
     'layout': {
         'line-join': 'round',
-        'line-cap': 'round',
+        'line-cap': 'round'
     },
     'paint': {},
     'filter': ['all']
@@ -23,7 +23,7 @@ let testOutlineLayer = {
     'type': 'ipline',
     'layout': {
         'ipline-join': 'round',
-        'ipline-cap': 'round',
+        'ipline-cap': 'round'
     },
     'paint': {
         'ipline-color': 'green',
@@ -57,7 +57,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 'id': layerID,
                 'symbolID': symbolID,
                 'source': this.sourceID,
-                'source-layer': 'fill',
+                'source-layer': 'fill'
             }, clone(defaultFillLayer));
             layer.paint['fill-color'] = symbol.fillColor;
             layer.paint['fill-opacity'] = symbol.fillOpacity;
@@ -67,7 +67,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                 'id': outlineLayerID,
                 'symbolID': symbolID,
                 'source': this.sourceID,
-                'source-layer': 'fill',
+                'source-layer': 'fill'
             }, clone(defaultOutlineLayer));
             outlineLayer.paint['line-color'] = symbol.outlineColor;
             outlineLayer.paint['line-opacity'] = symbol.outlineOpacity;
@@ -80,7 +80,7 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
                     'id': outlineLayerID,
                     'symbolID': symbolID,
                     'source': this.sourceID,
-                    'source-layer': 'fill',
+                    'source-layer': 'fill'
                 }, clone(testOutlineLayer));
                 outlineLayer.paint['ipline-opacity'] = symbol.outlineOpacity;
             }
@@ -129,4 +129,4 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_fill
+export default indoor_layergroup_fill;

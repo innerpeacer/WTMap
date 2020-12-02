@@ -1,5 +1,5 @@
-import IndoorGroupLayer from './indoor_layer_base'
-import {extend, clone, geojson_utils as GeojsonUtils} from "../../dependencies.js";
+import IndoorGroupLayer from './indoor_layer_base';
+import {extend, clone, geojson_utils as GeojsonUtils} from '../../dependencies.js';
 
 let defaultSymbolLayer = {
     'type': 'symbol',

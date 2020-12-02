@@ -1,18 +1,18 @@
-import {Evented} from "../../dependencies.js";
-import {ip_agent_utils} from '../utils/ip_agent_utils'
+import {Evented} from '../../dependencies.js';
+import {ip_agent_utils} from '../utils/ip_agent_utils';
 
 class orientation_handler extends Evented {
     constructor(target, options) {
         super();
         this._target = target;
         this._agent = ip_agent_utils.getAgent().type;
-        this._threhold = (options && options["threhold"]) || 2;
+        this._threhold = (options && options['threhold']) || 2;
 
         this._lastHeading = 1000;
         this._isBinded = false;
         let self = this;
         this.orientationEventCallback = (event) => {
-            self.OnOrientationChange(event)
+            self.OnOrientationChange(event);
         };
         this.absoluteOrientationEventCallbackForAndroid = (event) => {
             self.OnAbsoluteOrientationChange(event);
@@ -24,7 +24,7 @@ class orientation_handler extends Evented {
 
         this._isBinded = true;
         if (this._agent === 1) {
-            window.addEventListener("deviceorientationabsolute", this.absoluteOrientationEventCallbackForAndroid, false);
+            window.addEventListener('deviceorientationabsolute', this.absoluteOrientationEventCallbackForAndroid, false);
         } else {
             window.addEventListener('deviceorientation', this.orientationEventCallback, false);
         }
@@ -43,7 +43,7 @@ class orientation_handler extends Evented {
 
     OnOrientationChange(event) {
         if (this._agent !== 1) {
-            if (event.hasOwnProperty("webkitCompassHeading")) {
+            if (event.hasOwnProperty('webkitCompassHeading')) {
                 this._NotifyAngle(360 - event.webkitCompassHeading);
             } else {
                 this._NotifyAngle(event.alpha);
@@ -62,9 +62,9 @@ class orientation_handler extends Evented {
         if (diff > this._threhold) {
             this._lastHeading = heading;
             this.heading = heading;
-            this._target.fire("heading", {heading: this.heading});
+            this._target.fire('heading', {heading: this.heading});
         }
     }
 }
 
-export {orientation_handler}
+export {orientation_handler};

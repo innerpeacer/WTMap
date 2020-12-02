@@ -1,10 +1,10 @@
-import IndoorGroupLayer from "./indoor_layer_base"
+import IndoorGroupLayer from './indoor_layer_base';
 
 class indoor_layer_highlight extends IndoorGroupLayer {
     constructor(map) {
         super(map);
 
-        let subLayerName = "highlight";
+        let subLayerName = 'highlight';
         this.styleLayers = {};
 
         let layerID = `${subLayerName}-fill`;
@@ -13,10 +13,10 @@ class indoor_layer_highlight extends IndoorGroupLayer {
             'id': layerID,
             'type': 'fill',
             'source': this.sourceID,
-            "source-layer": "fill",
+            'source-layer': 'fill',
             'layout': {},
             'paint': {},
-            "filter": ["==", "POI_ID", "not exist"]
+            'filter': ['==', 'POI_ID', 'not exist']
         };
 
         this.pois = [];
@@ -24,11 +24,11 @@ class indoor_layer_highlight extends IndoorGroupLayer {
 
     _highlightPoi(pois, options) {
         if (options && options.color) {
-            this.map.setPaintProperty(this.highlightLayerID, "fill-color", options.color);
+            this.map.setPaintProperty(this.highlightLayerID, 'fill-color', options.color);
         }
 
         if (options && options.opacity) {
-            this.map.setPaintProperty(this.highlightLayerID, "fill-opacity", options.opacity);
+            this.map.setPaintProperty(this.highlightLayerID, 'fill-opacity', options.opacity);
         }
 
         this.pois = [].concat(pois);
@@ -39,7 +39,7 @@ class indoor_layer_highlight extends IndoorGroupLayer {
     }
 
     _resetHighlight() {
-        this.map.setFilter(this.highlightLayerID, ["==", "POI_ID", "not exist"]);
+        this.map.setFilter(this.highlightLayerID, ['==', 'POI_ID', 'not exist']);
     }
 
     _setMapInfo() {
@@ -50,4 +50,4 @@ class indoor_layer_highlight extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layer_highlight
+export default indoor_layer_highlight;

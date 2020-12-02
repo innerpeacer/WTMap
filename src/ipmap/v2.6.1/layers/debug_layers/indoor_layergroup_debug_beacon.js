@@ -1,5 +1,5 @@
-import IndoorGroupLayer from '../indoor_layer_base'
-import {extend, clone, geojson_utils as GeojsonUtils} from "../../../dependencies.js"
+import IndoorGroupLayer from '../indoor_layer_base';
+import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
 
 
 let defaultCircleLayer = {
@@ -13,14 +13,14 @@ let defaultCircleLayer = {
 let defaultTextSymbolLayer = {
     'type': 'symbol',
     'paint': {
-        'text-halo-color': '#ffffff',
+        'text-halo-color': '#ffffff'
     },
     'layout': {
         'text-font': ['simhei'],
         'text-offset': [0, 0.3],
         'text-anchor': 'top',
         'text-max-width': 20,
-        'text-size': 9,
+        'text-size': 9
     }
 };
 
@@ -76,7 +76,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor']], {'font-scale': 1.2},
                 '\n', {},
-                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {}
             ];
             layer.layout['text-allow-overlap'] = true;
             this.styleLayers[layerID] = layer;
@@ -99,7 +99,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             layer.layout['text-field'] = ['format',
                 ['concat', ['get', 'minor'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
                 '\n', {},
-                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {},
+                ['concat', ['get', 'desc'], ' ', ['get', 'rssi'], 'dB ', ['get', 'accuracy'], 'm'], {}
             ];
             this.styleLayers[layerID] = layer;
             this.otherFloorLayers[layerID] = layer;
@@ -124,7 +124,7 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
             let layer = extend({id: layerID, source: locationSourceID}, clone(defaultTextSymbolLayer));
             layer.paint['text-color'] = '#253494';
             layer.layout['text-field'] = ['format',
-                ['concat', ['get', 'maxRssi'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2},
+                ['concat', ['get', 'maxRssi'], ' F(', ['get', 'floor'], ')'], {'font-scale': 1.2}
             ];
             layer.layout['text-field'] = ['format', ['get', 'text'], {'font-scale': 1.2}];
             layer.layout['text-offset'] = [0, 0.7];

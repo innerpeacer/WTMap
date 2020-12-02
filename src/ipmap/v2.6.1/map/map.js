@@ -7,28 +7,28 @@ import {
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
     CBMData,
-    wt_wgs84_converter as WtWgs84Converter,
-} from "../../dependencies.js";
-import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit'
+    wt_wgs84_converter as WtWgs84Converter
+} from '../../dependencies.js';
+import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit';
 
-import {getCBMPath, getTilePath} from "../data/path_manager"
+import {getCBMPath, getTilePath} from '../data/path_manager';
 
-import IndoorLayers from '../layers/indoor_layers'
-import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc'
+import IndoorLayers from '../layers/indoor_layers';
+import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc';
 
-import IndoorLocator from '../locator/locator'
-import {web_gps_updater} from "../locator/web_gps_updater";
+import IndoorLocator from '../locator/locator';
+import {web_gps_updater} from '../locator/web_gps_updater';
 
-import {getStyle} from '../config/default_style'
+import {getStyle} from '../config/default_style';
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
-import {motion_handler as MotionHandler} from "../motion/motion_handler";
+import {motion_handler as MotionHandler} from '../motion/motion_handler';
 
-import EventManager from "../utils/event_manager"
+import EventManager from '../utils/event_manager';
 
 let MapEvent = EventManager.MapEvent;
 let LocatorEvent = EventManager.LocatorEvent;
 
-import InnerEventManager from "../utils/inner_event_manager"
+import InnerEventManager from '../utils/inner_event_manager';
 
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
@@ -37,9 +37,9 @@ const defaultOptions = {
     _apiHost: defaultHost,
     _apiRouteHost: defaultHost,
 
-    _apiPath: "backend-new",
-    _apiRoute: "map-server",
-    _resourceRootDir: "backend-map/V4",
+    _apiPath: 'backend-new',
+    _apiRoute: 'map-server',
+    _resourceRootDir: 'backend-map/V4',
     spriteName: 'WTMapSprite',
 
     localIdeographFontFamily: false,
@@ -55,7 +55,7 @@ const defaultOptions = {
     _useFile: true,
     _debugBeacon: false,
 
-    __disableGps: true,
+    __disableGps: true
 };
 
 class IPMap extends BoxMap {
@@ -122,7 +122,7 @@ class IPMap extends BoxMap {
         // }
         // console.log('CacheVersion: ' + CacheVersion.getVersionName());
 
-        this.on('load', function () {
+        this.on('load', function() {
             // console.log('on load');
             if (map.__abort) {
                 map.fire(MapEvent.Error, {'description': 'Invalid Token: ' + options.token + ' for ' + options.buildingID});
@@ -143,7 +143,7 @@ class IPMap extends BoxMap {
     }
 
     disableOrientation() {
-        console.log("disableOrientation");
+        console.log('disableOrientation');
         this._orientationHandler && this._orientationHandler.unbind();
     }
 
@@ -171,7 +171,7 @@ class IPMap extends BoxMap {
         this._layerGroup._showLocation(this.location, options);
         if (options && options.center) {
             if (targetFloor && targetFloor !== map.currentMapInfo.floorNumber) {
-                map.setFloor(map.location.properties.floor, function () {
+                map.setFloor(map.location.properties.floor, function() {
                     map.easeTo({center: map.location});
                 });
             } else {
@@ -207,7 +207,7 @@ class IPMap extends BoxMap {
 
         let result = {
             location: data.location,
-            maxRssi: data.maxRssi,
+            maxRssi: data.maxRssi
         };
 
         if (this._debugBeacon) {
@@ -298,7 +298,7 @@ class IPMap extends BoxMap {
         map.city = new IPCity(data['Cities'][0]);
         map.building = new IPBuilding(data['Buildings'][0]);
 
-        let dataVersion = this.dataVersion = map.building.dataVersion || "1.0";
+        let dataVersion = this.dataVersion = map.building.dataVersion || '1.0';
         if (dataVersion) {
             CacheVersion.useVersion(dataVersion);
         }
@@ -313,11 +313,11 @@ class IPMap extends BoxMap {
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
         map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
-        map._fillSymbolArray.forEach(function (fill) {
+        map._fillSymbolArray.forEach(function(fill) {
             map._fillSymbolMap[fill.UID] = fill;
         });
         map._iconTextSymbolArray = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
-        map._iconTextSymbolArray.forEach(function (iconText) {
+        map._iconTextSymbolArray.forEach(function(iconText) {
             map._iconTextSymbolMap[iconText.UID] = iconText;
         });
         map._layerSymbolMap = data['Symbols'];
@@ -338,8 +338,8 @@ class IPMap extends BoxMap {
         let maskingBounds = buildingExtent.getExtendedBounds2(10);
         let [lng1, lat1, lng2, lat2] = maskingBounds;
         let maskingData = {
-            "type": "FeatureCollection",
-            "features": [{
+            'type': 'FeatureCollection',
+            'features': [{
                 'type': 'Feature',
                 'geometry': {
                     'type': 'Polygon',
@@ -348,7 +348,7 @@ class IPMap extends BoxMap {
                         [lng2, lat1],
                         [lng2, lat2],
                         [lng1, lat2],
-                        [lng1, lat1],
+                        [lng1, lat1]
                     ]]
                 }
             }]
@@ -368,21 +368,21 @@ class IPMap extends BoxMap {
         }
 
         map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
-        map._locator.on(InnerLocatorEvent.LocatorReady, function (event) {
+        map._locator.on(InnerLocatorEvent.LocatorReady, function(event) {
             // console.log('inner-locator-ready');
             if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
             map.fire(LocatorEvent.LocatorReady, event);
         });
-        map._locator.on(InnerLocatorEvent.LocatorFailed, function (error) {
+        map._locator.on(InnerLocatorEvent.LocatorFailed, function(error) {
             // console.log('inner-locator-failed');
             map.fire(LocatorEvent.LocatorFailed, error);
         });
-        map._locator.on(InnerLocatorEvent.LocationUpdate, function (res) {
+        map._locator.on(InnerLocatorEvent.LocationUpdate, function(res) {
             // console.log("IndoorLocator.LocatorEventTypeUpdate");
             // console.log(res);
             map.fire(LocatorEvent.LocationUpdate, res);
         });
-        map._locator.on(InnerLocatorEvent.LocationUpdateFailed, function (error) {
+        map._locator.on(InnerLocatorEvent.LocationUpdateFailed, function(error) {
             map.fire(LocatorEvent.LocationUpdateFailed, error);
         });
     }
@@ -464,7 +464,7 @@ class IPMap extends BoxMap {
         map._layerGroup._updateMapInfo(result.mapInfo);
         if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._setMapInfo(result.mapInfo);
 
-        requestAnimationFrame(function () {
+        requestAnimationFrame(function() {
             let c = map.currentMapInfo.getCenter();
             // console.log('requestAnimationFrame');
             // console.log(c);

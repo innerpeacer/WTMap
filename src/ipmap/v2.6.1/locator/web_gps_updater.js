@@ -1,14 +1,14 @@
-import {Evented} from "../../dependencies.js";
+import {Evented} from '../../dependencies.js';
 
 const GpsEvent = {
-    GpsReady: "gps-ready",
-    GpsFailed: "gps-failed",
-    GpsError: "gps-error",
-    GpsResult: "gps-result"
+    GpsReady: 'gps-ready',
+    GpsFailed: 'gps-failed',
+    GpsError: 'gps-error',
+    GpsResult: 'gps-result'
 };
 
 const GpsEventCode = {
-    CalibrationFailed: 1001,
+    CalibrationFailed: 1001
 };
 
 const DefaultGpsOptions = {
@@ -43,9 +43,9 @@ class web_gps_updater extends Evented {
                 this._gpsError(error);
             }, DefaultGpsOptions);
             this._isStarted = true;
-            this.fire(GpsEvent.GpsReady, {description: "gps is started!"});
+            this.fire(GpsEvent.GpsReady, {description: 'gps is started!'});
         } else {
-            this.fire(GpsEvent.GpsFailed, {description: "geolocation is not supported by this browser."});
+            this.fire(GpsEvent.GpsFailed, {description: 'geolocation is not supported by this browser.'});
         }
     }
 
@@ -73,4 +73,4 @@ class web_gps_updater extends Evented {
     }
 }
 
-export {web_gps_updater, GpsEvent}
+export {web_gps_updater, GpsEvent};

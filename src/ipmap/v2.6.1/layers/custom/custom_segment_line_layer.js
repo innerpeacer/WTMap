@@ -1,5 +1,5 @@
-import {layerIdentifier, sourceIdentifier} from "./layer_identifier";
-import {extend, clone, geojson_utils as GeojsonUtils} from "../../../dependencies.js";
+import {layerIdentifier, sourceIdentifier} from './layer_identifier';
+import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
 
 let defaultLineLayer = {
     'type': 'line',
@@ -9,7 +9,7 @@ let defaultLineLayer = {
     },
     'paint': {
         'line-color': '#d9d6c3',
-        'line-width': 0.5,
+        'line-width': 0.5
     }
 };
 
@@ -17,7 +17,7 @@ let defaultTextSymbolLayer = {
     'type': 'symbol',
     'paint': {
         'text-halo-color': '#ffffff',
-        'text-color': '#8B8682',
+        'text-color': '#8B8682'
     },
     'layout': {
         'text-allow-overlap': true,
@@ -25,7 +25,7 @@ let defaultTextSymbolLayer = {
         'text-font': ['simhei'],
         'text-offset': [0, -0.5],
         'text-anchor': 'center',
-        'text-size': 9,
+        'text-size': 9
     }
 };
 
@@ -37,7 +37,7 @@ class custom_segment_line_layer {
         this.lineSourceID = lineSourceID;
         this.lineSource = GeojsonUtils.emptySource;
 
-        let lineLayerID = layerIdentifier(name, "line");
+        let lineLayerID = layerIdentifier(name, 'line');
         this.lineLayerID = lineLayerID;
         this.lineLayer = extend({id: lineLayerID, source: lineSourceID}, clone(defaultLineLayer));
 
@@ -63,23 +63,23 @@ class custom_segment_line_layer {
     }
 
     setLineWidth(width) {
-        this.lineLayer.paint["line-width"] = width;
+        this.lineLayer.paint['line-width'] = width;
     }
 
     setLineColor(color) {
-        this.lineLayer.paint["line-color"] = color;
+        this.lineLayer.paint['line-color'] = color;
     }
 
     setLineTextField(prop) {
-        this.lineSymbolLayer.layout["text-field"] = prop;
+        this.lineSymbolLayer.layout['text-field'] = prop;
     }
 
     setLineTextColor(color) {
-        this.lineSymbolLayer.paint["text-color"] = color;
+        this.lineSymbolLayer.paint['text-color'] = color;
     }
 
     setLineTextSize(size) {
-        this.lineSymbolLayer.layout["text-size"] = size;
+        this.lineSymbolLayer.layout['text-size'] = size;
     }
 
     setLinePaintProperty(prop, value) {
@@ -124,4 +124,4 @@ class custom_segment_line_layer {
     }
 }
 
-export {custom_segment_line_layer}
+export {custom_segment_line_layer};

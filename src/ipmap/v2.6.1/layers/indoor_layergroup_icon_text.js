@@ -1,5 +1,5 @@
-import IndoorGroupLayer from './indoor_layer_base'
-import {extend, clone} from "../../dependencies.js"
+import IndoorGroupLayer from './indoor_layer_base';
+import {extend, clone} from '../../dependencies.js';
 
 let defaultSymbolLayer = {
     'type': 'symbol',
@@ -10,8 +10,8 @@ let defaultSymbolLayer = {
     'layout': {
         'symbol-z-order': 'source',
         'text-offset': [0.6, 0.1],
-        'text-padding': 2,
-    },
+        'text-padding': 2
+    }
 };
 
 function _getHeight(use3D) {
@@ -40,7 +40,7 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
                 'symbol': symbol,
                 'symbolID': symbol.symbolID,
                 'source': this.sourceID,
-                'source-layer': subLayerName,
+                'source-layer': subLayerName
             }, clone(defaultSymbolLayer));
             layer.paint['symbol-height'] = height;
 
@@ -199,4 +199,4 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_icon_text
+export default indoor_layergroup_icon_text;

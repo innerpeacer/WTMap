@@ -1,4 +1,4 @@
-import {clone} from "../../dependencies.js"
+import {clone} from '../../dependencies.js';
 
 const default_style = {
     'version': 8,
@@ -9,7 +9,7 @@ const default_style = {
         'anchor': 'viewport',
         'color': 'white',
         'intensity': 0.2
-    },
+    }
 };
 
 function getStyle(host, resourceRoot, spriteName) {
@@ -20,4 +20,4 @@ function getStyle(host, resourceRoot, spriteName) {
 }
 
 // module.exports = default_style;
-export {getStyle}
+export {getStyle};

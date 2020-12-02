@@ -1,9 +1,9 @@
 import {
     local_point as LocalPoint, Evented,
     WebBleLocator as BleLocator, BleEvent
-} from "../../dependencies.js";
-import GpsLocator from "./gps/gps_locator"
-import InnerEventManager from "../utils/inner_event_manager"
+} from '../../dependencies.js';
+import GpsLocator from './gps/gps_locator';
+import InnerEventManager from '../utils/inner_event_manager';
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
@@ -12,7 +12,7 @@ let LocatorParams = {
     ModeSwitchInterval: 4000,
     ResultValidInterval: 6000,
     WaitingBleInterval: 3000,
-    LocationValidInterval: 6000,
+    LocationValidInterval: 6000
 };
 
 const MODE = {
@@ -23,11 +23,11 @@ const MODE = {
 
 function modeName(mode) {
     if (mode === MODE.BLE) {
-        return "ble";
+        return 'ble';
     } else if (mode === MODE.GPS) {
-        return "gps";
+        return 'gps';
     } else if (mode === MODE.HYBRID) {
-        return "hybrid";
+        return 'hybrid';
     }
 }
 
@@ -61,7 +61,7 @@ class locator extends Evented {
         });
         this._gpsLocator.on(InnerGpsEvent.GpsFailed, (error) => {
             // console.log("gps failed");
-            console.log("GPS Failed: ", error.description);
+            console.log('GPS Failed: ', error.description);
             status._gpsReady = false;
             this._processStatus();
         });
@@ -107,10 +107,10 @@ class locator extends Evented {
 
         if (bleValid && !gpsValid) {
             mode = MODE.BLE;
-            this._modeCondition = "gps not valid";
+            this._modeCondition = 'gps not valid';
         } else if (gpsValid && !bleValid) {
             mode = MODE.GPS;
-            this._modeCondition = "ble not valid";
+            this._modeCondition = 'ble not valid';
             // } else if (this._bleResult.maxRssi > -70 || this._bleResult.beaconCount > 30) {
         } else if (this._bleResult.maxRssi > -75) {
             mode = MODE.BLE;
@@ -138,7 +138,7 @@ class locator extends Evented {
         let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < LocatorParams.ResultValidInterval);
 
         if (Math.abs(now - this._initTime) < LocatorParams.WaitingBleInterval && !bleValid) {
-            console.log("Waiting BLE Result!");
+            console.log('Waiting BLE Result!');
             return;
         }
 
@@ -183,7 +183,7 @@ class locator extends Evented {
             targetMode: `${this._targetMode}(${modeName(this._targetMode)})`,
             condition: this._modeCondition,
             gpsValid: gpsValid,
-            bleValid: bleValid,
+            bleValid: bleValid
         };
 
         if (this._bleResult && bleValid) {
@@ -203,7 +203,7 @@ class locator extends Evented {
         if (Math.abs(now - this._initTime) < LocatorParams.WaitingBleInterval && !bleValid) {
             // console.log("_doFusion: ", now);
             // console.log("delta: ", now - this._initTime);
-            console.log("Waiting BLE Result 2!");
+            console.log('Waiting BLE Result 2!');
             return;
         }
         if (!this._newGpsResult && !this._newBleResult) {
@@ -262,7 +262,7 @@ class locator extends Evented {
     _processStatus() {
         if (status._bleReady == null || status._gpsReady == null) return;
         if (!status._bleReady && !status._gpsReady) {
-            this.fire(InnerLocatorEvent.LocatorFailed, {description: "Both gps and ble not supported!"});
+            this.fire(InnerLocatorEvent.LocatorFailed, {description: 'Both gps and ble not supported!'});
             return;
         }
 
@@ -279,7 +279,7 @@ class locator extends Evented {
         // console.log("locator start time: ", this._initTime);
         this._lastTimeLocationUpdated = this._initTime;
         this._timeHandler = setInterval(() => {
-            self._doFusion()
+            self._doFusion();
         }, 900);
     }
 

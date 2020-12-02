@@ -1,14 +1,14 @@
-import IndoorGroupLayer from "./indoor_layer_base"
+import IndoorGroupLayer from './indoor_layer_base';
 
 let emptySource = {
-    'type': 'geojson', 'data': {"type": "FeatureCollection", "features": []}
+    'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
 };
 
 class indoor_layer_masking extends IndoorGroupLayer {
     constructor(map) {
         super(map);
 
-        let subLayerName = "highlight_masking";
+        let subLayerName = 'highlight_masking';
         this.sourceID = subLayerName;
         this.map.addSource(this.sourceID, emptySource);
         this.styleLayers = {};
@@ -22,10 +22,10 @@ class indoor_layer_masking extends IndoorGroupLayer {
                 'visibility': 'none'
             },
             'paint': {
-                'fill-color': "#888888",
-                'fill-opacity': 0.5,
+                'fill-color': '#888888',
+                'fill-opacity': 0.5
             },
-            "filter": ["all"]
+            'filter': ['all']
         };
     }
 
@@ -34,4 +34,4 @@ class indoor_layer_masking extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layer_masking
+export default indoor_layer_masking;

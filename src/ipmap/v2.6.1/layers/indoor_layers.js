@@ -1,13 +1,13 @@
-import FillLayer from './indoor_layergroup_fill'
-import IconTextLayer from './indoor_layergroup_icon_text'
+import FillLayer from './indoor_layergroup_fill';
+import IconTextLayer from './indoor_layergroup_icon_text';
 
 // import ExtrusionLayer from './indoor_layergroup_extrusion'
-import ExtrusionLayer from './indoor_layergroup_ipextrusion'
-import MultiStopRouteLayer from './indoor_layergroup_multi_stop_route'
-import MaskingLayer from "./indoor_layer_masking"
-import HighlightLayer from "./indoor_layer_highlight"
-import LocationLayer from './indoor_layer_location'
-import DebugBeaconLayer from './debug_layers/indoor_layergroup_debug_beacon'
+import ExtrusionLayer from './indoor_layergroup_ipextrusion';
+import MultiStopRouteLayer from './indoor_layergroup_multi_stop_route';
+import MaskingLayer from './indoor_layer_masking';
+import HighlightLayer from './indoor_layer_highlight';
+import LocationLayer from './indoor_layer_location';
+import DebugBeaconLayer from './debug_layers/indoor_layergroup_debug_beacon';
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -68,7 +68,7 @@ class indoor_layers {
     }
 
     _switch3D(use3D) {
-        this._3dLayerArray.forEach(function (layer) {
+        this._3dLayerArray.forEach(function(layer) {
             layer._switch3D(use3D);
         });
     }
@@ -87,13 +87,13 @@ class indoor_layers {
     }
 
     switchLanguage(options) {
-        this._labelIconLayerArray.forEach(function (layer) {
+        this._labelIconLayerArray.forEach(function(layer) {
             layer.switchLanguage(options);
         });
     }
 
     _setLabelIconVisibleRange(minZoom, maxZoom) {
-        this._labelIconLayerArray.forEach(function (layer) {
+        this._labelIconLayerArray.forEach(function(layer) {
             layer._setLabelIconVisibleRange(minZoom, maxZoom);
         });
     }
@@ -135,25 +135,25 @@ class indoor_layers {
     }
 
     setFont(fontName) {
-        this._labelIconLayerArray.forEach(function (layer) {
+        this._labelIconLayerArray.forEach(function(layer) {
             layer.setFont(fontName);
         });
     }
 
     _updateFontIconSize(minZoom) {
-        this._labelIconLayerArray.forEach(function (layer) {
+        this._labelIconLayerArray.forEach(function(layer) {
             layer._updateFontIconSize(minZoom);
         });
     }
 
     hideLayers() {
-        this._baseLayerArray.forEach(function (layer) {
+        this._baseLayerArray.forEach(function(layer) {
             layer.hide();
         });
     }
 
     showLayers() {
-        this._baseLayerArray.forEach(function (layer) {
+        this._baseLayerArray.forEach(function(layer) {
             layer.show();
         });
     }
@@ -189,7 +189,7 @@ class indoor_layers {
     }
 
     _updateMapInfo(mapInfo) {
-        this._baseLayerArray.forEach(function (layer) {
+        this._baseLayerArray.forEach(function(layer) {
             layer._setMapInfo(mapInfo);
         });
     }
@@ -221,5 +221,5 @@ class indoor_layers {
     }
 }
 
-export default indoor_layers
+export default indoor_layers;
 

@@ -18,7 +18,7 @@ function _getLayerArray(styleLayers, usePriority) {
             }
         }
 
-        prioritized.sort(function (layer1, layer2) {
+        prioritized.sort(function(layer1, layer2) {
             return layer2.symbol.priority - layer1.symbol.priority;
         });
 
@@ -81,4 +81,4 @@ class indoor_layer_base {
     }
 }
 
-export default indoor_layer_base
+export default indoor_layer_base;

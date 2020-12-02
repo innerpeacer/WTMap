@@ -1,4 +1,4 @@
-import {extend, clone, geojson_utils} from "../../dependencies.js"
+import {extend, clone, geojson_utils} from '../../dependencies.js';
 
 class layer_object {
     constructor(sourceID, layerID, layerID2) {
@@ -64,13 +64,13 @@ let defaultLineLayer = {
 let defaultSymbolLayer = {
     'type': 'symbol',
     'paint': {
-        'text-color': '#fff',
+        'text-color': '#fff'
     },
     'layout': {
         'text-anchor': 'center',
         'text-padding': 0,
         'icon-allow-overlap': true,
-        'icon-rotation-alignment': 'map',
+        'icon-rotation-alignment': 'map'
     }
 };
 
@@ -97,14 +97,14 @@ class route_layer_object {
             this.wholeRouteObject = new layer_object(wholeRouteSourceID, wholeRouteLayer1ID, wholeRouteLayer2ID);
             this.wholeRouteObject.layer = extend({
                 'id': wholeRouteLayer1ID,
-                'source': wholeRouteSourceID,
+                'source': wholeRouteSourceID
             }, clone(defaultLineLayer));
             this.wholeRouteObject.layer.paint['line-color'] = '#ffffff';
             this.wholeRouteObject.layer.paint['line-width'] = 8;
 
             this.wholeRouteObject.layer2 = extend({
                 'id': wholeRouteLayer2ID,
-                'source': wholeRouteSourceID,
+                'source': wholeRouteSourceID
             }, clone(defaultLineLayer));
             this.wholeRouteObject.layer2.paint['line-color'] = '#00ff00';
             this.wholeRouteObject.layer2.paint['line-width'] = 6;
@@ -114,7 +114,7 @@ class route_layer_object {
             this.wholeArrowObject = new layer_object(wholeRouteArrowSourceID, wholeRouteArrowLayerID);
             this.wholeArrowObject.layer = extend({
                 'id': wholeRouteArrowLayerID,
-                'source': wholeRouteArrowSourceID,
+                'source': wholeRouteArrowSourceID
             }, clone(defaultSymbolLayer));
             this.wholeArrowObject.layer.layout['icon-image'] = 'icon_route_arrow';
             this.wholeArrowObject.layer.layout['icon-size'] = 1;
@@ -128,14 +128,14 @@ class route_layer_object {
             this.segmentRouteObject = new layer_object(segmentRouteSourceID, segmentRouteLayer1ID, segmentRouteLayer2ID);
             this.segmentRouteObject.layer = extend({
                 'id': segmentRouteLayer1ID,
-                'source': segmentRouteSourceID,
+                'source': segmentRouteSourceID
             }, clone(defaultLineLayer));
             this.segmentRouteObject.layer.paint['line-color'] = '#ffffff';
             this.segmentRouteObject.layer.paint['line-width'] = 8;
 
             this.segmentRouteObject.layer2 = extend({
                 'id': segmentRouteLayer2ID,
-                'source': segmentRouteSourceID,
+                'source': segmentRouteSourceID
             }, clone(defaultLineLayer));
             this.segmentRouteObject.layer2.paint['line-color'] = '#ff5959';
             this.segmentRouteObject.layer2.paint['line-width'] = 6;
@@ -145,7 +145,7 @@ class route_layer_object {
             this.passedSegmentRouteObject = new layer_object(passedSegmentRouteSourceID, passedSegmentRouteLayerID);
             this.passedSegmentRouteObject.layer = extend({
                 'id': passedSegmentRouteLayerID,
-                'source': passedSegmentRouteSourceID,
+                'source': passedSegmentRouteSourceID
             }, clone(defaultLineLayer));
             this.passedSegmentRouteObject.layer.paint['line-color'] = '#888888';
             this.passedSegmentRouteObject.layer.paint['line-width'] = 8;
@@ -155,7 +155,7 @@ class route_layer_object {
             this.segmentArrowObject = new layer_object(segmentArrowSourceID, segmentArrowLayerID);
             this.segmentArrowObject.layer = extend({
                 'id': segmentArrowLayerID,
-                'source': segmentArrowSourceID,
+                'source': segmentArrowSourceID
             }, clone(defaultSymbolLayer));
             this.segmentArrowObject.layer.layout['icon-image'] = 'icon_route_arrow';
             this.segmentArrowObject.layer.layout['icon-rotate'] = ['get', 'angle'];
@@ -169,12 +169,12 @@ class route_layer_object {
             this.routeStopObject = new layer_object(routeStopSourceID, routeStopLayer1ID, routeStopLayer2ID);
             this.routeStopObject.layer = extend({
                 'id': routeStopLayer1ID,
-                'source': routeStopSourceID,
+                'source': routeStopSourceID
             }, clone(defaultCircleLayer));
 
             this.routeStopObject.layer2 = extend({
                 'id': routeStopLayer2ID,
-                'source': routeStopSourceID,
+                'source': routeStopSourceID
             }, clone(defaultSymbolLayer));
             this.routeStopObject.layer2.layout['text-field'] = ['get', 'NAME'];
             this.routeStopObject.layer2.layout['text-font'] = ['simhei'];
@@ -183,4 +183,4 @@ class route_layer_object {
     }
 }
 
-export default route_layer_object
+export default route_layer_object;

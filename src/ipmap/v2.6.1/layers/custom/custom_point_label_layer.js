@@ -1,5 +1,5 @@
-import {layerIdentifier, sourceIdentifier} from "./layer_identifier";
-import {extend, clone, geojson_utils as GeojsonUtils} from "../../../dependencies.js"
+import {layerIdentifier, sourceIdentifier} from './layer_identifier';
+import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
 
 let defaultCircleLayer = {
     'type': 'circle',
@@ -7,7 +7,7 @@ let defaultCircleLayer = {
         'circle-stroke-width': 0.5,
         'circle-stroke-color': '#888',
         'circle-color': '#3bb2d0',
-        'circle-radius': 3,
+        'circle-radius': 3
     }
 };
 
@@ -15,14 +15,14 @@ let defaultTextSymbolLayer = {
     'type': 'symbol',
     'paint': {
         'text-halo-color': '#ffffff',
-        'text-color': '#8B8682',
+        'text-color': '#8B8682'
     },
     'layout': {
         'text-font': ['simhei'],
         'text-offset': [0, 0.3],
         'text-anchor': 'top',
         'text-max-width': 20,
-        'text-size': 9,
+        'text-size': 9
     }
 };
 
@@ -34,11 +34,11 @@ class custom_point_label_layer {
         this.labelSourceID = labelSourceID;
         this.labelSource = GeojsonUtils.emptySource;
 
-        let labelCircleLayerID = layerIdentifier(name, "circle");
+        let labelCircleLayerID = layerIdentifier(name, 'circle');
         this.labelCircleLayerID = labelCircleLayerID;
         this.labelCircleLayer = extend({id: labelCircleLayerID, source: labelSourceID}, clone(defaultCircleLayer));
 
-        let labelSymbolLayerID = layerIdentifier(name, "symbol");
+        let labelSymbolLayerID = layerIdentifier(name, 'symbol');
         this.labelSymbolLayerID = labelSymbolLayerID;
         this.labelSymbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
     }
@@ -77,23 +77,23 @@ class custom_point_label_layer {
     }
 
     setTextField(prop) {
-        this.labelSymbolLayer.layout["text-field"] = prop;
+        this.labelSymbolLayer.layout['text-field'] = prop;
     }
 
     setTextColor(color) {
-        this.labelSymbolLayer.paint["text-color"] = color;
+        this.labelSymbolLayer.paint['text-color'] = color;
     }
 
     setTextSize(size) {
-        this.labelSymbolLayer.layout["text-size"] = size;
+        this.labelSymbolLayer.layout['text-size'] = size;
     }
 
     setCircleColor(color) {
-        this.labelCircleLayer.paint["circle-color"] = color;
+        this.labelCircleLayer.paint['circle-color'] = color;
     }
 
     setCircleRadius(radius) {
-        this.labelCircleLayer.paint["circle-radius"] = radius;
+        this.labelCircleLayer.paint['circle-radius'] = radius;
     }
 
     setCirclePaintProperty(prop, value) {
@@ -135,7 +135,7 @@ class custom_point_label_layer {
     }
 
     setFloor(floorNumber) {
-        let filter = ["all", ['==', 'floor', floorNumber]];
+        let filter = ['all', ['==', 'floor', floorNumber]];
         this.updateFilter(filter);
     }
 

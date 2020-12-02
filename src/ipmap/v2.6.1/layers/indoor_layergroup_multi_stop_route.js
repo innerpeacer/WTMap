@@ -1,9 +1,9 @@
 import {
     coord_projection as CoordProjection,
-    IPTurf as ipTurf,
-} from '../../dependencies.js'
-import RouteLayerObject from './route_layer_object'
-import AnimationObject from '../utils/route_animation_object'
+    IPTurf as ipTurf
+} from '../../dependencies.js';
+import RouteLayerObject from './route_layer_object';
+import AnimationObject from '../utils/route_animation_object';
 
 let routeAnimationObject = new AnimationObject();
 
@@ -74,7 +74,7 @@ class indoor_layergroup_multi_stop_route {
         routeAnimationObject.reset();
 
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.clearSource(map);
         });
     }
@@ -125,7 +125,7 @@ class indoor_layergroup_multi_stop_route {
                 let passedLineArray = [];
                 let passedRouteParts = [];
                 let routeParts = segmentResult.getRoutePartsOnFloor(this.map.currentMapInfo.floorNumber);
-                routeParts.forEach(function (rp) {
+                routeParts.forEach(function(rp) {
                     if (rp.partIndex < targetPart.partIndex) {
                         passedRouteParts.push(rp);
                         passedLineArray.push(rp.getGeojsonGeometry());
@@ -171,7 +171,7 @@ class indoor_layergroup_multi_stop_route {
         this._floorIndex = mapInfo.floorNumber;
         let map = this.map;
         let filter = ['==', 'floor', this._floorIndex];
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.setFilter(map, filter);
         });
     }
@@ -187,7 +187,7 @@ class indoor_layergroup_multi_stop_route {
 
     addToMap() {
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.addToMap(map);
         });
         return this;
@@ -195,14 +195,14 @@ class indoor_layergroup_multi_stop_route {
 
     removeFromMap() {
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.removeFromMap(map);
         });
     }
 
     clearSource() {
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.clearSource(map);
         });
 
@@ -212,17 +212,17 @@ class indoor_layergroup_multi_stop_route {
 
     hide() {
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.hide(map);
         });
     }
 
     show() {
         let map = this.map;
-        this._layerObjects.forEach(function (obj) {
+        this._layerObjects.forEach(function(obj) {
             obj.show(map);
         });
     }
 }
 
-export default indoor_layergroup_multi_stop_route
+export default indoor_layergroup_multi_stop_route;

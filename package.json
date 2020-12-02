@@ -1,25 +1,25 @@
 {
-  "name": "wtmap",
-  "description": "wtmap library",
-  "version": "1.0.0",
-  "repository": {},
-  "engines": {
-    "node": ">=6.4.0"
-  },
-  "dependencies": {
-    "@innerpeacer/navigation": "^1.2.1",
-    "@innerpeacer/locator": "v1.2.0",
-    "@innerpeacer/map-pbf": "v1.0.1",
-    "@innerpeacer/ty-utils": "^1.2.0",
-    "@innerpeacer/map-entity-base": "^1.1.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "ul": "npm run clear-innerpeacer; npm install",
-    "clear-innerpeacer": "rm -rf node_modules/@innerpeacer",
-    "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
-    "wt-min": "npm run build-wt-prod-min --prefix src/mapbox/1.0.0",
-    "wt": "npm run build-wt-prod --prefix src/mapbox/1.0.0"
-  },
-  "files": []
+    "name": "wtmap",
+    "description": "wtmap library",
+    "version": "1.0.0",
+    "repository": {},
+    "engines": {
+        "node": ">=6.4.0"
+    },
+    "dependencies": {
+        "@innerpeacer/navigation": "^1.2.1",
+        "@innerpeacer/locator": "v1.2.0",
+        "@innerpeacer/map-pbf": "v1.0.1",
+        "@innerpeacer/ty-utils": "^1.2.0",
+        "@innerpeacer/map-entity-base": "^1.1.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "ul": "npm run clear-innerpeacer; npm install",
+        "clear-innerpeacer": "rm -rf node_modules/@innerpeacer",
+        "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
+        "wt-min": "npm run build-wt-prod-min --prefix src/mapbox/1.0.0",
+        "wt": "npm run build-wt-prod --prefix src/mapbox/1.0.0"
+    },
+    "files": []
 }

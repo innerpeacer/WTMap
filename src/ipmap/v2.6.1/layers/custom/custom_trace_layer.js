@@ -1,5 +1,5 @@
-import {layerIdentifier, sourceIdentifier} from "./layer_identifier";
-import {extend, clone, geojson_utils as GeojsonUtils} from "../../../dependencies.js"
+import {layerIdentifier, sourceIdentifier} from './layer_identifier';
+import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
 
 let defaultCircleLayer = {
     'type': 'circle',
@@ -7,7 +7,7 @@ let defaultCircleLayer = {
         'circle-stroke-width': 0.5,
         'circle-stroke-color': '#888',
         'circle-color': '#3bb2d0',
-        'circle-radius': 3,
+        'circle-radius': 3
     }
 };
 
@@ -28,26 +28,26 @@ let defaultTextSymbolLayer = {
     'type': 'symbol',
     'paint': {
         'text-halo-color': '#ffffff',
-        'text-color': '#8B8682',
+        'text-color': '#8B8682'
     },
     'layout': {
         'text-font': ['simhei'],
         'text-offset': [0, 0.3],
         'text-anchor': 'top',
         'text-max-width': 20,
-        'text-size': 9,
+        'text-size': 9
     }
 };
 
 class custom_trace_layer {
     constructor(name) {
         this.name = name;
-        let typeName = "trace";
+        let typeName = 'trace';
         let traceLineSourceID = sourceIdentifier(`${name}-${typeName}-line`);
         this.traceLineSourceID = traceLineSourceID;
         this.traceLineSource = GeojsonUtils.emptySource;
 
-        let traceLineLayerID = layerIdentifier(`${name}-${typeName}`, "line");
+        let traceLineLayerID = layerIdentifier(`${name}-${typeName}`, 'line');
         this.traceLineLayerID = traceLineLayerID;
         this.traceLineLayer = extend({id: traceLineLayerID, source: traceLineSourceID}, clone(defaultLineLayer));
 
@@ -55,14 +55,14 @@ class custom_trace_layer {
         this.tracePointSourceID = tracePointSourceID;
         this.tracePointSource = GeojsonUtils.emptySource;
 
-        let tracePointCircleLayerID = layerIdentifier(`${name}-${typeName}-point`, "circle");
+        let tracePointCircleLayerID = layerIdentifier(`${name}-${typeName}-point`, 'circle');
         this.tracePointCircleLayerID = tracePointCircleLayerID;
         this.tracePointCircleLayer = extend({
             id: tracePointCircleLayerID,
             source: tracePointSourceID
         }, clone(defaultCircleLayer));
 
-        let tracePointSymbolLayerID = layerIdentifier(`${name}-${typeName}-point`, "symbol");
+        let tracePointSymbolLayerID = layerIdentifier(`${name}-${typeName}-point`, 'symbol');
         this.tracePointSymbolLayerID = tracePointSymbolLayerID;
         this.tracePointSymbolLayer = extend({
             id: tracePointSymbolLayerID,
@@ -128,4 +128,4 @@ class custom_trace_layer {
     }
 }
 
-export {custom_trace_layer}
+export {custom_trace_layer};

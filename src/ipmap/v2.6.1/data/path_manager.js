@@ -1,13 +1,13 @@
 function getCBMJson(bID, options) {
     if (options._useFile) {
-        return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json` + "?t=" + Date.now();
+        return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json` + '?t=' + Date.now();
     } else {
         return `${options._apiHost}/${options._apiPath}/web/GetCBM?buildingID=${bID}`;
     }
 }
 
 function getCBMPbf(bID, options) {
-    return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf` + "?t=" + Date.now();
+    return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf` + '?t=' + Date.now();
 }
 
 export function getCBMPath(bID, options) {

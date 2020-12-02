@@ -15,7 +15,7 @@ function lat2Tile(lat, z) {
         * (Math.pow(2.0, z));
 }
 
-ip_tile_coord.lngLatToTile = function (lng, lat, zoom) {
+ip_tile_coord.lngLatToTile = function(lng, lat, zoom) {
     let z = Math.floor(zoom);
     let xtile = Math.floor(lng2Tile(lng, z));
     let ytile = Math.floor(lat2Tile(lat, z));
@@ -26,7 +26,7 @@ ip_tile_coord.lngLatToTile = function (lng, lat, zoom) {
     ytile = ytile < 0 ? 0 : ytile;
     if (ytile >= (1 << z))
         ytile = ((1 << z) - 1);
-    return {z: z, x: xtile, y: ytile}
+    return {z: z, x: xtile, y: ytile};
 };
 
-export {ip_tile_coord}
+export {ip_tile_coord};
