@@ -70,6 +70,17 @@ class custom_trace_layer {
         }, clone(defaultTextSymbolLayer));
     }
 
+    cloneWithName(name) {
+        let layer = new custom_trace_layer(name);
+        layer.tracePointCircleLayer.paint = clone(this.tracePointCircleLayer.paint) || {};
+        layer.tracePointCircleLayer.layout = clone(this.tracePointCircleLayer.layout) || {};
+        layer.tracePointSymbolLayer.paint = clone(this.tracePointSymbolLayer.paint) || {};
+        layer.tracePointSymbolLayer.layout = clone(this.tracePointSymbolLayer.layout) || {};
+        layer.traceLineLayer.paint = clone(this.traceLineLayer.paint) || {};
+        layer.traceLineLayer.layout = clone(this.traceLineLayer.layout) || {};
+        return layer;
+    }
+
     addToMap(map) {
         this.map = map;
 
@@ -77,8 +88,8 @@ class custom_trace_layer {
         this.map.addLayer(this.traceLineLayer);
 
         this.map.addSource(this.tracePointSourceID, this.tracePointSource);
-        this.map.addLayer(this.tracePointCircleLayer);
         this.map.addLayer(this.tracePointSymbolLayer);
+        this.map.addLayer(this.tracePointCircleLayer);
     }
 
     removeFromMap() {
@@ -114,6 +125,55 @@ class custom_trace_layer {
 
     setCircleLayoutProperty(prop, value) {
         this.tracePointCircleLayer.layout[prop] = value;
+    }
+
+    setFilter(filter) {
+        this.traceLineLayer.filter = filter;
+        this.tracePointCircleLayer.filter = filter;
+        this.tracePointSymbolLayer.filter = filter;
+    }
+
+    updateFilter(filter) {
+        this.map.setFilter(this.traceLineLayerID, filter);
+        this.map.setFilter(this.tracePointCircleLayerID, filter);
+        this.map.setFilter(this.tracePointSymbolLayerID, filter);
+    }
+
+    show() {
+        this.updateCircleVisible(true);
+        this.updateTextVisible(true);
+        this.updateLineVisible(true);
+    }
+
+    hide() {
+        this.updateCircleVisible(false);
+        this.updateTextVisible(false);
+        this.updateLineVisible(false);
+    }
+
+    updateCircleVisible(isVisible) {
+        this.map.setLayoutProperty(this.tracePointCircleLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
+    }
+
+    updateTextVisible(isVisible) {
+        this.map.setLayoutProperty(this.tracePointSymbolLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
+    }
+
+    updateLineVisible(isVisible) {
+        this.map.setLayoutProperty(this.traceLineLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
+    }
+
+    updateTextProperty(type, prop, value) {
+        if (type === 'paint') {
+            this.map.setPaintProperty(this.tracePointSymbolLayerID, prop, value);
+        } else if (type === 'layout') {
+            this.map.setLayoutProperty(this.tracePointSymbolLayerID, prop, value);
+        }
+    }
+
+    setFloor(floorNumber) {
+        let filter = ['all', ['==', 'floor', floorNumber]];
+        this.updateFilter(filter);
     }
 
     showTraceData(tracePoints) {
