@@ -81,4 +81,4 @@ class indoor_layer_base {
     }
 }
 
-export default indoor_layer_base;
+export {indoor_layer_base};

@@ -2,8 +2,8 @@ import {
     local_point as LocalPoint, Evented,
     WebBleLocator as BleLocator, BleEvent
 } from '../../dependencies.js';
-import GpsLocator from './gps/gps_locator';
-import InnerEventManager from '../utils/inner_event_manager';
+import {gps_locator as GpsLocator} from './gps/gps_locator';
+import {inner_event_manager as InnerEventManager} from '../utils/inner_event_manager';
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
@@ -300,4 +300,4 @@ class locator extends Evented {
     }
 }
 
-export default locator;
+export {locator};

@@ -13,7 +13,7 @@ import {
     WebSocketManager
 } from '../../dependencies.js';
 import {version} from '../version.js';
-import WTMap from '../map/map';
+import {IPMap as WTMap} from '../map/map';
 import {debug_options} from './debug_options';
 import {ip_tile_coord as TileCoord} from '../utils/ip_tile_coord';
 import {ip_agent_utils as AgentUtil} from '../utils/ip_agent_utils';

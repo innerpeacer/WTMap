@@ -2,8 +2,8 @@ import {
     coord_projection as CoordProjection,
     IPTurf as ipTurf
 } from '../../dependencies.js';
-import RouteLayerObject from './route_layer_object';
-import AnimationObject from '../utils/route_animation_object';
+import {route_layer_object as RouteLayerObject} from './route_layer_object';
+import {route_animation_object as AnimationObject} from '../utils/route_animation_object';
 
 let routeAnimationObject = new AnimationObject();
 
@@ -225,4 +225,4 @@ class indoor_layergroup_multi_stop_route {
     }
 }
 
-export default indoor_layergroup_multi_stop_route;
+export {indoor_layergroup_multi_stop_route};

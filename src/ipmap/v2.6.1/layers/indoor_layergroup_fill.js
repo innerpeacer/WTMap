@@ -1,4 +1,4 @@
-import IndoorGroupLayer from './indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from './indoor_layer_base';
 import {extend, clone} from '../../dependencies.js';
 
 let defaultFillLayer = {
@@ -129,4 +129,4 @@ class indoor_layergroup_fill extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_fill;
+export {indoor_layergroup_fill};

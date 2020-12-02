@@ -13,22 +13,22 @@ import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit
 
 import {getCBMPath, getTilePath} from '../data/path_manager';
 
-import IndoorLayers from '../layers/indoor_layers';
-import CalculateZoomForMaxBounds from '../utils/ip_zoom_calc';
+import {indoor_layers as IndoorLayers} from '../layers/indoor_layers';
+import {calculateZoomForMaxBounds as CalculateZoomForMaxBounds} from '../utils/ip_zoom_calc';
 
-import IndoorLocator from '../locator/locator';
+import {locator as IndoorLocator} from '../locator/locator';
 import {web_gps_updater} from '../locator/web_gps_updater';
 
 import {getStyle} from '../config/default_style';
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
 import {motion_handler as MotionHandler} from '../motion/motion_handler';
 
-import EventManager from '../utils/event_manager';
+import {event_manager as EventManager} from '../utils/event_manager';
 
 let MapEvent = EventManager.MapEvent;
 let LocatorEvent = EventManager.LocatorEvent;
 
-import InnerEventManager from '../utils/inner_event_manager';
+import {inner_event_manager as InnerEventManager} from '../utils/inner_event_manager';
 
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
@@ -509,4 +509,4 @@ class IPMap extends BoxMap {
     }
 }
 
-export default IPMap;
+export {IPMap};

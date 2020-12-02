@@ -1,4 +1,4 @@
-import IndoorGroupLayer from './indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from './indoor_layer_base';
 
 class indoor_layer_highlight extends IndoorGroupLayer {
     constructor(map) {
@@ -50,4 +50,4 @@ class indoor_layer_highlight extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layer_highlight;
+export {indoor_layer_highlight};

@@ -1,4 +1,4 @@
-import IndoorGroupLayer from './indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from './indoor_layer_base';
 import {extend, clone} from '../../dependencies.js';
 
 let defaultSymbolLayer = {
@@ -199,4 +199,4 @@ class indoor_layergroup_icon_text extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_icon_text;
+export {indoor_layergroup_icon_text};

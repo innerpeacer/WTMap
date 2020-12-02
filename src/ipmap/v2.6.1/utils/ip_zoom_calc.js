@@ -66,4 +66,4 @@ function scaleToZoom(scale) {
     return Math.log(scale) / Math.LN2;
 }
 
-export default calculateZoomForMaxBounds;
+export {calculateZoomForMaxBounds};

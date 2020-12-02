@@ -1,13 +1,13 @@
-import FillLayer from './indoor_layergroup_fill';
-import IconTextLayer from './indoor_layergroup_icon_text';
+import {indoor_layergroup_fill as FillLayer} from './indoor_layergroup_fill';
+import {indoor_layergroup_icon_text as IconTextLayer} from './indoor_layergroup_icon_text';
 
 // import ExtrusionLayer from './indoor_layergroup_extrusion'
-import ExtrusionLayer from './indoor_layergroup_ipextrusion';
-import MultiStopRouteLayer from './indoor_layergroup_multi_stop_route';
-import MaskingLayer from './indoor_layer_masking';
-import HighlightLayer from './indoor_layer_highlight';
-import LocationLayer from './indoor_layer_location';
-import DebugBeaconLayer from './debug_layers/indoor_layergroup_debug_beacon';
+import {indoor_layergroup_ipextrusion as ExtrusionLayer} from './indoor_layergroup_ipextrusion';
+import {indoor_layergroup_multi_stop_route as MultiStopRouteLayer} from './indoor_layergroup_multi_stop_route';
+import {indoor_layer_masking as MaskingLayer} from './indoor_layer_masking';
+import {indoor_layer_highlight as HighlightLayer} from './indoor_layer_highlight';
+import {indoor_layer_location as LocationLayer} from './indoor_layer_location';
+import {indoor_layergroup_debug_beacon as DebugBeaconLayer} from './debug_layers/indoor_layergroup_debug_beacon';
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -221,5 +221,5 @@ class indoor_layers {
     }
 }
 
-export default indoor_layers;
+export {indoor_layers};
 

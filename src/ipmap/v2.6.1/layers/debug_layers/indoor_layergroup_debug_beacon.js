@@ -1,4 +1,4 @@
-import IndoorGroupLayer from '../indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from '../indoor_layer_base';
 import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
 
 
@@ -167,4 +167,4 @@ class indoor_layergroup_debug_beacon extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_debug_beacon;
+export {indoor_layergroup_debug_beacon};

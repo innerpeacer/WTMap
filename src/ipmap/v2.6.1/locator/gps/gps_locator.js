@@ -1,5 +1,5 @@
 import {Evented} from '../../../dependencies.js';
-import InnerEventManager from '../../utils/inner_event_manager';
+import {inner_event_manager as InnerEventManager} from '../../utils/inner_event_manager';
 
 let GpsEvent = InnerEventManager.GpsEvent;
 
@@ -65,4 +65,4 @@ class gps_locator extends Evented {
     }
 }
 
-export default gps_locator;
+export {gps_locator};

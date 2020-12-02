@@ -20,4 +20,4 @@ let LocatorEvent = {
 };
 event_manager.LocatorEvent = LocatorEvent;
 
-export default event_manager;
+export {event_manager};

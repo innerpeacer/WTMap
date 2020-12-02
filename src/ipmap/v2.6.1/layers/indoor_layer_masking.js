@@ -1,4 +1,4 @@
-import IndoorGroupLayer from './indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from './indoor_layer_base';
 
 let emptySource = {
     'type': 'geojson', 'data': {'type': 'FeatureCollection', 'features': []}
@@ -34,4 +34,4 @@ class indoor_layer_masking extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layer_masking;
+export {indoor_layer_masking};

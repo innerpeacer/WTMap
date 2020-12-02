@@ -1,4 +1,4 @@
-import IndoorGroupLayer from './indoor_layer_base';
+import {indoor_layer_base as IndoorGroupLayer} from './indoor_layer_base';
 import {extend, clone} from '../../dependencies.js';
 
 let defaultExtrusionLayer = {
@@ -105,4 +105,4 @@ class indoor_layergroup_ipextrusion extends IndoorGroupLayer {
     }
 }
 
-export default indoor_layergroup_ipextrusion;
+export {indoor_layergroup_ipextrusion};
