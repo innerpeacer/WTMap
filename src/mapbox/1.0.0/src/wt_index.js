@@ -6,7 +6,7 @@ import supported from '@mapbox/mapbox-gl-supported';
 // import { version } from '../package.json';
 import Map from './ui/map';
 
-import {wtExported} from "../../../ipmap/wt_export.js";
+import {wtExported} from '../../../ipmap/wt_export.js';
 
 let {
     version,
@@ -28,9 +28,10 @@ let {
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
     CustomTraceLayer,
+    CustomPolygonLayer,
     HttpRequest,
     Utils,
-    GeojsonUtils,
+    GeojsonUtils
 } = wtExported;
 
 import NavigationControl from './ui/control/navigation_control';
@@ -74,6 +75,7 @@ const exported = {
     CustomPointLabelLayer,
     CustomSegmentLineLayer,
     CustomTraceLayer,
+    CustomPolygonLayer,
     HttpRequest,
     Utils,
     GeojsonUtils,
