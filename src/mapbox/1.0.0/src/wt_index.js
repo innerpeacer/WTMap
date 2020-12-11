@@ -31,6 +31,7 @@ let {
     CustomPolygonLayer,
     HttpRequest,
     Utils,
+    HostUtils,
     GeojsonUtils
 } = wtExported;
 
@@ -78,6 +79,7 @@ const exported = {
     CustomPolygonLayer,
     HttpRequest,
     Utils,
+    HostUtils,
     GeojsonUtils,
 
     NavigationControl,

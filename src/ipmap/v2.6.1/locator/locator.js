@@ -1,4 +1,5 @@
 import {
+    extend,
     local_point as LocalPoint, Evented,
     WebBleLocator as BleLocator, BleEvent
 } from '../../dependencies.js';
@@ -35,6 +36,7 @@ class locator extends Evented {
     constructor(buildingID, options, converter) {
         super();
         let self = this;
+        this.options = extend({}, options);
         this._buildingID = buildingID;
         this._converter = converter;
 
@@ -65,13 +67,13 @@ class locator extends Evented {
             status._gpsReady = false;
             this._processStatus();
         });
-        if (!options.__disableGps) {
+        if (!this.options.__disableGps) {
             this.startGps();
         } else {
             status._gpsReady = false;
         }
 
-        this._bleLocator = new BleLocator(buildingID, options);
+        this._bleLocator = new BleLocator(buildingID, this.options);
         this._bleLocator.on(BleEvent.BleReady, () => {
             // console.log("ble ready");
             status._bleReady = true;

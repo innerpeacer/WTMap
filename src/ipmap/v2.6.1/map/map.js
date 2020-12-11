@@ -7,6 +7,7 @@ import {
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
     CBMData,
+    HostUtils,
     wt_wgs84_converter as WtWgs84Converter
 } from '../../dependencies.js';
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit';
@@ -32,10 +33,10 @@ import {inner_event_manager as InnerEventManager} from '../utils/inner_event_man
 
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
 
-let defaultHost = window.location.protocol + '//' + window.location.host;
+let defaultHostUtils = HostUtils.GetDefault();
 const defaultOptions = {
-    _apiHost: defaultHost,
-    _apiRouteHost: defaultHost,
+    _apiHost: defaultHostUtils.getHttpHost(),
+    _apiRouteHost: defaultHostUtils.getHttpHost(),
 
     _apiPath: 'backend-new',
     _apiRoute: 'map-server',
@@ -63,7 +64,7 @@ class IPMap extends BoxMap {
         // console.log('IPMap.constructor');
         // console.log('Version: ' + version);
         options = extend({}, defaultOptions, options);
-        if (options._cbmPath == null) options._cbmPath = defaultHost + options._apiPath + '/web/GetCBM';
+        if (options._cbmPath == null) options._cbmPath = defaultHostUtils.getHttpHost() + options._apiPath + '/web/GetCBM';
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
         if (options._apiRouteHost == null && options._apiHost != null) options._apiRouteHost = options._apiHost;
         options.style = getStyle(options._apiHost, options._resourceRootDir, options.spriteName);

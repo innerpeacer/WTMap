@@ -6,6 +6,7 @@ import {
     IPTurf as Turf,
     utils as Utils,
     geojson_utils as GeojsonUtils,
+    HostUtils,
     Navigation,
     SimulatedNavigation,
     NavigationEvent, NavigationHintType,
@@ -47,5 +48,6 @@ export {
     CustomPolygonLayer,
     HttpRequest,
     Utils,
+    HostUtils,
     GeojsonUtils
 };
