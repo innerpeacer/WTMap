@@ -7,6 +7,7 @@ import {
     utils as Utils,
     geojson_utils as GeojsonUtils,
     HostUtils,
+    BeaconSignal,
     Navigation,
     SimulatedNavigation,
     NavigationEvent, NavigationHintType,
@@ -49,5 +50,6 @@ export {
     HttpRequest,
     Utils,
     HostUtils,
+    BeaconSignal,
     GeojsonUtils
 };

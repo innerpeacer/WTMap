@@ -32,6 +32,7 @@ let {
     HttpRequest,
     Utils,
     HostUtils,
+    BeaconSignal,
     GeojsonUtils
 } = wtExported;
 
@@ -80,6 +81,7 @@ const exported = {
     HttpRequest,
     Utils,
     HostUtils,
+    BeaconSignal,
     GeojsonUtils,
 
     NavigationControl,

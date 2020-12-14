@@ -18,6 +18,7 @@ export {
     utils,
     geojson_utils,
     HostUtils,
+    BeaconSignal,
     WebSocketManager,
     IPTurf
 } from '@innerpeacer/ty-utils';
