@@ -1,0 +1,124 @@
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>NativeLocating</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src="js/config-dev.js"></script>
+    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
+    <script src="vconsole.min.js"></script>
+</head>
+<body>
+
+<style>
+    .map-overlay {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        position: absolute;
+        width: 200px;
+        top: 0;
+        right: 0;
+        padding: 10px;
+    }
+</style>
+
+<div id='map'></div>
+<div id='data'>
+    <div class='map-overlay'>
+        <label id="hint"></label>
+    </div>
+</div>
+
+<script>
+    var hintLabel = document.getElementById('hint');
+    new VConsole();
+    console.log(wtmap.version);
+    var buildingID = getParameter('buildingID');
+    if (buildingID == null) buildingID = '00278888';
+    var use3D = true;
+    use3D = false;
+
+    var currentLocation;
+    console.log(wtmap.Utils);
+    let mapOptions = {
+        container: 'map',
+        buildingID: buildingID,
+        use3D: use3D,
+        _disableCache: true,
+        _dataVersion: 'v5',
+        usePbf: true,
+        // _debugBeacon: true,
+        enableOrientation: true,
+        enableMotion: true
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
+
+    map.on('click', function(evt) {
+        // console.log("Zoom: " + map.getZoom());
+        // console.log(evt.lngLat);
+        // console.log(map.building.initAngle);
+        // var beacons = [{
+        //     'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+        //     'major': 10194,
+        //     'minor': 5336,
+        //     'rssi': -60 + parseInt(Math.random() * 20),
+        //     'accuracy': 1.4534
+        // }, {
+        //     'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+        //     'major': 10194,
+        //     'minor': 5335,
+        //     'rssi': -100 + parseInt(Math.random() * 20),
+        //     'accuracy': 1.4534
+        // }];
+        //
+        // scan(beacons);
+    });
+
+    map.on('mapready', function(evt) {
+        console.log('mapready');
+        initFloorSwitch(map);
+    });
+
+    // ------ reactive with native ------------
+    function nativeToJs() {
+        console.log('nativeToJs called');
+        map.panBy([50, 50]);
+        return 'nativeToJs called';
+    }
+
+    function jsToNative(obj) {
+        if (window.webkit) {
+            window.webkit.messageHandlers.jsToNative.postMessage(obj);
+        }
+    }
+
+    function scan(data) {
+        console.log('scan called');
+        console.log(data);
+        let res = map.didRangeBeacons(data.ble);
+        let heading = data.heading;
+        console.log(res);
+        if (res && res.location) {
+            map.showLocation(res.location, {
+                angle: heading != null ? heading - map.building.initAngle : 0
+            });
+        } else {
+            map.hideLocation();
+        }
+    }
+
+    function hideLocation() {
+        console.log('hideLocation');
+        map.hideLocation();
+    }
+
+    function round(num, n) {
+        return parseInt(num * Math.pow(10, n)) / Math.pow(10, n);
+    }
+</script>
+
+
+</body>
+</html>
