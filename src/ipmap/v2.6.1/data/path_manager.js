@@ -10,6 +10,10 @@ function getCBMPbf(bID, options) {
     return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf` + '?t=' + Date.now();
 }
 
+export function getThemePbfPath(themeID, options) {
+    return `${options._apiHost}/${options._resourceRootDir}/theme/Theme_${themeID}.pbf` + '?t=' + Date.now();
+}
+
 export function getCBMPath(bID, options) {
     if (options.usePbf) {
         return getCBMPbf(bID, options);

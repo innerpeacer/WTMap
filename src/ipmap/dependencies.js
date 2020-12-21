@@ -6,7 +6,8 @@ export {
     theme,
     fill_symbol, icon_text_symbol,
     beacon, scanned_beacon, locating_beacon,
-    cbm_data as CBMData
+    cbm_data as CBMData,
+    theme_data as ThemeData
 } from '@innerpeacer/map-entity-base';
 
 export {

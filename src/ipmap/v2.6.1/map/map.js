@@ -8,12 +8,13 @@ import {
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
     CBMData,
+    ThemeData,
     HostUtils,
     wt_wgs84_converter as WtWgs84Converter
 } from '../../dependencies.js';
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit';
 
-import {getCBMPath, getTilePath} from '../data/path_manager';
+import {getCBMPath, getThemePbfPath, getTilePath} from '../data/path_manager';
 
 import {calculateZoomForMaxBounds as CalculateZoomForMaxBounds} from '../utils/ip_zoom_calc';
 
@@ -83,6 +84,12 @@ class IPMap extends BoxMap {
             return;
         }
 
+        this._cbmReady = false;
+        this.themeID = options.themeID;
+        this.__useCustomTheme = (this.themeID != null);
+        this._themeReady = false;
+        this._themeFailed = false;
+
         this._debugBeacon = options._debugBeacon;
         this._enableOrientation = options.enableOrientation;
         this._enableMotion = options.enableMotion;
@@ -145,6 +152,11 @@ class IPMap extends BoxMap {
         this._motionHandler = new MotionHandler(this);
         if (this._enableMotion) this._motionHandler.bind();
 
+        if (map.__useCustomTheme) {
+            map._requestTheme();
+        } else {
+            map._themeReady = true;
+        }
         map._requestCBM();
     }
 
@@ -291,19 +303,54 @@ class IPMap extends BoxMap {
         this._layerManager._setRouteColor(color1, color2, color3);
     }
 
+    _requestTheme() {
+        console.log('_requestTheme');
+        let url = getThemePbfPath(this.themeID, this._options);
+
+        ThemeData.fetchTheme({url: url}, (data) => {
+            this._themeReady = true;
+            this._themeData = data;
+            this._init();
+        }, (error) => {
+            this._themeReady = true;
+            this._themeFailed = true;
+            this._init();
+        });
+    }
+
     _requestCBM() {
         // console.log('requestCBM');
         let url = getCBMPath(this.resourceBuildingID, this._options);
 
         CBMData.fetchCBM({url: url, usePbf: this._options.usePbf}, (data) => {
-            this.__cbmReady(data);
+            console.log('cbmReady');
+            this._cbmReady = true;
+            this._cbmData = data;
+            this._init();
         }, (error) => {
             this.fire(MapEvent.Error, error);
         });
     }
 
-    __cbmReady(data) {
-        // console.log('cbmReady');
+    _init() {
+        if (!this._themeReady || !this._cbmReady) return;
+        let fillSymbols;
+        let iconTextSymbols;
+        let data = this._cbmData;
+        if (this.__useCustomTheme && !this._themeFailed) {
+            console.log('use custom theme');
+            fillSymbols = IPFillSymbol.getFillSymbolArray(this._themeData.FillSymbols);
+            iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(this._themeData.IconTextSymbols);
+        } else {
+            if (this._themeFailed) {
+                console.log('custom theme failed, use default');
+            } else {
+                console.log('not use custom theme, use default');
+            }
+            fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
+            iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
+        }
+
         let map = this;
         map.city = new IPCity(data['Cities'][0]);
         map.building = new IPBuilding(data['Buildings'][0]);
@@ -322,11 +369,11 @@ class IPMap extends BoxMap {
 
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
-        map._fillSymbolArray = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
+        map._fillSymbolArray = fillSymbols;
         map._fillSymbolArray.forEach(function(fill) {
             map._fillSymbolMap[fill.UID] = fill;
         });
-        map._iconTextSymbolArray = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
+        map._iconTextSymbolArray = iconTextSymbols;
         map._iconTextSymbolArray.forEach(function(iconText) {
             map._iconTextSymbolMap[iconText.UID] = iconText;
         });
