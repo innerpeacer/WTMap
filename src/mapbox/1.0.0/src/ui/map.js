@@ -128,7 +128,7 @@ const defaultOptions = {
     renderWorldCopies: true,
     refreshExpiredTiles: true,
     maxTileCacheSize: null,
-    localIdeographFontFamily: 'sans-serif',
+    localIdeographFontFamily: false,
     transformRequest: null,
     fadeDuration: 300,
     crossSourceCollisions: true
