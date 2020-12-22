@@ -45,20 +45,12 @@
 
         flag = !flag;
         if (flag) {
-            map.clearHighlight();
             return;
         }
 
         var fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs("room")});
         if (fs && fs.length > 0) {
             console.log(fs[0].properties);
-            var properties = fs[0].properties;
-            var poiID = fs[0].properties["POI_ID"];
-            map.highlightPoi([poiID, "00270003F0110600"], {
-                masking: true,
-                color: "#ff0000",
-                opacity: 0.9
-            });
         }
     });
 

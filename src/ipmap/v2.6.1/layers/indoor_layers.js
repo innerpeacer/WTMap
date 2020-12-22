@@ -4,8 +4,6 @@ import {indoor_layergroup_icon_text as IconTextLayer} from './indoor_layergroup_
 // import ExtrusionLayer from './indoor_layergroup_extrusion'
 import {indoor_layergroup_ipextrusion as ExtrusionLayer} from './indoor_layergroup_ipextrusion';
 import {indoor_layergroup_multi_stop_route as MultiStopRouteLayer} from './indoor_layergroup_multi_stop_route';
-import {indoor_layer_masking as MaskingLayer} from './indoor_layer_masking';
-import {indoor_layer_highlight as HighlightLayer} from './indoor_layer_highlight';
 import {indoor_layer_location as LocationLayer} from './indoor_layer_location';
 import {indoor_layergroup_debug_beacon as DebugBeaconLayer} from './debug_layers/indoor_layergroup_debug_beacon';
 
@@ -59,10 +57,6 @@ class indoor_layers {
         this._locationLayer = new LocationLayer(map).addToMap();
         this._baseLayerArray.push(this._locationLayer);
         this._locationLayerArray.push(this._locationLayer);
-
-        this._maskingLayer = new MaskingLayer(map).addToMap();
-        this._highlightLayer = new HighlightLayer(map).addToMap();
-        this._baseLayerArray.push(this._highlightLayer);
 
         this._switch3D(this._use3D);
     }
@@ -156,24 +150,6 @@ class indoor_layers {
         this._baseLayerArray.forEach(function(layer) {
             layer.show();
         });
-    }
-
-    _setMaskingData(data) {
-        this._maskingLayer._setMaskingData(data);
-    }
-
-    _highlightPoi(pois, options) {
-        if (options && options.masking) {
-            this._maskingLayer.show();
-        } else {
-            this._maskingLayer.hide();
-        }
-        this._highlightLayer._highlightPoi(pois, options);
-    }
-
-    _resetHighlight() {
-        this._highlightLayer._resetHighlight();
-        this._maskingLayer.hide();
     }
 
     hideRoute() {
