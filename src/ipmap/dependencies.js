@@ -3,6 +3,7 @@ export {
     building,
     local_point,
     mapinfo,
+    theme,
     fill_symbol, icon_text_symbol,
     beacon, scanned_beacon, locating_beacon,
     cbm_data as CBMData

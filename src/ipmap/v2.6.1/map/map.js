@@ -4,6 +4,7 @@ import {
     building as IPBuilding,
     local_point as LocalPoint,
     mapinfo as IPMapInfo,
+    theme as Theme,
     fill_symbol as IPFillSymbol, icon_text_symbol as IPIconTextSymbol,
     MultiStopRouteManager as IPMultiStopRouteManager, RouteEvent,
     CBMData,
@@ -25,6 +26,8 @@ import {orientation_handler as OrientationHandler} from '../motion/orientation_h
 import {motion_handler as MotionHandler} from '../motion/motion_handler';
 
 import {event_manager as EventManager} from '../utils/event_manager';
+
+import {layer_manager as LayerManager} from '../layers/manager/layer_manager';
 
 let MapEvent = EventManager.MapEvent;
 let LocatorEvent = EventManager.LocatorEvent;
@@ -67,7 +70,7 @@ class IPMap extends BoxMap {
         if (options._cbmPath == null) options._cbmPath = defaultHostUtils.getHttpHost() + options._apiPath + '/web/GetCBM';
         if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
         if (options._apiRouteHost == null && options._apiHost != null) options._apiRouteHost = options._apiHost;
-        options.style = getStyle(options._apiHost, options._resourceRootDir, options.spriteName);
+        options.wtStyle = getStyle(options._apiHost, options._resourceRootDir, options.spriteName);
 
         super(options);
         this._options = options;
@@ -123,13 +126,16 @@ class IPMap extends BoxMap {
         // }
         // console.log('CacheVersion: ' + CacheVersion.getVersionName());
 
-        this.on('load', function() {
-            // console.log('on load');
-            if (map.__abort) {
-                map.fire(MapEvent.Error, {'description': 'Invalid Token: ' + options.token + ' for ' + options.buildingID});
-                return;
+        this.on('style.load', function() {
+            console.log('on style.load');
+            map.fire(MapEvent.MapReady);
+
+            if (map._targetFloor != null) {
+                map.setFloor(this._targetFloor);
+            } else {
+                let initFloorIndex = map.building.initFloorIndex;
+                map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
             }
-            map._requestCBM();
         });
 
         this._orientationHandler = new OrientationHandler(this);
@@ -137,6 +143,8 @@ class IPMap extends BoxMap {
 
         this._motionHandler = new MotionHandler(this);
         if (this._enableMotion) this._motionHandler.bind();
+
+        map._requestCBM();
     }
 
     enableOrientation() {
@@ -227,7 +235,7 @@ class IPMap extends BoxMap {
     }
 
     switch3D(use3D) {
-        this._layerGroup._switch3D(use3D);
+        this._layerManager._switch3D(use3D);
     }
 
     showRoute(location, segment) {
@@ -330,24 +338,29 @@ class IPMap extends BoxMap {
         let buildingExtent = map.building.buildingExtent;
         let initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
-        map.addSource('innerpeacer', {
-            'tiles': getTilePath(this.resourceBuildingID, this._options),
-            'type': 'vector',
-            'bounds': initBounds
-        });
         map._layerGroup = new IndoorLayers(map, map._use3D);
         // map._layerGroup._updateLocator(map._locator);
 
+        this.defaultTheme = new Theme({
+            themeID: 'built-in',
+            themeName: 'built-in',
+            spriteName: '',
+            FillSymbols: map._fillSymbolArray,
+            IconTextSymbols: map._iconTextSymbolArray
+        });
+        this._layerManager = new LayerManager(map._layerSymbolMap, this.defaultTheme, {
+            map,
+            buildingID: this.buildingID,
+            tilePath: getTilePath(this.resourceBuildingID, this._options),
+            baseZoom: this.getBaseZoom(),
+            initBounds,
+            use3D: map._use3D
+        });
+        this._options.wtStyle.layers = this._layerManager.prepareStyleLayers();
+        this._options.wtStyle.sources = this._layerManager.prepareStyleSources();
+        this.setStyle(this._options.wtStyle);
+
         map._gpsManager = new web_gps_updater(map._wtWgs84Converter);
-
-        map.fire(MapEvent.MapReady);
-
-        if (this._targetFloor != null) {
-            map.setFloor(this._targetFloor);
-        } else {
-            let initFloorIndex = map.building.initFloorIndex;
-            map.setFloor(map.mapInfoArray[initFloorIndex].mapID);
-        }
 
         map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
         map._locator.on(InnerLocatorEvent.LocatorReady, function(event) {
@@ -385,30 +398,6 @@ class IPMap extends BoxMap {
         return this._baseZoom;
     }
 
-    setLabelVisibleRange(minZoom, maxZoom) {
-        this._layerGroup._setLabelVisibleRange(minZoom, maxZoom);
-    }
-
-    setIconVisibleRange(minZoom, maxZoom) {
-        this._layerGroup._setIconVisibleRange(minZoom, maxZoom);
-    }
-
-    setLabelLayout(property, value) {
-        this._layerGroup.setLabelLayout(property, value);
-    }
-
-    setLabelPaint(property, value) {
-        this._layerGroup.setLabelPaint(property, value);
-    }
-
-    setFacilityLayout(propetry, value) {
-        this._layerGroup.setFacilityLayout(propetry, value);
-    }
-
-    setFacilityPaint(property, value) {
-        this._layerGroup.setFacilityPaint(property, value);
-    }
-
     setBackgroundColor(color) {
         this.setPaintProperty('background', 'background-color', color);
     }
@@ -435,7 +424,7 @@ class IPMap extends BoxMap {
         // map._layerGroup.hideLayers();
         map.currentMapInfo = result.mapInfo;
 
-        map._layerGroup._updateMapInfo(result.mapInfo);
+        map._layerManager.setMapInfo(result.mapInfo);
         if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._setMapInfo(result.mapInfo);
 
         requestAnimationFrame(function() {
@@ -463,11 +452,11 @@ class IPMap extends BoxMap {
     }
 
     switchLanguage(options) {
-        this._layerGroup.switchLanguage(options);
+        this._layerManager.switchLanguage(options);
     }
 
     setFont(fontName) {
-        this._layerGroup.setFont(fontName);
+        this._layerManager.setFont(fontName);
     }
 
     getFloorInfoArray() {
@@ -475,11 +464,19 @@ class IPMap extends BoxMap {
     }
 
     getLayerIDs(subLayer) {
-        return this._layerGroup.getLayerIDs(subLayer);
+        return this._layerManager.getLayerIDs(subLayer);
+    }
+
+    showLabels() {
+        this._layerManager._showLabels();
+    }
+
+    hideLabels() {
+        this._hideLabels();
     }
 
     _hideLabels() {
-        this._layerGroup._hideLabels();
+        this._layerManager._hideLabels();
     }
 }
 
