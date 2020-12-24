@@ -95,6 +95,7 @@ class IPMap extends BoxMap {
         this._use3D = options.use3D;
         this._useFile = options._useFile;
 
+        this.styleReady = false;
         this.city = null;
         this.building = null;
         this.mapInfoArray = null;
@@ -128,6 +129,7 @@ class IPMap extends BoxMap {
 
         this.on('style.load', function() {
             console.log('on style.load');
+            map.styleReady = true;
             map.fire(MapEvent.MapReady);
 
             if (map._targetFloor != null) {
@@ -225,7 +227,7 @@ class IPMap extends BoxMap {
             result.totalWeighting = data.totalWeighting;
             result.beaconList = data.beaconList;
             result.beaconPool = data.beaconPool;
-            this._layerGroup._updateDebugBeacon(data);
+            this._layerManager.showDebugSignals(data);
         }
         return result;
     }
@@ -339,7 +341,6 @@ class IPMap extends BoxMap {
         let initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
         map._layerGroup = new IndoorLayers(map, map._use3D);
-        // map._layerGroup._updateLocator(map._locator);
 
         this.defaultTheme = new Theme({
             themeID: 'built-in',
@@ -354,7 +355,8 @@ class IPMap extends BoxMap {
             tilePath: getTilePath(this.resourceBuildingID, this._options),
             baseZoom: this.getBaseZoom(),
             initBounds,
-            use3D: map._use3D
+            use3D: map._use3D,
+            debugBeacon: map._debugBeacon
         });
         this._options.wtStyle.layers = this._layerManager.prepareStyleLayers();
         this._options.wtStyle.sources = this._layerManager.prepareStyleSources();
@@ -365,7 +367,7 @@ class IPMap extends BoxMap {
         map._locator = new IndoorLocator(map.building.buildingID, map._options, map._wtWgs84Converter);
         map._locator.on(InnerLocatorEvent.LocatorReady, function(event) {
             // console.log('inner-locator-ready');
-            if (map._layerGroup) map._layerGroup._updateLocator(map._locator);
+            map.showDebugBeacon();
             map.fire(LocatorEvent.LocatorReady, event);
         });
         map._locator.on(InnerLocatorEvent.LocatorFailed, function(error) {
@@ -380,6 +382,12 @@ class IPMap extends BoxMap {
         map._locator.on(InnerLocatorEvent.LocationUpdateFailed, function(error) {
             map.fire(LocatorEvent.LocationUpdateFailed, error);
         });
+    }
+
+    showDebugBeacon() {
+        if (this._debugBeacon) {
+            this._layerManager.showDebugBeacons(this._locator);
+        }
     }
 
     getGpsManager() {
@@ -421,11 +429,9 @@ class IPMap extends BoxMap {
         // console.log('_loadFloorData');
         let map = this;
         map.fire(MapEvent.FloorStart, {});
-        // map._layerGroup.hideLayers();
         map.currentMapInfo = result.mapInfo;
 
         map._layerManager.setMapInfo(result.mapInfo);
-        if (map._debugBeacon && map._debugBeaconLayer) map._debugBeaconLayer._setMapInfo(result.mapInfo);
 
         requestAnimationFrame(function() {
             let c = map.currentMapInfo.getCenter();

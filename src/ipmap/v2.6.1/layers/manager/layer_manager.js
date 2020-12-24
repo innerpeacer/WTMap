@@ -5,12 +5,14 @@ import {unit_symbol_layer} from '../base/unit_symbol_layer';
 import {unit_extrusion_layer} from '../base/unit_extrusion_layer';
 import {base_layers} from './base_layers';
 import {location_layers} from './location_layers';
+import {debug_beacon_layers} from './debug_beacon_layers';
 
 class layer_manager {
     constructor(symbolMap, theme, options) {
         console.log('layer_manager.constructor');
         this.map = options.map;
         this.use3D = options.use3D;
+        this.debugBeacon = options._debugBeacon;
         this.options = options;
         this.symbolMap = symbolMap;
         this.theme = theme;
@@ -77,11 +79,15 @@ class layer_manager {
         let labelParams = LayerParams.Label;
         this.labelLayer = new base_layers(labelParams, [unit_symbol_layer], this.symbolMap[labelParams.name], this.iconTextMap, options);
 
+        this.debugBeaconLayer = new debug_beacon_layers();
         this.locationLayer = new location_layers();
 
         this.sources[this.locationLayer.locationSourceID] = this.locationLayer.locationSource;
+        this.sources[this.debugBeaconLayer.debugBeaconSourceID] = this.debugBeaconLayer.debugBeaconSource;
+        this.sources[this.debugBeaconLayer.debugBeaconSignalSourceID] = this.debugBeaconLayer.debugBeaconSignalSource;
+        this.sources[this.debugBeaconLayer.debugLocationSourceID] = this.debugBeaconLayer.debugLocationSource;
 
-        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.locationLayer];
+        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.debugBeaconLayer, this.locationLayer];
         this._3dLayerArray = [this.extrusionLayer, this.facilityLayer, this.labelLayer];
         this._labelIconLayerArray = [this.facilityLayer, this.labelLayer];
 
@@ -92,7 +98,7 @@ class layer_manager {
                 'background-color': 'white'
             }
         };
-        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.locationLayer.unitLayers);
+        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers);
         console.log(this.layers);
     }
 
@@ -100,6 +106,16 @@ class layer_manager {
         this._baseLayerArray.forEach((baseLayer) => {
             baseLayer.setMapInfo(this.map, info.floorNumber);
         });
+    }
+
+    showDebugBeacons(locator) {
+        if (locator && locator._isBleReady()) {
+            this.debugBeaconLayer.showDebugBeacons(this.map, locator._biteMe('_getLocatingBeaconGeojson'));
+        }
+    }
+
+    showDebugSignals(data) {
+        this.debugBeaconLayer.showDebugSignals(this.map, data);
     }
 
     showLocation(location) {

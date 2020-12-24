@@ -1,4 +1,4 @@
-import {GeojsonUtils} from '../../config/output';
+import {geojson_utils as GeojsonUtils} from '../../../dependencies';
 import {unit_location_layer} from '../functional/unit_location_layer';
 
 class location_layers {

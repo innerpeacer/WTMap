@@ -1,5 +1,4 @@
 import {indoor_layergroup_multi_stop_route as MultiStopRouteLayer} from './indoor_layergroup_multi_stop_route';
-import {indoor_layergroup_debug_beacon as DebugBeaconLayer} from './debug_layers/indoor_layergroup_debug_beacon';
 
 class indoor_layers {
     constructor(map, use3D) {
@@ -53,19 +52,6 @@ class indoor_layers {
         // this._locationLayerArray.push(this._locationLayer);
         //
         // this._switch3D(this._use3D);
-    }
-
-    _updateLocator(locator) {
-        if (locator && locator._isBleReady() && this._debugBeacon) {
-            // this._debugBeaconLayer._setLocatingBeaconData(locator._biteMe('_getLocatingBeaconGeojson'));
-        }
-    }
-
-    _updateDebugBeacon(data) {
-        if (this._debugBeacon) {
-            // this._debugBeaconLayer._setScannedBeaconData(data.debugData);
-            // this._debugBeaconLayer._setLocationData(data.debugLocation);
-        }
     }
 
     hideRoute() {
