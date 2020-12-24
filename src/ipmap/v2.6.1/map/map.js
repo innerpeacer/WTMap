@@ -177,7 +177,7 @@ class IPMap extends BoxMap {
         let map = this;
         let targetFloor = location.floor;
         this.location = loc;
-        this._layerGroup._showLocation(this.location, options);
+        this._layerManager.showLocation(this.location, options);
         if (options && options.center) {
             if (targetFloor && targetFloor !== map.currentMapInfo.floorNumber) {
                 map.setFloor(map.location.properties.floor, function() {
@@ -203,11 +203,11 @@ class IPMap extends BoxMap {
                 lpArray.push(lp);
             }
         }
-        this._layerGroup._showLocations(lpArray);
+        this._layerManager.showLocations(lpArray);
     };
 
     hideLocation() {
-        this._layerGroup._hideLocation();
+        this._layerManager.hideLocation();
     }
 
     didRangeBeacons(beacons) {

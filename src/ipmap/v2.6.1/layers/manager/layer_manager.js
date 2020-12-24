@@ -4,6 +4,7 @@ import {unit_outline_layer} from '../base/unit_outline_layer';
 import {unit_symbol_layer} from '../base/unit_symbol_layer';
 import {unit_extrusion_layer} from '../base/unit_extrusion_layer';
 import {base_layers} from './base_layers';
+import {location_layers} from './location_layers';
 
 class layer_manager {
     constructor(symbolMap, theme, options) {
@@ -76,7 +77,11 @@ class layer_manager {
         let labelParams = LayerParams.Label;
         this.labelLayer = new base_layers(labelParams, [unit_symbol_layer], this.symbolMap[labelParams.name], this.iconTextMap, options);
 
-        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer];
+        this.locationLayer = new location_layers();
+
+        this.sources[this.locationLayer.locationSourceID] = this.locationLayer.locationSource;
+
+        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.locationLayer];
         this._3dLayerArray = [this.extrusionLayer, this.facilityLayer, this.labelLayer];
         this._labelIconLayerArray = [this.facilityLayer, this.labelLayer];
 
@@ -87,7 +92,7 @@ class layer_manager {
                 'background-color': 'white'
             }
         };
-        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers);
+        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.locationLayer.unitLayers);
         console.log(this.layers);
     }
 
@@ -95,6 +100,18 @@ class layer_manager {
         this._baseLayerArray.forEach((baseLayer) => {
             baseLayer.setMapInfo(this.map, info.floorNumber);
         });
+    }
+
+    showLocation(location) {
+        this.locationLayer.showLocation(this.map, location);
+    }
+
+    showLocations(locations) {
+        this.locationLayer.showLocations(this.map, locations);
+    }
+
+    hideLocation() {
+        this.locationLayer.hideLocation(this.map);
     }
 
     prepareStyleSources() {

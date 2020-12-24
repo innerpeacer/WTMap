@@ -1,5 +1,4 @@
 import {indoor_layergroup_multi_stop_route as MultiStopRouteLayer} from './indoor_layergroup_multi_stop_route';
-import {indoor_layer_location as LocationLayer} from './indoor_layer_location';
 import {indoor_layergroup_debug_beacon as DebugBeaconLayer} from './debug_layers/indoor_layergroup_debug_beacon';
 
 class indoor_layers {
@@ -79,18 +78,6 @@ class indoor_layers {
 
     _setRouteColor(color1, color2, color3) {
         // this._routeLayer._setRouteColor(color1, color2, color3);
-    }
-
-    _showLocation(location) {
-        // this._locationLayer._showLocation(location);
-    }
-
-    _showLocations(locations) {
-        // this._locationLayer._showLocations(locations);
-    }
-
-    _hideLocation() {
-        // this._locationLayer._hideLocation();
     }
 }
 
