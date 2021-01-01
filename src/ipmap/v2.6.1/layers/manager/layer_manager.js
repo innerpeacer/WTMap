@@ -6,6 +6,7 @@ import {unit_extrusion_layer} from '../base/unit_extrusion_layer';
 import {base_layers} from './base_layers';
 import {location_layers} from './location_layers';
 import {debug_beacon_layers} from './debug_beacon_layers';
+import {route_layers} from './route_layers';
 
 class layer_manager {
     constructor(symbolMap, theme, options) {
@@ -70,6 +71,8 @@ class layer_manager {
         let assetParams = LayerParams.Asset;
         this.assetLayer = new base_layers(assetParams, [unit_fill_layer, unit_outline_layer], this.symbolMap[assetParams.name], this.fillSymbolMap, options);
 
+        this.routeLayer = new route_layers();
+
         let extrusionParams = LayerParams.Extrusion;
         this.extrusionLayer = new base_layers(extrusionParams, [unit_extrusion_layer], this.symbolMap[extrusionParams.name], this.fillSymbolMap, options);
 
@@ -82,12 +85,19 @@ class layer_manager {
         this.debugBeaconLayer = new debug_beacon_layers();
         this.locationLayer = new location_layers();
 
+        this.sources[this.routeLayer.routeWholeLineSourceID] = this.routeLayer.routeWholeLineSource;
+        this.sources[this.routeLayer.wholeRouteArrowSourceID] = this.routeLayer.wholeRouteArrowSource;
+        this.sources[this.routeLayer.routeSegmentLineSourceID] = this.routeLayer.routeSegmentLineSource;
+        this.sources[this.routeLayer.segmentRouteArrowSourceID] = this.routeLayer.segmentRouteArrowSource;
+        this.sources[this.routeLayer.routePassedSegmentLineSourceID] = this.routeLayer.routePassedSegmentLineSource;
+        this.sources[this.routeLayer.routeStopSourceID] = this.routeLayer.routeStopSource;
+
         this.sources[this.locationLayer.locationSourceID] = this.locationLayer.locationSource;
         this.sources[this.debugBeaconLayer.debugBeaconSourceID] = this.debugBeaconLayer.debugBeaconSource;
         this.sources[this.debugBeaconLayer.debugBeaconSignalSourceID] = this.debugBeaconLayer.debugBeaconSignalSource;
         this.sources[this.debugBeaconLayer.debugLocationSourceID] = this.debugBeaconLayer.debugLocationSource;
 
-        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.debugBeaconLayer, this.locationLayer];
+        this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.routeLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.debugBeaconLayer, this.locationLayer];
         this._3dLayerArray = [this.extrusionLayer, this.facilityLayer, this.labelLayer];
         this._labelIconLayerArray = [this.facilityLayer, this.labelLayer];
 
@@ -98,8 +108,7 @@ class layer_manager {
                 'background-color': 'white'
             }
         };
-        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers);
-        console.log(this.layers);
+        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers, this.routeLayer.unitLayers);
     }
 
     setMapInfo(info) {
@@ -182,6 +191,18 @@ class layer_manager {
         this._labelIconLayerArray.forEach((baseLayer) => {
             baseLayer.hide(this.map);
         });
+    }
+
+    showRoute(result, location, segment) {
+        this.routeLayer.showRoute(this.map, result, location, segment);
+    }
+
+    hideRoute() {
+        this.routeLayer.hideRoute(this.map);
+    }
+
+    _setRouteColor(color1, color2, color3) {
+        this.routeLayer._setRouteColor(this.map, color1, color2, color3);
     }
 
     getLayerIDs(subLayer) {

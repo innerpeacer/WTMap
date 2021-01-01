@@ -15,7 +15,6 @@ import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit
 
 import {getCBMPath, getTilePath} from '../data/path_manager';
 
-import {indoor_layers as IndoorLayers} from '../layers/indoor_layers';
 import {calculateZoomForMaxBounds as CalculateZoomForMaxBounds} from '../utils/ip_zoom_calc';
 
 import {locator as IndoorLocator} from '../locator/locator';
@@ -243,7 +242,7 @@ class IPMap extends BoxMap {
     showRoute(location, segment) {
         // console.log('showRoute');
         let map = this;
-        map._layerGroup.showRoute(map._routeResult, location, segment);
+        map._layerManager.showRoute(map._routeResult, location, segment);
     }
 
     resetRoute() {
@@ -254,7 +253,7 @@ class IPMap extends BoxMap {
 
     hideRoute() {
         let map = this;
-        map._layerGroup.hideRoute();
+        map._layerManager.hideRoute();
     }
 
     __requestRoute(start, end, stops, callback, errorCallback, params) {
@@ -289,7 +288,7 @@ class IPMap extends BoxMap {
     }
 
     setRouteColor(color1, color2, color3) {
-        this._layerGroup._setRouteColor(color1, color2, color3);
+        this._layerManager._setRouteColor(color1, color2, color3);
     }
 
     _requestCBM() {
@@ -340,7 +339,6 @@ class IPMap extends BoxMap {
         let buildingExtent = map.building.buildingExtent;
         let initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
-        map._layerGroup = new IndoorLayers(map, map._use3D);
 
         this.defaultTheme = new Theme({
             themeID: 'built-in',
