@@ -5,14 +5,18 @@ class location_layers {
     constructor() {
         this.name = 'wt-location';
         this.locationSourceID = `${this.name}-source`;
-        this.locationSource = GeojsonUtils.emptySource;
 
         this.locationLayer = new unit_location_layer({
             name: this.name,
             sourceID: this.locationSourceID
         });
 
+        this.sourceIDs = [this.locationSourceID];
         this.unitLayers = [this.locationLayer];
+    }
+
+    getSourceIDs() {
+        return this.sourceIDs;
     }
 
     showLocation(map, location) {

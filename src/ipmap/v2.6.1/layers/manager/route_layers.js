@@ -60,7 +60,6 @@ class route_layers {
         // ============ whole ============
         this.wholeLineName = `${this.name}-whole-line`;
         this.routeWholeLineSourceID = `${this.wholeLineName}-source`;
-        this.routeWholeLineSource = GeojsonUtils.emptySource;
 
         this.routeWholeBorderLineLayer = new unit_route_line_layer({
             name: `${this.wholeLineName}-border`,
@@ -72,7 +71,6 @@ class route_layers {
         }).asLine();
 
         this.wholeRouteArrowSourceID = `${this.wholeLineName}-arrow-source`;
-        this.wholeRouteArrowSource = GeojsonUtils.emptySource;
         this.wholeRouteArrowLayer = new unit_route_symbol_layer({
             name: this.wholeLineName,
             sourceID: this.wholeRouteArrowSourceID
@@ -81,7 +79,6 @@ class route_layers {
         // ============ segment ============
         this.routeSegmentName = `${this.name}-segment-line`;
         this.routeSegmentLineSourceID = `${this.routeSegmentName}-source`;
-        this.routeSegmentLineSource = GeojsonUtils.emptySource;
 
         this.routeSegmentBorderLineLayer = new unit_route_line_layer({
             name: `${this.routeSegmentName}-border`,
@@ -93,7 +90,6 @@ class route_layers {
         }).asSegement();
 
         this.segmentRouteArrowSourceID = `${this.routeSegmentName}-arrow-source`;
-        this.segmentRouteArrowSource = GeojsonUtils.emptySource;
         this.segmentRouteArrowLayer = new unit_route_symbol_layer({
             name: this.routeSegmentName,
             sourceID: this.segmentRouteArrowSourceID
@@ -102,7 +98,6 @@ class route_layers {
         // ============ pass ============
         this.routePassedSegmentName = `${this.name}-passed-segment-line`;
         this.routePassedSegmentLineSourceID = `${this.routePassedSegmentName}-source`;
-        this.routePassedSegmentLineSource = GeojsonUtils.emptySource;
 
         this.routePassedSegmentLineLayer = new unit_route_line_layer({
             name: `${this.routePassedSegmentName}`,
@@ -112,7 +107,6 @@ class route_layers {
         // ============ stops ============
         this.routeStopName = `${this.name}-stop`;
         this.routeStopSourceID = `${this.routeStopName}-source`;
-        this.routeStopSource = GeojsonUtils.emptySource;
         this.routeStopCircleLayer = new unit_route_circle_layer({
             name: this.routeStopName,
             sourceID: this.routeStopSourceID
@@ -125,6 +119,10 @@ class route_layers {
 
         this.sourceIDs = [this.routeWholeLineSourceID, this.wholeRouteArrowSourceID, this.routeSegmentLineSourceID, this.routePassedSegmentLineSourceID, this.segmentRouteArrowSourceID, this.routeStopSourceID];
         this.unitLayers = [this.routeWholeBorderLineLayer, this.routeWholeLineLayer, this.routeSegmentBorderLineLayer, this.routeSegmentLineLayer, this.routePassedSegmentLineLayer, this.wholeRouteArrowLayer, this.segmentRouteArrowLayer, this.routeStopCircleLayer, this.routeStopSymbolLayer];
+    }
+
+    getSourceIDs() {
+        return this.sourceIDs;
     }
 
     showRoute(map, multiResult, location, segment) {

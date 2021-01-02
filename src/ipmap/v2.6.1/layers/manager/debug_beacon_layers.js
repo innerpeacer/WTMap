@@ -55,8 +55,13 @@ class debug_beacon_layers {
             sourceID: this.debugLocationSourceID
         }).asLocationLayer();
 
+        this.sourceIDs = [this.debugBeaconSourceID, this.debugBeaconSignalSourceID, this.debugLocationSourceID];
         this.unitLayers = [this.debugBeaconCircleLayer, this.debugBeaconSymbolLayer,
             this.debugBeaconFocusSignalCircleLayer, this.debugBeaconOffFocusSignalCircleLayer, this.debugBeaconFocusSignalSymbolLayer, this.debugBeaconOffFocusSignalSymbolLayer, this.debugLocationSymbolLayer];
+    }
+
+    getSourceIDs() {
+        return this.sourceIDs;
     }
 
     showDebugBeacons(map, data) {

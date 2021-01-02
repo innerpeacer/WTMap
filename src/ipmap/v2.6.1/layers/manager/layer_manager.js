@@ -1,3 +1,6 @@
+import {
+    geojson_utils as GeojsonUtils
+} from '../../../dependencies';
 import {LayerParams, DefaultVectorSourceID} from '../layer_constants';
 import {unit_fill_layer} from '../base/unit_fill_layer';
 import {unit_outline_layer} from '../base/unit_outline_layer';
@@ -29,10 +32,10 @@ class layer_manager {
 
         this.sources = {};
         this.layers = [];
-        this.buildBaseLayers();
+        this.build();
     }
 
-    buildBaseLayers() {
+    build() {
         let options = {
             buildingID: this.options.buildingID,
             baseZoom: this.options.baseZoom,
@@ -44,23 +47,6 @@ class layer_manager {
             'type': 'vector',
             'bounds': this.options.initBounds
         };
-        // let floorParams = LayerParams.Floor;
-        // this.floorLayer = new fill_layers(floorParams, this.symbolMap[floorParams.name], this.fillSymbolMap, options);
-        //
-        // let roomParams = LayerParams.Room;
-        // this.roomLayer = new fill_layers(roomParams, this.symbolMap[roomParams.name], this.fillSymbolMap, options);
-        //
-        // let assetParams = LayerParams.Asset;
-        // this.assetLayer = new fill_layers(assetParams, this.symbolMap[assetParams.name], this.fillSymbolMap, options);
-        //
-        // let extrusionParams = LayerParams.Extrusion;
-        // this.extrusionLayer = new extrusion_layers(extrusionParams, this.symbolMap[extrusionParams.name], this.fillSymbolMap, options);
-        //
-        // let facilityParams = LayerParams.Facility;
-        // this.facilityLayer = new symbol_layers(facilityParams, this.symbolMap[facilityParams.name], this.iconTextMap, options);
-        //
-        // let labelParams = LayerParams.Label;
-        // this.labelLayer = new symbol_layers(labelParams, this.symbolMap[labelParams.name], this.iconTextMap, options);
 
         let floorParams = LayerParams.Floor;
         this.floorLayer = new base_layers(floorParams, [unit_fill_layer, unit_outline_layer], this.symbolMap[floorParams.name], this.fillSymbolMap, options);
@@ -71,8 +57,6 @@ class layer_manager {
         let assetParams = LayerParams.Asset;
         this.assetLayer = new base_layers(assetParams, [unit_fill_layer, unit_outline_layer], this.symbolMap[assetParams.name], this.fillSymbolMap, options);
 
-        this.routeLayer = new route_layers();
-
         let extrusionParams = LayerParams.Extrusion;
         this.extrusionLayer = new base_layers(extrusionParams, [unit_extrusion_layer], this.symbolMap[extrusionParams.name], this.fillSymbolMap, options);
 
@@ -82,20 +66,13 @@ class layer_manager {
         let labelParams = LayerParams.Label;
         this.labelLayer = new base_layers(labelParams, [unit_symbol_layer], this.symbolMap[labelParams.name], this.iconTextMap, options);
 
+        this.routeLayer = new route_layers();
         this.debugBeaconLayer = new debug_beacon_layers();
         this.locationLayer = new location_layers();
 
-        this.sources[this.routeLayer.routeWholeLineSourceID] = this.routeLayer.routeWholeLineSource;
-        this.sources[this.routeLayer.wholeRouteArrowSourceID] = this.routeLayer.wholeRouteArrowSource;
-        this.sources[this.routeLayer.routeSegmentLineSourceID] = this.routeLayer.routeSegmentLineSource;
-        this.sources[this.routeLayer.segmentRouteArrowSourceID] = this.routeLayer.segmentRouteArrowSource;
-        this.sources[this.routeLayer.routePassedSegmentLineSourceID] = this.routeLayer.routePassedSegmentLineSource;
-        this.sources[this.routeLayer.routeStopSourceID] = this.routeLayer.routeStopSource;
-
-        this.sources[this.locationLayer.locationSourceID] = this.locationLayer.locationSource;
-        this.sources[this.debugBeaconLayer.debugBeaconSourceID] = this.debugBeaconLayer.debugBeaconSource;
-        this.sources[this.debugBeaconLayer.debugBeaconSignalSourceID] = this.debugBeaconLayer.debugBeaconSignalSource;
-        this.sources[this.debugBeaconLayer.debugLocationSourceID] = this.debugBeaconLayer.debugLocationSource;
+        this._addSources(this.routeLayer.getSourceIDs());
+        this._addSources(this.locationLayer.getSourceIDs());
+        this._addSources(this.debugBeaconLayer.getSourceIDs());
 
         this._baseLayerArray = [this.floorLayer, this.roomLayer, this.assetLayer, this.routeLayer, this.extrusionLayer, this.facilityLayer, this.labelLayer, this.debugBeaconLayer, this.locationLayer];
         this._3dLayerArray = [this.extrusionLayer, this.facilityLayer, this.labelLayer];
@@ -137,6 +114,12 @@ class layer_manager {
 
     hideLocation() {
         this.locationLayer.hideLocation(this.map);
+    }
+
+    _addSources(sourceIDList) {
+        sourceIDList.forEach((sourceID) => {
+            this.sources[sourceID] = GeojsonUtils.emptySource;
+        });
     }
 
     prepareStyleSources() {
