@@ -310,6 +310,15 @@ class IPMap extends BoxMap {
         ThemeData.fetchTheme({url: url}, (data) => {
             this._themeReady = true;
             this._themeData = data;
+            let fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
+            let iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
+            this.customTheme = new Theme({
+                themeID: data.themeID,
+                themeName: data.themeName,
+                spriteName: data.spriteName,
+                FillSymbols: fillSymbols,
+                IconTextSymbols: iconTextSymbols
+            });
             this._init();
         }, (error) => {
             this._themeReady = true;
@@ -326,30 +335,34 @@ class IPMap extends BoxMap {
             console.log('cbmReady');
             this._cbmReady = true;
             this._cbmData = data;
+            let fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
+            let iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
+            this.defaultTheme = new Theme({
+                themeID: 'built-in',
+                themeName: 'built-in',
+                spriteName: this._options.spriteName,
+                FillSymbols: fillSymbols,
+                IconTextSymbols: iconTextSymbols
+            });
             this._init();
         }, (error) => {
             this.fire(MapEvent.Error, error);
         });
     }
 
+    setTheme(options) {
+        let themeID = options && options.themeID;
+        if (themeID == null) {
+            console.log('themeID is null');
+            return;
+        }
+
+
+    }
+
     _init() {
         if (!this._themeReady || !this._cbmReady) return;
-        let fillSymbols;
-        let iconTextSymbols;
         let data = this._cbmData;
-        if (this.__useCustomTheme && !this._themeFailed) {
-            console.log('use custom theme');
-            fillSymbols = IPFillSymbol.getFillSymbolArray(this._themeData.FillSymbols);
-            iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(this._themeData.IconTextSymbols);
-        } else {
-            if (this._themeFailed) {
-                console.log('custom theme failed, use default');
-            } else {
-                console.log('not use custom theme, use default');
-            }
-            fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
-            iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
-        }
 
         let map = this;
         map.city = new IPCity(data['Cities'][0]);
@@ -369,14 +382,6 @@ class IPMap extends BoxMap {
 
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
-        map._fillSymbolArray = fillSymbols;
-        map._fillSymbolArray.forEach(function(fill) {
-            map._fillSymbolMap[fill.UID] = fill;
-        });
-        map._iconTextSymbolArray = iconTextSymbols;
-        map._iconTextSymbolArray.forEach(function(iconText) {
-            map._iconTextSymbolMap[iconText.UID] = iconText;
-        });
         map._layerSymbolMap = data['Symbols'];
         map._msRouteManager.setBM(map.building, map.mapInfoArray);
 
@@ -387,14 +392,8 @@ class IPMap extends BoxMap {
         let initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
 
-        this.defaultTheme = new Theme({
-            themeID: 'built-in',
-            themeName: 'built-in',
-            spriteName: '',
-            FillSymbols: map._fillSymbolArray,
-            IconTextSymbols: map._iconTextSymbolArray
-        });
-        this._layerManager = new LayerManager(map._layerSymbolMap, this.defaultTheme, {
+        this.theme = (this.__useCustomTheme && !this._themeFailed) ? this.customTheme : this.defaultTheme;
+        this._layerManager = new LayerManager(map._layerSymbolMap, this.theme, {
             map,
             buildingID: this.buildingID,
             tilePath: getTilePath(this.resourceBuildingID, this._options),
