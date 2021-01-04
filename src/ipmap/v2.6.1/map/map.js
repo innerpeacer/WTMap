@@ -21,7 +21,7 @@ import {calculateZoomForMaxBounds as CalculateZoomForMaxBounds} from '../utils/i
 import {locator as IndoorLocator} from '../locator/locator';
 import {web_gps_updater} from '../locator/web_gps_updater';
 
-import {getStyle} from '../config/default_style';
+import {getStyle, getSpritePath} from '../config/default_style';
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
 import {motion_handler as MotionHandler} from '../motion/motion_handler';
 
@@ -134,7 +134,7 @@ class IPMap extends BoxMap {
         // console.log('CacheVersion: ' + CacheVersion.getVersionName());
 
         this.on('style.load', function() {
-            console.log('on style.load');
+            // console.log('on style.load');
             map.styleReady = true;
             map.fire(MapEvent.MapReady);
 
@@ -304,7 +304,7 @@ class IPMap extends BoxMap {
     }
 
     _requestTheme() {
-        console.log('_requestTheme');
+        // console.log('_requestTheme');
         let url = getThemePbfPath(this.themeID, this._options);
 
         ThemeData.fetchTheme({url: url}, (data) => {
@@ -332,7 +332,7 @@ class IPMap extends BoxMap {
         let url = getCBMPath(this.resourceBuildingID, this._options);
 
         CBMData.fetchCBM({url: url, usePbf: this._options.usePbf}, (data) => {
-            console.log('cbmReady');
+            // console.log('cbmReady');
             this._cbmReady = true;
             this._cbmData = data;
             let fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
@@ -350,13 +350,47 @@ class IPMap extends BoxMap {
         });
     }
 
+    _useTheme(theme) {
+        this.theme = theme;
+        this._layerManager = new LayerManager(map._layerSymbolMap, this.theme, {
+            map,
+            buildingID: this.buildingID,
+            tilePath: getTilePath(this.resourceBuildingID, this._options),
+            baseZoom: this.getBaseZoom(),
+            initBounds: this._initBounds,
+            use3D: map._use3D,
+            debugBeacon: map._debugBeacon
+        });
+        this._options.wtStyle.layers = this._layerManager.prepareStyleLayers();
+        this._options.wtStyle.sources = this._layerManager.prepareStyleSources();
+        this._options.wtStyle.sprite = getSpritePath(this._options._apiHost, this._options._resourceRootDir, this.theme.spriteName);
+        this.setStyle(this._options.wtStyle);
+    }
+
     setTheme(options) {
         let themeID = options && options.themeID;
         if (themeID == null) {
-            console.log('themeID is null');
+            // console.log('themeID is null');
+            this._useTheme(this.defaultTheme);
             return;
         }
 
+        let url = getThemePbfPath(themeID, this._options);
+
+        ThemeData.fetchTheme({url: url}, (data) => {
+            let fillSymbols = IPFillSymbol.getFillSymbolArray(data['FillSymbols']);
+            let iconTextSymbols = IPIconTextSymbol.getIconTextSymbolArray(data['IconTextSymbols']);
+            let newTheme = new Theme({
+                themeID: data.themeID,
+                themeName: data.themeName,
+                spriteName: data.spriteName,
+                FillSymbols: fillSymbols,
+                IconTextSymbols: iconTextSymbols
+            });
+            this._useTheme(newTheme);
+        }, (error) => {
+            this.fire(MapEvent.Error, {'description': 'Theme data failed: ' + themeID});
+        });
 
     }
 
@@ -378,7 +412,7 @@ class IPMap extends BoxMap {
             TileCacheDB.disable();
             GlyphCacheDB.disable();
         }
-        console.log('CacheVersion: ' + CacheVersion.getVersionName());
+        // console.log('CacheVersion: ' + CacheVersion.getVersionName());
 
         map._wtWgs84Converter = new WtWgs84Converter(map.building.wgs84CalibrationPoint, map.building.wtCalibrationPoint);
         map.mapInfoArray = IPMapInfo.getMapInfoArray(data['MapInfo']);
@@ -389,22 +423,11 @@ class IPMap extends BoxMap {
         // console.log(initBounds);
 
         let buildingExtent = map.building.buildingExtent;
-        let initBounds = buildingExtent.getExtendedBounds2(0.2);
+        let initBounds = this._initBounds = buildingExtent.getExtendedBounds2(0.2);
         this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
 
-        this.theme = (this.__useCustomTheme && !this._themeFailed) ? this.customTheme : this.defaultTheme;
-        this._layerManager = new LayerManager(map._layerSymbolMap, this.theme, {
-            map,
-            buildingID: this.buildingID,
-            tilePath: getTilePath(this.resourceBuildingID, this._options),
-            baseZoom: this.getBaseZoom(),
-            initBounds,
-            use3D: map._use3D,
-            debugBeacon: map._debugBeacon
-        });
-        this._options.wtStyle.layers = this._layerManager.prepareStyleLayers();
-        this._options.wtStyle.sources = this._layerManager.prepareStyleSources();
-        this.setStyle(this._options.wtStyle);
+        let theme = (this.__useCustomTheme && !this._themeFailed) ? this.customTheme : this.defaultTheme;
+        this._useTheme(theme);
 
         map._gpsManager = new web_gps_updater(map._wtWgs84Converter);
 

@@ -13,7 +13,7 @@ import {route_layers} from './route_layers';
 
 class layer_manager {
     constructor(symbolMap, theme, options) {
-        console.log('layer_manager.constructor');
+        // console.log('layer_manager.constructor');
         this.map = options.map;
         this.use3D = options.use3D;
         this.debugBeacon = options._debugBeacon;

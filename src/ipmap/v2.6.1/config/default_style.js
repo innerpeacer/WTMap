@@ -19,5 +19,9 @@ function getStyle(host, resourceRoot, spriteName) {
     return style;
 }
 
+function getSpritePath(host, resourceRoot, spriteName) {
+    return `${host}/${resourceRoot}/sprites/${spriteName}`;
+}
+
 // module.exports = default_style;
-export {getStyle};
+export {getStyle, getSpritePath};
