@@ -352,14 +352,14 @@ class IPMap extends BoxMap {
 
     _useTheme(theme) {
         this.theme = theme;
-        this._layerManager = new LayerManager(map._layerSymbolMap, this.theme, {
-            map,
+        this._layerManager = new LayerManager(this._layerSymbolMap, this.theme, {
+            map: this,
             buildingID: this.buildingID,
             tilePath: getTilePath(this.resourceBuildingID, this._options),
             baseZoom: this.getBaseZoom(),
             initBounds: this._initBounds,
-            use3D: map._use3D,
-            debugBeacon: map._debugBeacon
+            use3D: this._use3D,
+            debugBeacon: this._debugBeacon
         });
         this._options.wtStyle.layers = this._layerManager.prepareStyleLayers();
         this._options.wtStyle.sources = this._layerManager.prepareStyleSources();
