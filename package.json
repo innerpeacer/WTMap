@@ -13,8 +13,12 @@
         "@innerpeacer/ty-utils": "^1.3.0",
         "@innerpeacer/map-entity-base": "^1.3.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "flow-bin": "^0.136.0",
+        "flow-remove-types": "^2.136.0"
+    },
     "scripts": {
+        "flow": "flow",
         "ul": "npm run clear-innerpeacer; npm install",
         "clear-innerpeacer": "rm -rf node_modules/@innerpeacer",
         "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
