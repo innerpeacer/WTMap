@@ -1,5 +1,7 @@
+// @flow
 import {layerIdentifier, sourceIdentifier} from './layer_identifier';
 import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
+import {IPMap} from '../../map/map';
 
 let defaultLineLayer = {
     'type': 'line',
@@ -30,7 +32,20 @@ let defaultTextSymbolLayer = {
 };
 
 class custom_segment_line_layer {
-    constructor(name) {
+    name: string;
+    map: IPMap | any;
+
+    lineSourceID: string;
+    lineSource: Object;
+
+    lineLayerID: string;
+    lineLayer: Object;
+
+    lineSymbolLayerID: string;
+    lineSymbolLayer: Object;
+
+    constructor(name: string) {
+
         this.name = name;
 
         let lineSourceID = sourceIdentifier(name);
@@ -46,7 +61,7 @@ class custom_segment_line_layer {
         this.lineSymbolLayer = extend({id: lineSymbolLayerID, source: lineSourceID}, clone(defaultTextSymbolLayer));
     }
 
-    addToMap(map) {
+    addToMap(map: IPMap) {
         this.map = map;
         this.map.addSource(this.lineSourceID, this.lineSource);
 
@@ -62,43 +77,43 @@ class custom_segment_line_layer {
         this.map = null;
     }
 
-    setLineWidth(width) {
+    setLineWidth(width: any) {
         this.lineLayer.paint['line-width'] = width;
     }
 
-    setLineColor(color) {
+    setLineColor(color: any) {
         this.lineLayer.paint['line-color'] = color;
     }
 
-    setLineTextField(prop) {
+    setLineTextField(prop: any) {
         this.lineSymbolLayer.layout['text-field'] = prop;
     }
 
-    setLineTextColor(color) {
+    setLineTextColor(color: any) {
         this.lineSymbolLayer.paint['text-color'] = color;
     }
 
-    setLineTextSize(size) {
+    setLineTextSize(size: any) {
         this.lineSymbolLayer.layout['text-size'] = size;
     }
 
-    setLinePaintProperty(prop, value) {
+    setLinePaintProperty(prop: string, value: any) {
         this.lineLayer.paint[prop] = value;
     }
 
-    setLineLayoutProperty(prop, value) {
+    setLineLayoutProperty(prop: string, value: any) {
         this.lineLayer.layout[prop] = value;
     }
 
-    setTextPaintProperty(prop, value) {
+    setTextPaintProperty(prop: string, value: any) {
         this.lineSymbolLayer.paint[prop] = value;
     }
 
-    setTextLayoutProperty(prop, value) {
+    setTextLayoutProperty(prop: string, value: any) {
         this.lineSymbolLayer.layout[prop] = value;
     }
 
-    updateLineProperty(type, prop, value) {
+    updateLineProperty(type: string, prop: string, value: any) {
         if (type === 'paint') {
             this.map.setPaintProperty(this.lineLayerID, prop, value);
         } else if (type === 'layout') {
@@ -106,7 +121,7 @@ class custom_segment_line_layer {
         }
     }
 
-    updateTextProperty(type, prop, value) {
+    updateTextProperty(type: string, prop: string, value: any) {
         if (type === 'paint') {
             this.map.setPaintProperty(this.lineSymbolLayerID, prop, value);
         } else if (type === 'layout') {
@@ -114,12 +129,12 @@ class custom_segment_line_layer {
         }
     }
 
-    showLineData(data) {
+    showLineData(data: Array<Object>) {
         let geojson = GeojsonUtils.createLineFeatureCollection(data);
         this.map.getSource(this.lineSourceID).setData(geojson);
     }
 
-    showGeojsonData(geojson) {
+    showGeojsonData(geojson: Object) {
         this.map.getSource(this.lineSourceID).setData(geojson);
     }
 }

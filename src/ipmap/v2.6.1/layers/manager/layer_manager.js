@@ -1,4 +1,9 @@
+// @flow
 import {
+    mapinfo as MapInfo,
+    theme as Theme,
+    local_point as LocalPoint,
+    MultiStopRouteResult as MultiRouteResult,
     geojson_utils as GeojsonUtils
 } from '../../../dependencies';
 import {LayerParams, DefaultVectorSourceID} from '../layer_constants';
@@ -10,9 +15,46 @@ import {base_layers} from './base_layers';
 import {location_layers} from './location_layers';
 import {debug_beacon_layers} from './debug_beacon_layers';
 import {route_layers} from './route_layers';
+import {IPMap} from '../../map/map';
+import {unit_base_layer} from '../base/unit_base_layer';
+import {unit_functional_layer} from '../functional/unit_functional_layer';
+import {locator as Locator} from '../../locator/locator';
+
+type   BaseLayerType = base_layers | route_layers | debug_beacon_layers | location_layers
 
 class layer_manager {
-    constructor(symbolMap, theme, options) {
+    map: IPMap;
+    use3D: boolean;
+    debugBeacon: boolean;
+    options: Object;
+    symbolMap: Object;
+    theme: Theme;
+
+    fillSymbolMap: Object;
+    iconTextMap: Object;
+
+    sources: {[string]: Object};
+    layers: Array<unit_base_layer | unit_functional_layer>;
+
+    floorLayer: base_layers;
+    roomLayer: base_layers;
+    assetLayer: base_layers;
+    extrusionLayer: base_layers;
+    facilityLayer: base_layers;
+    labelLayer: base_layers;
+
+    routeLayer: route_layers;
+    debugBeaconLayer: debug_beacon_layers;
+    locationLayer: location_layers;
+
+
+    _baseLayerArray: Array<BaseLayerType>;
+    _3dLayerArray: Array<base_layers>;
+    _labelIconLayerArray: Array<base_layers>;
+
+    backgroundLayer: Object;
+
+    constructor(symbolMap: Object, theme: Theme, options: Object) {
         // console.log('layer_manager.constructor');
         this.map = options.map;
         this.use3D = options.use3D;
@@ -88,27 +130,27 @@ class layer_manager {
         this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers, this.routeLayer.unitLayers);
     }
 
-    setMapInfo(info) {
+    setMapInfo(info: MapInfo) {
         this._baseLayerArray.forEach((baseLayer) => {
             baseLayer.setMapInfo(this.map, info.floorNumber);
         });
     }
 
-    showDebugBeacons(locator) {
+    showDebugBeacons(locator: Locator) {
         if (locator && locator._isBleReady()) {
             this.debugBeaconLayer.showDebugBeacons(this.map, locator._biteMe('_getLocatingBeaconGeojson'));
         }
     }
 
-    showDebugSignals(data) {
+    showDebugSignals(data: Object) {
         this.debugBeaconLayer.showDebugSignals(this.map, data);
     }
 
-    showLocation(location) {
+    showLocation(location: Object) {
         this.locationLayer.showLocation(this.map, location);
     }
 
-    showLocations(locations) {
+    showLocations(locations: Object) {
         this.locationLayer.showLocations(this.map, locations);
     }
 
@@ -116,17 +158,17 @@ class layer_manager {
         this.locationLayer.hideLocation(this.map);
     }
 
-    _addSources(sourceIDList) {
+    _addSources(sourceIDList: Array<string>) {
         sourceIDList.forEach((sourceID) => {
             this.sources[sourceID] = GeojsonUtils.emptySource;
         });
     }
 
-    prepareStyleSources() {
+    prepareStyleSources(): {[string]: Object} {
         return this.sources;
     }
 
-    prepareStyleLayers() {
+    prepareStyleLayers(): Array<Object> {
         let layers = [this.backgroundLayer];
         this.layers.forEach((unitLayer) => {
             layers.push(unitLayer.layer);
@@ -134,14 +176,14 @@ class layer_manager {
         return layers;
     }
 
-    _switch3D(use3D) {
+    _switch3D(use3D: boolean) {
         this._3dLayerArray.forEach((baseLayer) => {
             baseLayer._switch3D(this.map, use3D);
         });
     }
 
     showLayers() {
-        this._baseLayerArray.forEach((baseLayer) => {
+        this._baseLayerArray.forEach((baseLayer: BaseLayerType) => {
             baseLayer.show(this.map);
         });
     }
@@ -152,13 +194,13 @@ class layer_manager {
         });
     }
 
-    setFont(fontName) {
+    setFont(fontName: string) {
         this._labelIconLayerArray.forEach((baseLayer) => {
             baseLayer.setFont(this.map, fontName);
         });
     }
 
-    switchLanguage(options) {
+    switchLanguage(options: Object) {
         this._labelIconLayerArray.forEach((baseLayer) => {
             baseLayer.switchLanguage(this.map, options);
         });
@@ -176,7 +218,7 @@ class layer_manager {
         });
     }
 
-    showRoute(result, location, segment) {
+    showRoute(result: MultiRouteResult, location: LocalPoint, segment: number) {
         this.routeLayer.showRoute(this.map, result, location, segment);
     }
 
@@ -184,11 +226,11 @@ class layer_manager {
         this.routeLayer.hideRoute(this.map);
     }
 
-    _setRouteColor(color1, color2, color3) {
+    _setRouteColor(color1: string, color2: string, color3: string) {
         this.routeLayer._setRouteColor(this.map, color1, color2, color3);
     }
 
-    getLayerIDs(subLayer) {
+    getLayerIDs(subLayer: string): ?Array<string> {
         if (subLayer === LayerParams.Floor.name) return this.floorLayer._getLayerIDList();
         if (subLayer === LayerParams.Room.name) return this.roomLayer._getLayerIDList();
         if (subLayer === LayerParams.Asset.name) return this.assetLayer._getLayerIDList();

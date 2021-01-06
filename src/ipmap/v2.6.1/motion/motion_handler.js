@@ -1,10 +1,16 @@
+// @flow
 import {Evented} from '../../dependencies.js';
+import type {CallbackType} from '../../dependencies.js';
 import {ip_agent_utils} from '../utils/ip_agent_utils';
 
 let flag = true;
 
 class motion_handler extends Evented {
-    constructor(target) {
+    _target: any;
+    _isBinded: boolean;
+    motionEventCallback: CallbackType;
+
+    constructor(target: Object) {
         super();
         this._target = target;
         this._isBinded = false;
@@ -29,7 +35,7 @@ class motion_handler extends Evented {
         window.addEventListener('devicemotion', this.motionEventCallback, false);
     }
 
-    OnMotionEvent(event) {
+    OnMotionEvent(event: Object) {
         // console.log("OnMotionEvent");
         // console.log(event.acceleration);
 

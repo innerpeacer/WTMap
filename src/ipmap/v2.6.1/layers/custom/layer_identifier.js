@@ -1,8 +1,9 @@
-function sourceIdentifier(name) {
+// @flow
+function sourceIdentifier(name: string): string {
     return `${name}-source`;
 }
 
-function layerIdentifier(name, type) {
+function layerIdentifier(name: string, type: string): string {
     return `${name}-${type}-layer`;
 }
 

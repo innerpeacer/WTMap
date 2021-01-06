@@ -1,3 +1,4 @@
+// @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
 
@@ -15,7 +16,9 @@ const DefaultRouteSymbolLayer = {
 };
 
 class unit_route_symbol_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'symbol';
@@ -27,7 +30,7 @@ class unit_route_symbol_layer extends unit_functional_layer {
         });
     }
 
-    asArrow() {
+    asArrow(): unit_route_symbol_layer {
         this.setLayoutProperties({
             'icon-image': 'icon_route_arrow',
             'icon-size': 1,
@@ -36,7 +39,7 @@ class unit_route_symbol_layer extends unit_functional_layer {
         return this;
     }
 
-    asStop() {
+    asStop(): unit_route_symbol_layer {
         this.setLayoutProperties({
             'text-field': ['get', 'NAME'],
             'text-font': ['simhei'],

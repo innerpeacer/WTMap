@@ -1,18 +1,24 @@
+// @flow
 import {
     geojson_utils as GeojsonUtils,
+    local_point as LocalPoint,
     IPTurf as ipTurf,
-    coord_projection as CoordProjection, geojson_utils
+    MultiStopRouteResult as MultiRouteResult,
+    coord_projection as CoordProjection
 } from '../../../dependencies';
 import {unit_route_line_layer} from '../functional/route/unit_route_line_layer';
 import {unit_route_symbol_layer} from '../functional/route/unit_route_symbol_layer';
 import {route_animation_object as AnimationObject} from '../../utils/route_animation_object';
 import {unit_route_circle_layer} from '../functional/route/unit_route_circle_layer';
+import {unit_functional_layer} from '../functional/unit_functional_layer';
+import {IPMap} from '../../map/map';
 
 let routeAnimationObject = new AnimationObject();
 
 function sliceLength2(zoom) {
     if (zoom >= 19) return 6;
     if (zoom < 19) return 12;
+    return 12;
 }
 
 function dist2(c1, c2) {
@@ -52,6 +58,37 @@ function showAnimatedArrows(time) {
 }
 
 class route_layers {
+    name: string;
+    _isRouteHidden: boolean;
+
+    wholeLineName: string;
+    routeWholeLineSourceID: string;
+    routeWholeBorderLineLayer: unit_functional_layer;
+    routeWholeLineLayer: unit_route_line_layer;
+
+    wholeRouteArrowSourceID: string;
+    wholeRouteArrowLayer: unit_functional_layer;
+
+    routeSegmentName: string;
+    routeSegmentLineSourceID: string;
+    routeSegmentBorderLineLayer: unit_functional_layer;
+    routeSegmentLineLayer: unit_route_line_layer;
+
+    segmentRouteArrowSourceID: string;
+    segmentRouteArrowLayer: unit_functional_layer;
+
+    routePassedSegmentName: string;
+    routePassedSegmentLineSourceID: string;
+    routePassedSegmentLineLayer: unit_route_line_layer;
+
+    routeStopName: string;
+    routeStopSourceID: string;
+    routeStopCircleLayer: unit_functional_layer;
+    routeStopSymbolLayer: unit_functional_layer;
+
+    sourceIDs: Array<string>;
+    unitLayers: Array<unit_functional_layer>;
+
     constructor() {
         this.name = 'wt-route';
 
@@ -121,11 +158,11 @@ class route_layers {
         this.unitLayers = [this.routeWholeBorderLineLayer, this.routeWholeLineLayer, this.routeSegmentBorderLineLayer, this.routeSegmentLineLayer, this.routePassedSegmentLineLayer, this.wholeRouteArrowLayer, this.segmentRouteArrowLayer, this.routeStopCircleLayer, this.routeStopSymbolLayer];
     }
 
-    getSourceIDs() {
+    getSourceIDs(): Array<string> {
         return this.sourceIDs;
     }
 
-    showRoute(map, multiResult, location, segment) {
+    showRoute(map: IPMap, multiResult: MultiRouteResult, location: LocalPoint, segment: ?number) {
         // console.log('route_layers.showRoute');
         if (!location) this.clearSource(map);
         this._isRouteHidden = false;
@@ -194,7 +231,7 @@ class route_layers {
         }
     }
 
-    _setRouteColor(map, color1, color2, color3) {
+    _setRouteColor(map: IPMap, color1: string, color2: string, color3: string) {
         if (color1 != null) {
             this.routeSegmentLineLayer.updateLineColor(map, color1);
         }
@@ -206,14 +243,14 @@ class route_layers {
         }
     }
 
-    hideRoute(map) {
+    hideRoute(map: IPMap) {
         // console.log('hideRoute');
         this._isRouteHidden = true;
         this.clearSource(map);
     }
 
 
-    clearSource(map) {
+    clearSource(map: IPMap) {
         this.sourceIDs.forEach((sourceID) => {
             map.getSource(sourceID).setData(GeojsonUtils.emptyGeojson);
         });
@@ -222,19 +259,19 @@ class route_layers {
         routeAnimationObject.reset();
     }
 
-    hide(map) {
+    hide(map: IPMap) {
         this.unitLayers.forEach((unitLayer) => {
             unitLayer.hide(map);
         });
     }
 
-    show(map) {
+    show(map: IPMap) {
         this.unitLayers.forEach((unitLayer) => {
             unitLayer.show(map);
         });
     }
 
-    setMapInfo(map, floor) {
+    setMapInfo(map: IPMap, floor: number) {
         this.unitLayers.forEach((unitLayer) => {
             map.setFilter(unitLayer.layerID, unitLayer.createDefaultFilter(floor));
         });

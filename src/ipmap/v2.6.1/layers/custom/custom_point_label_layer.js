@@ -1,5 +1,7 @@
+// @flow
 import {layerIdentifier, sourceIdentifier} from './layer_identifier';
 import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
+import {IPMap} from '../../map/map';
 
 let defaultCircleLayer = {
     'type': 'circle',
@@ -27,7 +29,19 @@ let defaultTextSymbolLayer = {
 };
 
 class custom_point_label_layer {
-    constructor(name) {
+    name: string;
+    map: IPMap | any;
+
+    labelSourceID: string;
+    labelSource: Object;
+
+    labelCircleLayerID: string;
+    labelCircleLayer: Object;
+
+    labelSymbolLayerID: string;
+    labelSymbolLayer: Object;
+
+    constructor(name: string) {
         this.name = name;
 
         let labelSourceID = sourceIdentifier(name);
@@ -43,7 +57,7 @@ class custom_point_label_layer {
         this.labelSymbolLayer = extend({id: labelSymbolLayerID, source: labelSourceID}, clone(defaultTextSymbolLayer));
     }
 
-    cloneWithName(name) {
+    cloneWithName(name: string): custom_point_label_layer {
         let layer = new custom_point_label_layer(name);
         layer.labelCircleLayer.paint = clone(this.labelCircleLayer.paint);
         layer.labelSymbolLayer.paint = clone(this.labelSymbolLayer.paint);
@@ -51,7 +65,7 @@ class custom_point_label_layer {
         return layer;
     }
 
-    addToMap(map) {
+    addToMap(map: IPMap) {
         this.map = map;
         this.map.addSource(this.labelSourceID, this.labelSource);
 
@@ -67,48 +81,48 @@ class custom_point_label_layer {
         this.map = null;
     }
 
-    showLabelData(data) {
+    showLabelData(data: Object) {
         let geojson = GeojsonUtils.createPointFeatureCollection(data);
         this.map.getSource(this.labelSourceID).setData(geojson);
     }
 
-    showGeojsonData(geojson) {
+    showGeojsonData(geojson: Object) {
         this.map.getSource(this.labelSourceID).setData(geojson);
     }
 
-    setTextField(prop) {
+    setTextField(prop: any) {
         this.labelSymbolLayer.layout['text-field'] = prop;
     }
 
-    setTextColor(color) {
+    setTextColor(color: any) {
         this.labelSymbolLayer.paint['text-color'] = color;
     }
 
-    setTextSize(size) {
+    setTextSize(size: any) {
         this.labelSymbolLayer.layout['text-size'] = size;
     }
 
-    setCircleColor(color) {
+    setCircleColor(color: any) {
         this.labelCircleLayer.paint['circle-color'] = color;
     }
 
-    setCircleRadius(radius) {
+    setCircleRadius(radius: any) {
         this.labelCircleLayer.paint['circle-radius'] = radius;
     }
 
-    setCirclePaintProperty(prop, value) {
+    setCirclePaintProperty(prop: string, value: any) {
         this.labelCircleLayer.paint[prop] = value;
     }
 
-    setTextPaintProperty(prop, value) {
+    setTextPaintProperty(prop: string, value: any) {
         this.labelSymbolLayer.paint[prop] = value;
     }
 
-    setTextLayoutProperty(prop, value) {
+    setTextLayoutProperty(prop: string, value: any) {
         this.labelSymbolLayer.layout[prop] = value;
     }
 
-    updateCircleProperty(type, prop, value) {
+    updateCircleProperty(type: string, prop: string, value: any) {
         if (type === 'paint') {
             this.map.setPaintProperty(this.labelCircleLayerID, prop, value);
         } else if (type === 'layout') {
@@ -116,7 +130,7 @@ class custom_point_label_layer {
         }
     }
 
-    updateTextProperty(type, prop, value) {
+    updateTextProperty(type: string, prop: string, value: any) {
         if (type === 'paint') {
             this.map.setPaintProperty(this.labelSymbolLayerID, prop, value);
         } else if (type === 'layout') {
@@ -124,22 +138,22 @@ class custom_point_label_layer {
         }
     }
 
-    setFilter(filter) {
+    setFilter(filter: any) {
         this.labelCircleLayer.filter = filter;
         this.labelSymbolLayer.filter = filter;
     }
 
-    updateFilter(filter) {
+    updateFilter(filter: any) {
         this.map.setFilter(this.labelCircleLayerID, filter);
         this.map.setFilter(this.labelSymbolLayerID, filter);
     }
 
-    setFloor(floorNumber) {
+    setFloor(floorNumber: number) {
         let filter = ['all', ['==', 'floor', floorNumber]];
         this.updateFilter(filter);
     }
 
-    _getLayerID() {
+    _getLayerID(): string {
         return this.labelCircleLayerID;
     }
 }

@@ -1,5 +1,7 @@
+// @flow
 class inner_event_manager {
-
+    static GpsEvent: Object;
+    static LocatorEvent: Object;
 }
 
 let GpsEvent = {

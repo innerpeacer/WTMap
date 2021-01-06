@@ -1,8 +1,22 @@
+// @flow
 import {Evented} from '../../dependencies.js';
+import type {CallbackType} from '../../dependencies.js';
 import {ip_agent_utils} from '../utils/ip_agent_utils';
 
 class orientation_handler extends Evented {
-    constructor(target, options) {
+    _target: any;
+    _agent: number;
+
+    _threhold: number;
+    _isBinded: boolean;
+
+    orientationEventCallback: CallbackType;
+    absoluteOrientationEventCallbackForAndroid: CallbackType;
+
+    heading: number;
+    _lastHeading: number;
+
+    constructor(target: Object, options: Object) {
         super();
         this._target = target;
         this._agent = ip_agent_utils.getAgent().type;
@@ -41,7 +55,7 @@ class orientation_handler extends Evented {
         }
     }
 
-    OnOrientationChange(event) {
+    OnOrientationChange(event: Object) {
         if (this._agent !== 1) {
             if (event.hasOwnProperty('webkitCompassHeading')) {
                 this._NotifyAngle(360 - event.webkitCompassHeading);
@@ -51,13 +65,13 @@ class orientation_handler extends Evented {
         }
     }
 
-    OnAbsoluteOrientationChange(event) {
+    OnAbsoluteOrientationChange(event: Object) {
         if (this._agent === 1) {
             this._NotifyAngle(event.alpha);
         }
     }
 
-    _NotifyAngle(heading) {
+    _NotifyAngle(heading: number) {
         let diff = Math.abs(this._lastHeading - heading);
         if (diff > this._threhold) {
             this._lastHeading = heading;

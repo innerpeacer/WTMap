@@ -1,4 +1,21 @@
+// @flow
 class route_animation_object {
+    globalAnimationID: AnimationFrameID | any;
+    globalMap: Object;
+    lastTime: number;
+
+    // TODO
+    globalWholeRouteResult: Object;
+    globalWholeRouteArrowSourceID: ?string;
+    globalWholeOffset: number | any;
+
+    // TODO
+    globalSegmentRouteResult: Object;
+    globalSegmentRouteArrowSourceID: ?string;
+    globalSegmentOffset: number | any;
+
+    running: boolean;
+
     constructor() {
         this.reset();
     }

@@ -1,3 +1,4 @@
+// @flow
 import {unit_functional_layer} from './unit_functional_layer';
 import {extend, clone} from '../../../dependencies';
 
@@ -12,7 +13,11 @@ const DefaultLocationLayer = {
 };
 
 class unit_location_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+    layerID: string;
+    layer: Object;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'symbol';

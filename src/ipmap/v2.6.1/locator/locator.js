@@ -1,6 +1,8 @@
+// @flow
 import {
     extend,
     local_point as LocalPoint, Evented,
+    wt_wgs84_converter as WtWgs84Converter,
     WebBleLocator as BleLocator, BleEvent
 } from '../../dependencies.js';
 import {gps_locator as GpsLocator} from './gps/gps_locator';
@@ -8,7 +10,7 @@ import {inner_event_manager as InnerEventManager} from '../utils/inner_event_man
 
 let InnerGpsEvent = InnerEventManager.GpsEvent;
 let InnerLocatorEvent = InnerEventManager.LocatorEvent;
-let status = {};
+let status: any = {};
 let LocatorParams = {
     ModeSwitchInterval: 4000,
     ResultValidInterval: 6000,
@@ -30,10 +32,33 @@ function modeName(mode) {
     } else if (mode === MODE.HYBRID) {
         return 'hybrid';
     }
+    return 'unknown';
 }
 
 class locator extends Evented {
-    constructor(buildingID, options, converter) {
+    options: Object;
+    _buildingID: string;
+    _converter: WtWgs84Converter;
+
+    currentLocation: LocalPoint | any;
+    _gpsResult: Object;
+    _bleResult: Object;
+    _latestFloor: number;
+    _currentMode: number | any;
+    _modeChangeTime: number | any;
+    _targetMode: number | any;
+
+    _initTime: number;
+    _lastTimeLocationUpdated: number;
+    _timeHandler: ?IntervalID;
+    _modeCondition: string | any;
+    _newBleResult: boolean;
+    _newGpsResult: boolean;
+
+    _gpsLocator: GpsLocator;
+    _bleLocator: BleLocator;
+
+    constructor(buildingID: string, options: Object, converter: WtWgs84Converter) {
         super();
         let self = this;
         this.options = extend({}, options);
@@ -88,7 +113,7 @@ class locator extends Evented {
         });
     }
 
-    _notifyResult(res) {
+    _notifyResult(res: Object) {
         let now = new Date().valueOf();
         // console.log("Fire LocationUpdate: ", now - this._initTime);
         this.fire(InnerLocatorEvent.LocationUpdate, res);
@@ -96,7 +121,7 @@ class locator extends Evented {
         this._newGpsResult = false;
     }
 
-    _checkMode() {
+    _checkMode(): ?number {
         let now = new Date().valueOf();
         let bleValid = !!(this._bleResult && this._bleResult.location != null && Math.abs(now - this._bleResult.timestamp) < LocatorParams.ResultValidInterval);
         let gpsValid = !!(this._gpsResult && Math.abs(now - this._gpsResult.timestamp) < LocatorParams.ResultValidInterval);
@@ -179,8 +204,8 @@ class locator extends Evented {
         this._lastTimeLocationUpdated = now;
     }
 
-    _getDetails(gpsValid, bleValid) {
-        let details = {
+    _getDetails(gpsValid: boolean, bleValid: boolean): Object {
+        let details: Object = {
             mode: this._currentMode,
             targetMode: `${this._targetMode}(${modeName(this._targetMode)})`,
             condition: this._modeCondition,
@@ -231,12 +256,12 @@ class locator extends Evented {
         this._calculateResult();
     }
 
-    _gpsError(error) {
+    _gpsError(error: Object) {
         // console.log("_gpsError");
         // console.log(error);
     }
 
-    _gpsUpdated(gps) {
+    _gpsUpdated(gps: Object) {
         this._gpsResult = gps;
         this._newGpsResult = true;
     }
@@ -251,7 +276,7 @@ class locator extends Evented {
         this._gpsLocator.stopUpdateGps();
     }
 
-    _didRangeBeacons(beacons) {
+    _didRangeBeacons(beacons: Array<Object>): Object {
         this._newBleResult = true;
         this._bleLocator._didRangeBeacons(beacons);
         this._bleResult = this._bleLocator.calculateLocation();
@@ -289,16 +314,16 @@ class locator extends Evented {
         clearInterval(this._timeHandler);
     }
 
-    getLocation() {
+    getLocation(): LocalPoint {
         return this.currentLocation;
     }
 
-    _isBleReady() {
+    _isBleReady(): boolean {
         return status._bleReady;
     }
 
-    _biteMe(methodName, params) {
-        return this._bleLocator._biteMe(methodName, params);
+    _biteMe(methodName: string, params: Object): Object {
+        return this._bleLocator._biteMe(methodName);
     }
 }
 

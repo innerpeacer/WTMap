@@ -1,5 +1,6 @@
+// @flow
 class ip_tile_coord {
-
+    static lngLatToTile: (number, number, number) => Object;
 }
 
 function toRadians(deg) {

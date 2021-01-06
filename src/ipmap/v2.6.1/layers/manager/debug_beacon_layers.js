@@ -1,8 +1,37 @@
+// @flow
 import {geojson_utils as GeojsonUtils} from '../../../dependencies';
 import {unit_beacon_cirle_layer} from '../functional/debug_beacon/unit_beacon_cirle_layer';
 import {unit_beacon_symbol_layer} from '../functional/debug_beacon/unit_beacon_symbol_layer';
+import {unit_functional_layer} from '../functional/unit_functional_layer';
+import {IPMap} from '../../map/map';
 
 class debug_beacon_layers {
+    name: string;
+
+    debugBeaconSourceID: string;
+    debugBeaconSource: Object;
+
+    debugBeaconCircleLayer: unit_functional_layer;
+    debugBeaconSymbolLayer: unit_functional_layer;
+
+    signalName: string;
+    debugBeaconSignalSourceID: string;
+    debugBeaconSignalSource: Object;
+
+    debugBeaconFocusSignalCircleLayer: unit_functional_layer;
+    debugBeaconOffFocusSignalCircleLayer: unit_functional_layer;
+    debugBeaconFocusSignalSymbolLayer: unit_functional_layer;
+    debugBeaconOffFocusSignalSymbolLayer: unit_functional_layer;
+
+    locationName: string;
+    debugLocationSourceID: string;
+    debugLocationSource: Object;
+
+    debugLocationSymbolLayer: unit_functional_layer;
+
+    sourceIDs: Array<string>;
+    unitLayers: Array<unit_functional_layer>;
+
     constructor() {
         this.name = 'debug-beacon';
 
@@ -60,20 +89,28 @@ class debug_beacon_layers {
             this.debugBeaconFocusSignalCircleLayer, this.debugBeaconOffFocusSignalCircleLayer, this.debugBeaconFocusSignalSymbolLayer, this.debugBeaconOffFocusSignalSymbolLayer, this.debugLocationSymbolLayer];
     }
 
-    getSourceIDs() {
+    getSourceIDs(): Array<string> {
         return this.sourceIDs;
     }
 
-    showDebugBeacons(map, data) {
+    showDebugBeacons(map: IPMap, data: Object) {
         map.getSource(this.debugBeaconSourceID).setData(data);
     }
 
-    showDebugSignals(map, data) {
+    showDebugSignals(map: IPMap, data: Object) {
         map.getSource(this.debugBeaconSignalSourceID).setData(data.debugData);
         map.getSource(this.debugLocationSourceID).setData(data.debugLocation);
     }
 
-    setMapInfo(map, floor) {
+    hide(map: IPMap) {
+
+    }
+
+    show(map: IPMap) {
+
+    }
+
+    setMapInfo(map: IPMap, floor: number) {
         this.unitLayers.forEach((unitLayer) => {
             map.setFilter(unitLayer.layerID, unitLayer.createDefaultFilter(floor));
         });

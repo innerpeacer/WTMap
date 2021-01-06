@@ -1,7 +1,21 @@
+// @flow
 import {DefaultVectorSourceID, LayerParams} from '../layer_constants';
+import {unit_base_layer} from '../base/unit_base_layer';
+import {IPMap} from '../../map/map';
 
 class base_layers {
-    constructor(layerParams, layerClasses, uIDList, symbolMap, options) {
+    name: string;
+    params: Object;
+    layerClasses: Object;
+    uIDList: Array<number>;
+    // todo
+    symbolMap: Object;
+    options: Object;
+
+    unitLayers: Array<unit_base_layer>;
+    styleLayers: Array<Object>;
+
+    constructor(layerParams: Object, layerClasses: Object, uIDList: Array<number>, symbolMap: Object, options: Object) {
         this.name = layerParams.name;
         this.params = layerParams;
         this.layerClasses = layerClasses;
@@ -72,13 +86,13 @@ class base_layers {
         });
     }
 
-    setMapInfo(map, floor) {
+    setMapInfo(map: IPMap, floor: number) {
         this.unitLayers.forEach((unitLayer) => {
             map.setFilter(unitLayer.layerID, unitLayer.createDefaultFilter(floor));
         });
     }
 
-    _switch3D(map, use3D) {
+    _switch3D(map: IPMap, use3D: boolean) {
         if (this.name === LayerParams.Extrusion.name || this.name === LayerParams.Facility.name || this.name === LayerParams.Label.name) {
             this.unitLayers.forEach((unitLayer) => {
                 unitLayer._switch3D(map, use3D);
@@ -86,7 +100,7 @@ class base_layers {
         }
     }
 
-    switchLanguage(map, options) {
+    switchLanguage(map: IPMap, options: Object) {
         if (this.name === LayerParams.Facility.name || this.name === LayerParams.Label.name) {
             this.unitLayers.forEach((unitLayer) => {
                 unitLayer.switchLanguage(map, options);
@@ -94,7 +108,7 @@ class base_layers {
         }
     }
 
-    setFont(map, fontName) {
+    setFont(map: IPMap, fontName: string) {
         if (this.name === LayerParams.Facility.name || this.name === LayerParams.Label.name) {
             this.unitLayers.forEach((unitLayer) => {
                 unitLayer.setFont(map, fontName);
@@ -102,19 +116,19 @@ class base_layers {
         }
     }
 
-    show(map) {
+    show(map: IPMap) {
         this.unitLayers.forEach((unitLayer) => {
             unitLayer.show(map);
         });
     }
 
-    hide(map) {
+    hide(map: IPMap) {
         this.unitLayers.forEach((unitLayer) => {
             unitLayer.hide(map);
         });
     }
 
-    _getLayerIDList() {
+    _getLayerIDList(): Array<string> {
         let layerIDList = [];
         this.unitLayers.forEach((unitLayer) => {
             layerIDList.push(unitLayer.layerID);

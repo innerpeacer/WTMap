@@ -1,5 +1,7 @@
+// @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
+import {IPMap} from '../../../map/map';
 
 const DefaultRouteLineLayer = {
     'layout': {
@@ -10,7 +12,9 @@ const DefaultRouteLineLayer = {
 };
 
 class unit_route_line_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'line';
@@ -22,7 +26,7 @@ class unit_route_line_layer extends unit_functional_layer {
         });
     }
 
-    asBorder() {
+    asBorder(): unit_route_line_layer {
         this.setPaintProperties({
             'line-color': '#ffffff',
             'line-width': 8
@@ -30,7 +34,7 @@ class unit_route_line_layer extends unit_functional_layer {
         return this;
     }
 
-    asLine() {
+    asLine(): unit_route_line_layer {
         this.setPaintProperties({
             'line-color': '#00ff00',
             'line-width': 6
@@ -38,7 +42,7 @@ class unit_route_line_layer extends unit_functional_layer {
         return this;
     }
 
-    asSegement() {
+    asSegement(): unit_route_line_layer {
         this.setPaintProperties({
             'line-color': '#ff5959',
             'line-width': 6
@@ -46,7 +50,7 @@ class unit_route_line_layer extends unit_functional_layer {
         return this;
     }
 
-    asPassed() {
+    asPassed(): unit_route_line_layer {
         this.setPaintProperties({
             'line-color': '#888888',
             'line-width': 8
@@ -54,7 +58,7 @@ class unit_route_line_layer extends unit_functional_layer {
         return this;
     }
 
-    updateLineColor(map, color) {
+    updateLineColor(map: IPMap, color: any) {
         map.setPaintProperty(this.layerID, 'line-color', color);
     }
 }

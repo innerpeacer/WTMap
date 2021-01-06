@@ -1,3 +1,4 @@
+// @flow
 const worldSize = 1;
 
 function lngX(lng) {
@@ -19,7 +20,7 @@ function yLat(y) {
 }
 
 // maxBounds = [lng1, lat1, lng2, lat2]
-function getActualBounds(maxBounds, width, height) {
+function getActualBounds(maxBounds: Array<number>, width, height) {
     let pixels = [lngX(maxBounds[0]), latY(maxBounds[1]), lngX(maxBounds[2]), latY(maxBounds[3])];
 
     let pixelSize = {x: Math.abs(pixels[0] - pixels[2]), y: Math.abs(pixels[1] - pixels[3])};
@@ -41,7 +42,7 @@ function getActualBounds(maxBounds, width, height) {
     return [xLng(actualPixels[0]), yLat(actualPixels[1]), xLng(actualPixels[2]), yLat(actualPixels[3])];
 }
 
-function calculateZoomForMaxBounds(maxBounds, width, height) {
+function calculateZoomForMaxBounds(maxBounds: Array<number>, width: number, height: number): number {
     let actualBounds = getActualBounds(maxBounds, width, height);
     return calculateZoom(actualBounds, width, height);
 }

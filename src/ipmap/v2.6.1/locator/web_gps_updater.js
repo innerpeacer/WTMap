@@ -1,4 +1,5 @@
-import {Evented} from '../../dependencies.js';
+// @flow
+import {Evented, wt_wgs84_converter as WtWgs84Converter} from '../../dependencies.js';
 
 const GpsEvent = {
     GpsReady: 'gps-ready',
@@ -18,7 +19,13 @@ const DefaultGpsOptions = {
 };
 
 class web_gps_updater extends Evented {
-    constructor(converter) {
+    _gpsConverter: WtWgs84Converter;
+    _isSupported: boolean;
+    _isStarted: boolean;
+
+    _watchID: number;
+
+    constructor(converter: WtWgs84Converter) {
         super();
 
         this._gpsConverter = converter;
@@ -57,7 +64,7 @@ class web_gps_updater extends Evented {
         }
     }
 
-    _gpsCallback(gps) {
+    _gpsCallback(gps: Object) {
         let originGps = {lng: gps.coords.longitude, lat: gps.coords.latitude, accuracy: gps.coords.accuracy};
         let wtGps = this._gpsConverter.convertGPS(originGps);
         wtGps.accuracy = originGps.accuracy;
@@ -68,7 +75,7 @@ class web_gps_updater extends Evented {
         });
     }
 
-    _gpsError(error) {
+    _gpsError(error: Object) {
         this.fire(GpsEvent.GpsError, error);
     }
 }

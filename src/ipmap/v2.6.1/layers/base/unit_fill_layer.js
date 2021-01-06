@@ -1,3 +1,4 @@
+// @flow
 import {unit_base_layer} from './unit_base_layer';
 import {extend, clone} from '../../../dependencies';
 
@@ -8,7 +9,7 @@ const DefaultFillLayer = {
 };
 
 class unit_fill_layer extends unit_base_layer {
-    constructor(props) {
+    constructor(props: Object) {
         super(props);
 
         this.layer = extend(clone(DefaultFillLayer), this.layer);
@@ -18,7 +19,7 @@ class unit_fill_layer extends unit_base_layer {
         });
     }
 
-    createDefaultFilter(floor) {
+    createDefaultFilter(floor: number): any {
         return [
             'all',
             ['==', 'floor', floor || 0],

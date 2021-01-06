@@ -1,5 +1,7 @@
+// @flow
 import {unit_base_layer} from './unit_base_layer';
 import {extend, clone} from '../../../dependencies';
+import {IPMap} from '../../map/map';
 
 const DefaultIPExtrusionLayer = {
     'layout': {
@@ -14,7 +16,7 @@ const DefaultIPExtrusionLayer = {
 };
 
 class unit_extrusion_layer extends unit_base_layer {
-    constructor(props) {
+    constructor(props: Object) {
         super(props);
 
         this.layer = extend(clone(DefaultIPExtrusionLayer), this.layer);
@@ -31,11 +33,11 @@ class unit_extrusion_layer extends unit_base_layer {
         });
     }
 
-    _switch3D(map, use3D) {
+    _switch3D(map: IPMap, use3D: boolean) {
         use3D ? this.show(map) : this.hide(map);
     }
 
-    createDefaultFilter(floor) {
+    createDefaultFilter(floor: number): any {
         return ['all',
             ['has', 'extrusion'],
             ['==', 'extrusion', true],

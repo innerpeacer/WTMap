@@ -1,5 +1,6 @@
+// @flow
 class ip_agent_utils {
-
+    static getAgent: () => any;
 }
 
 ip_agent_utils.getAgent = function() {

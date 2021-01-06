@@ -1,3 +1,4 @@
+// @flow
 import {
     local_point as LocalPoint,
     mapinfo as MapInfo,

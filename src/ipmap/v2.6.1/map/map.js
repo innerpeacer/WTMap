@@ -1,3 +1,4 @@
+// @flow
 import {
     extend,
     city as IPCity,
@@ -11,6 +12,10 @@ import {
     ThemeData,
     HostUtils,
     wt_wgs84_converter as WtWgs84Converter
+} from '../../dependencies.js';
+import type {
+    PointLikeType,
+    CallbackType
 } from '../../dependencies.js';
 import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit';
 
@@ -63,7 +68,7 @@ const defaultOptions = {
 };
 
 class IPMap extends BoxMap {
-    constructor(options) {
+    constructor(options: Object) {
         // console.log('IPMap.constructor');
         // console.log('Version: ' + version);
         options = extend({}, defaultOptions, options);
@@ -177,7 +182,7 @@ class IPMap extends BoxMap {
         this._motionHandler && this._motionHandler.unbind();
     }
 
-    showLocation(location, options) {
+    showLocation(location: PointLikeType, options: Object) {
         // console.log('indoor_layer.showLocation');
         let loc = LocalPoint.fromObj(location);
         if (!loc) return;
@@ -202,7 +207,7 @@ class IPMap extends BoxMap {
         }
     };
 
-    showLocations(locations) {
+    showLocations(locations: Array<PointLikeType>) {
         // console.log('indoor_layer.showLocation');
         if (locations == null) return;
         let lpArray = [];
@@ -223,11 +228,11 @@ class IPMap extends BoxMap {
         this._layerManager.hideLocation();
     }
 
-    didRangeBeacons(beacons) {
+    didRangeBeacons(beacons: Array<Object>): Object {
         let data = this._locator._didRangeBeacons(beacons);
         if (data == null) return data;
 
-        let result = {
+        let result: Object = {
             location: data.location,
             maxRssi: data.maxRssi
         };
@@ -243,15 +248,15 @@ class IPMap extends BoxMap {
         return result;
     }
 
-    getLocation() {
+    getLocation(): LocalPoint {
         return this._locator.getLocation();
     }
 
-    switch3D(use3D) {
+    switch3D(use3D: boolean) {
         this._layerManager._switch3D(use3D);
     }
 
-    showRoute(location, segment) {
+    showRoute(location: LocalPoint, segment: number) {
         // console.log('showRoute');
         let map = this;
         map._layerManager.showRoute(map._routeResult, location, segment);
@@ -268,7 +273,7 @@ class IPMap extends BoxMap {
         map._layerManager.hideRoute();
     }
 
-    __requestRoute(start, end, stops, callback, errorCallback, params) {
+    __requestRoute(start: PointLikeType, end: PointLikeType, stops: Array<PointLikeType>, callback: CallbackType, errorCallback: CallbackType, params: Object) {
         // console.log('__requestRoute');
         // console.log(stops);
         this._msRouteManager.getRouteData(start, end, stops, (result) => {
@@ -289,7 +294,7 @@ class IPMap extends BoxMap {
         }, params);
     }
 
-    requestRoute(start, end, arg3, arg4, arg5, arg6) {
+    requestRoute(start: PointLikeType, end: PointLikeType, arg3: any, arg4: any, arg5: any, arg6: any) {
         // console.log('requestRoute');
         // console.log(stops);
         if (arg3.constructor === Array) {
@@ -299,7 +304,7 @@ class IPMap extends BoxMap {
         }
     }
 
-    setRouteColor(color1, color2, color3) {
+    setRouteColor(color1: string, color2: string, color3: string) {
         this._layerManager._setRouteColor(color1, color2, color3);
     }
 
@@ -350,7 +355,7 @@ class IPMap extends BoxMap {
         });
     }
 
-    _useTheme(theme) {
+    _useTheme(theme: Theme) {
         this.theme = theme;
         this._layerManager = new LayerManager(this._layerSymbolMap, this.theme, {
             map: this,
@@ -367,7 +372,7 @@ class IPMap extends BoxMap {
         this.setStyle(this._options.wtStyle);
     }
 
-    setTheme(options) {
+    setTheme(options: Object) {
         let themeID = options && options.themeID;
         if (themeID == null) {
             // console.log('themeID is null');
@@ -457,7 +462,7 @@ class IPMap extends BoxMap {
         }
     }
 
-    getGpsManager() {
+    getGpsManager(): web_gps_updater {
         return this._gpsManager;
     }
 
@@ -469,15 +474,15 @@ class IPMap extends BoxMap {
         this._locator && this._locator.stop();
     }
 
-    getBaseZoom() {
+    getBaseZoom(): number {
         return this._baseZoom;
     }
 
-    setBackgroundColor(color) {
+    setBackgroundColor(color: string) {
         this.setPaintProperty('background', 'background-color', color);
     }
 
-    setFloor(floor, callback, errorCallback) {
+    setFloor(floor: any, callback: ?CallbackType, errorCallback: ?CallbackType) {
         // console.log('setFloor: ' + floorID);
         let map = this;
         map._targetFloor = floor;
@@ -492,7 +497,7 @@ class IPMap extends BoxMap {
         map._loadFloorData({mapInfo: targetInfo}, null, callback);
     }
 
-    _loadFloorData(result, options, callback) {
+    _loadFloorData(result: Object, options: Object, callback: ?CallbackType) {
         // console.log('_loadFloorData');
         let map = this;
         map.fire(MapEvent.FloorStart, {});
@@ -524,19 +529,19 @@ class IPMap extends BoxMap {
         });
     }
 
-    switchLanguage(options) {
+    switchLanguage(options: Object) {
         this._layerManager.switchLanguage(options);
     }
 
-    setFont(fontName) {
+    setFont(fontName: string) {
         this._layerManager.setFont(fontName);
     }
 
-    getFloorInfoArray() {
+    getFloorInfoArray(): Array<IPMapInfo> {
         return this.mapInfoArray;
     }
 
-    getLayerIDs(subLayer) {
+    getLayerIDs(subLayer: string): Array<string> {
         return this._layerManager.getLayerIDs(subLayer);
     }
 

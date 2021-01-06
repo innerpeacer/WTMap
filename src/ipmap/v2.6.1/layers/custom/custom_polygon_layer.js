@@ -1,5 +1,7 @@
+// @flow
 import {layerIdentifier, sourceIdentifier} from './layer_identifier';
 import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
+import {IPMap} from '../../map/map';
 
 let defaultFillLayer = {
     'type': 'fill',
@@ -23,7 +25,19 @@ let defaultFillOutlineLayer = {
 };
 
 class custom_polygon_layer {
-    constructor(name) {
+    name: string;
+    map: IPMap | any;
+
+    polygonSourceID: string;
+    polygonSource: Object;
+
+    polygonFillLayerID: string;
+    polygonFillLayer: Object;
+
+    polygonOutlineLayerID: string;
+    polygonOutlineLayer: Object;
+
+    constructor(name: string) {
         this.name = name;
         let typeName = 'polygon';
         let polygonSourceID = sourceIdentifier(`${name}-${typeName}-fill`);
@@ -40,7 +54,7 @@ class custom_polygon_layer {
         }, clone(defaultFillOutlineLayer));
     }
 
-    addToMap(map) {
+    addToMap(map: IPMap) {
         this.map = map;
         this.map.addSource(this.polygonSourceID, this.polygonSource);
         this.map.addLayer(this.polygonFillLayer);
@@ -54,36 +68,36 @@ class custom_polygon_layer {
         this.map = null;
     }
 
-    setPolygonPaintProperty(prop, value) {
+    setPolygonPaintProperty(prop: string, value: any) {
         this.polygonFillLayer.paint[prop] = value;
     }
 
-    setPolygonLayoutProperty(prop, value) {
+    setPolygonLayoutProperty(prop: string, value: any) {
         this.polygonFillLayer.layout[prop] = value;
     }
 
-    setPolygonColor(color) {
+    setPolygonColor(color: any) {
         this.polygonFillLayer.paint['fill-color'] = color;
     }
 
-    setPolygonOpacity(opacity) {
+    setPolygonOpacity(opacity: any) {
         this.polygonFillLayer.paint['fill-opacity'] = opacity;
     }
 
-    setPolygonOutlineColor(color) {
+    setPolygonOutlineColor(color: any) {
         this.polygonOutlineLayer.paint['line-color'] = color;
     }
 
-    setPolygonOutlineWidth(width) {
+    setPolygonOutlineWidth(width: any) {
         this.polygonOutlineLayer.paint['line-width'] = width;
     }
 
-    showPolygonData(polygons) {
+    showPolygonData(polygons: Array<Object>) {
         let polygonGeojson = GeojsonUtils.createPolygonFeatureCollections(polygons);
         this.map.getSource(this.polygonSourceID).setData(polygonGeojson);
     }
 
-    showGeojsonData(geojson) {
+    showGeojsonData(geojson: Object) {
         this.map.getSource(this.polygonSourceID).setData(geojson);
     }
 }

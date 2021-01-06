@@ -1,3 +1,4 @@
+// @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
 
@@ -12,7 +13,9 @@ const DefaultRouteCircleLayer = {
 };
 
 class unit_route_circle_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'circle';

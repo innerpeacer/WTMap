@@ -1,5 +1,7 @@
+// @flow
 import {layerIdentifier, sourceIdentifier} from './layer_identifier';
 import {extend, clone, geojson_utils as GeojsonUtils} from '../../../dependencies.js';
+import {IPMap} from '../../map/map';
 
 let defaultCircleLayer = {
     'type': 'circle',
@@ -40,7 +42,25 @@ let defaultTextSymbolLayer = {
 };
 
 class custom_trace_layer {
-    constructor(name) {
+    name: string;
+    map: IPMap | any;
+
+    traceLineSourceID: string;
+    traceLineSource: Object;
+
+    traceLineLayerID: string;
+    traceLineLayer: Object;
+
+    tracePointSourceID: string;
+    tracePointSource: Object;
+
+    tracePointCircleLayerID: string;
+    tracePointCircleLayer: Object;
+
+    tracePointSymbolLayerID: string;
+    tracePointSymbolLayer: Object;
+
+    constructor(name: string) {
         this.name = name;
         let typeName = 'trace';
         let traceLineSourceID = sourceIdentifier(`${name}-${typeName}-line`);
@@ -70,7 +90,7 @@ class custom_trace_layer {
         }, clone(defaultTextSymbolLayer));
     }
 
-    cloneWithName(name) {
+    cloneWithName(name: string): custom_trace_layer {
         let layer = new custom_trace_layer(name);
         layer.tracePointCircleLayer.paint = clone(this.tracePointCircleLayer.paint) || {};
         layer.tracePointCircleLayer.layout = clone(this.tracePointCircleLayer.layout) || {};
@@ -81,7 +101,7 @@ class custom_trace_layer {
         return layer;
     }
 
-    addToMap(map) {
+    addToMap(map: IPMap) {
         this.map = map;
 
         this.map.addSource(this.traceLineSourceID, this.traceLineSource);
@@ -103,37 +123,37 @@ class custom_trace_layer {
         this.map = null;
     }
 
-    setLinePaintProperty(prop, value) {
+    setLinePaintProperty(prop: string, value: any) {
         this.traceLineLayer.paint[prop] = value;
     }
 
-    setLineLayoutProperty(prop, value) {
+    setLineLayoutProperty(prop: string, value: any) {
         this.traceLineLayer.layout[prop] = value;
     }
 
-    setTextPaintProperty(prop, value) {
+    setTextPaintProperty(prop: string, value: any) {
         this.tracePointSymbolLayer.paint[prop] = value;
     }
 
-    setTextLayoutProperty(prop, value) {
+    setTextLayoutProperty(prop: string, value: any) {
         this.tracePointSymbolLayer.layout[prop] = value;
     }
 
-    setCirclePaintProperty(prop, value) {
+    setCirclePaintProperty(prop: string, value: any) {
         this.tracePointCircleLayer.paint[prop] = value;
     }
 
-    setCircleLayoutProperty(prop, value) {
+    setCircleLayoutProperty(prop: string, value: any) {
         this.tracePointCircleLayer.layout[prop] = value;
     }
 
-    setFilter(filter) {
+    setFilter(filter: any) {
         this.traceLineLayer.filter = filter;
         this.tracePointCircleLayer.filter = filter;
         this.tracePointSymbolLayer.filter = filter;
     }
 
-    updateFilter(filter) {
+    updateFilter(filter: any) {
         this.map.setFilter(this.traceLineLayerID, filter);
         this.map.setFilter(this.tracePointCircleLayerID, filter);
         this.map.setFilter(this.tracePointSymbolLayerID, filter);
@@ -151,19 +171,19 @@ class custom_trace_layer {
         this.updateLineVisible(false);
     }
 
-    updateCircleVisible(isVisible) {
+    updateCircleVisible(isVisible: boolean) {
         this.map.setLayoutProperty(this.tracePointCircleLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
     }
 
-    updateTextVisible(isVisible) {
+    updateTextVisible(isVisible: boolean) {
         this.map.setLayoutProperty(this.tracePointSymbolLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
     }
 
-    updateLineVisible(isVisible) {
+    updateLineVisible(isVisible: boolean) {
         this.map.setLayoutProperty(this.traceLineLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
     }
 
-    updateTextProperty(type, prop, value) {
+    updateTextProperty(type: string, prop: string, value: any) {
         if (type === 'paint') {
             this.map.setPaintProperty(this.tracePointSymbolLayerID, prop, value);
         } else if (type === 'layout') {
@@ -171,12 +191,12 @@ class custom_trace_layer {
         }
     }
 
-    setFloor(floorNumber) {
+    setFloor(floorNumber: number) {
         let filter = ['all', ['==', 'floor', floorNumber]];
         this.updateFilter(filter);
     }
 
-    showTraceData(tracePoints) {
+    showTraceData(tracePoints: Object) {
         // console.log("showTraceData");
         // console.log(tracePoints);
 

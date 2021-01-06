@@ -1,5 +1,7 @@
+// @flow
 class event_manager {
-
+    static MapEvent: Object;
+    static LocatorEvent: Object;
 }
 
 let MapEvent = {

@@ -1,3 +1,4 @@
+// @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
 
@@ -9,7 +10,15 @@ const DefaultBeaconCircleLayer = {
 };
 
 class unit_beacon_cirle_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+    layerID: string;
+    layer: Object;
+
+    asBeacon: boolean;
+    asSignal: boolean;
+    onFocus: boolean;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'circle';
@@ -21,7 +30,7 @@ class unit_beacon_cirle_layer extends unit_functional_layer {
         });
     }
 
-    asBeaconLayer() {
+    asBeaconLayer(): unit_beacon_cirle_layer {
         this.asBeacon = true;
         this.setPaintProperties({
             'circle-radius': 2,
@@ -30,7 +39,7 @@ class unit_beacon_cirle_layer extends unit_functional_layer {
         return this;
     }
 
-    asFocusSignalLayer() {
+    asFocusSignalLayer(): unit_beacon_cirle_layer {
         this.asSignal = true;
         this.onFocus = true;
         this.setPaintProperties({
@@ -40,7 +49,7 @@ class unit_beacon_cirle_layer extends unit_functional_layer {
         return this;
     }
 
-    asOffFocusSignalLayer() {
+    asOffFocusSignalLayer(): unit_beacon_cirle_layer {
         this.asSignal = true;
         this.onFocus = false;
         this.setPaintProperties({
@@ -50,7 +59,7 @@ class unit_beacon_cirle_layer extends unit_functional_layer {
         return this;
     }
 
-    createDefaultFilter(floor) {
+    createDefaultFilter(floor: number): any {
         if (this.asSignal && !this.onFocus) {
             return ['all', ['!=', 'floor', floor]];
         }

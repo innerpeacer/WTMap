@@ -1,3 +1,4 @@
+// @flow
 import {clone} from '../../dependencies.js';
 
 const default_style = {
@@ -12,14 +13,14 @@ const default_style = {
     }
 };
 
-function getStyle(host, resourceRoot, spriteName) {
+function getStyle(host: string, resourceRoot: string, spriteName: string): string {
     let style = clone(default_style);
     style.sprite = `${host}/${resourceRoot}/sprites/${spriteName}`;
     style.glyphs = `${host}/${resourceRoot}/glyphs/{fontstack}/{range}.pbf`;
     return style;
 }
 
-function getSpritePath(host, resourceRoot, spriteName) {
+function getSpritePath(host: string, resourceRoot: string, spriteName: string): string {
     return `${host}/${resourceRoot}/sprites/${spriteName}`;
 }
 

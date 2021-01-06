@@ -1,3 +1,4 @@
+// @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
 
@@ -15,7 +16,14 @@ const DefaultBeaconSymbolLayer = {
 };
 
 class unit_beacon_symbol_layer extends unit_functional_layer {
-    constructor(options) {
+    layerType: string;
+
+    asBeacon: boolean;
+    onFocus: boolean;
+    asSignal: boolean;
+    asLocation: boolean;
+
+    constructor(options: Object) {
         super(options);
 
         this.layerType = 'symbol';
@@ -27,7 +35,7 @@ class unit_beacon_symbol_layer extends unit_functional_layer {
         });
     }
 
-    asBeaconLayer() {
+    asBeaconLayer(): unit_beacon_symbol_layer {
         this.asBeacon = true;
         this.setPaintProperties({
             'text-color': '#8B8682'
@@ -38,7 +46,7 @@ class unit_beacon_symbol_layer extends unit_functional_layer {
         return this;
     }
 
-    asFocusSignalLayer() {
+    asFocusSignalLayer(): unit_beacon_symbol_layer {
         this.asSignal = true;
         this.onFocus = true;
         this.setPaintProperties({
@@ -55,7 +63,7 @@ class unit_beacon_symbol_layer extends unit_functional_layer {
         return this;
     }
 
-    asOffFocusSignalLayer() {
+    asOffFocusSignalLayer(): unit_beacon_symbol_layer {
         this.asSignal = true;
         this.onFocus = false;
         this.setPaintProperties({
@@ -71,7 +79,7 @@ class unit_beacon_symbol_layer extends unit_functional_layer {
         return this;
     }
 
-    asLocationLayer() {
+    asLocationLayer(): unit_beacon_symbol_layer {
         this.asLocation = true;
         this.setPaintProperties({
             'text-color': '#253494'
@@ -84,7 +92,7 @@ class unit_beacon_symbol_layer extends unit_functional_layer {
         return this;
     }
 
-    createDefaultFilter(floor) {
+    createDefaultFilter(floor: number): any {
         if (this.asSignal && !this.onFocus) {
             return ['all', ['!=', 'floor', floor]];
         }

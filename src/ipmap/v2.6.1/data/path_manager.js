@@ -1,3 +1,4 @@
+// @flow
 function getCBMJson(bID, options) {
     if (options._useFile) {
         return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.json` + '?t=' + Date.now();
@@ -10,11 +11,11 @@ function getCBMPbf(bID, options) {
     return `${options._apiHost}/${options._dataRootDir}/cbm/${bID}.pbf` + '?t=' + Date.now();
 }
 
-export function getThemePbfPath(themeID, options) {
+export function getThemePbfPath(themeID: string, options: Object): string {
     return `${options._apiHost}/${options._resourceRootDir}/theme/Theme_${themeID}.pbf` + '?t=' + Date.now();
 }
 
-export function getCBMPath(bID, options) {
+export function getCBMPath(bID: string, options: Object): string {
     if (options.usePbf) {
         return getCBMPbf(bID, options);
     } else {
@@ -26,6 +27,6 @@ function getTilePbf(bID, options) {
     return [`${options._apiHost}/${options._dataRootDir}/vectortile/${bID}/{z}/{x}/{y}.pbf`];
 }
 
-export function getTilePath(bID, options) {
+export function getTilePath(bID: string, options: Object): Array<string> {
     return getTilePbf(bID, options);
 }

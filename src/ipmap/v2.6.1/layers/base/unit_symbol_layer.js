@@ -1,5 +1,7 @@
+// @flow
 import {unit_base_layer} from './unit_base_layer';
 import {extend, clone} from '../../../dependencies';
+import {IPMap} from '../../map/map';
 
 const DefaultSymbolLayer = {
     'paint': {
@@ -19,7 +21,7 @@ function _getHeight(use3D) {
 }
 
 class unit_symbol_layer extends unit_base_layer {
-    constructor(props) {
+    constructor(props: Object) {
         super(props);
 
         this.layer = extend(clone(DefaultSymbolLayer), this.layer);
@@ -76,15 +78,15 @@ class unit_symbol_layer extends unit_base_layer {
         }
     }
 
-    _switch3D(map, use3D) {
+    _switch3D(map: IPMap, use3D: boolean) {
         map.setPaintProperty(this.layerID, 'symbol-height', _getHeight(use3D));
     }
 
-    setFont(map, fontName) {
+    setFont(map: IPMap, fontName: string) {
         map.setLayoutProperty(this.layerID, 'text-font', [`${fontName}-${this.buildingID}`]);
     }
 
-    switchLanguage(map, options) {
+    switchLanguage(map: IPMap, options: Object) {
         if (!options || !options.lang) return;
         if (this.symbol.textVisible) {
             if (options.lang === 'cn') {
@@ -97,7 +99,7 @@ class unit_symbol_layer extends unit_base_layer {
         }
     }
 
-    createDefaultFilter(floor) {
+    createDefaultFilter(floor: number): any {
         return [
             'all',
             ['==', 'floor', floor || 0],
