@@ -11,7 +11,7 @@ import {unit_route_symbol_layer} from '../functional/route/unit_route_symbol_lay
 import {route_animation_object as AnimationObject} from '../../utils/route_animation_object';
 import {unit_route_circle_layer} from '../functional/route/unit_route_circle_layer';
 import {unit_functional_layer} from '../functional/unit_functional_layer';
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 let routeAnimationObject = new AnimationObject();
 

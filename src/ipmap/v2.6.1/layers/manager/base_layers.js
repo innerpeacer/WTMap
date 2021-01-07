@@ -1,7 +1,7 @@
 // @flow
 import {DefaultVectorSourceID, LayerParams} from '../layer_constants';
 import {unit_base_layer} from '../base/unit_base_layer';
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 class base_layers {
     name: string;

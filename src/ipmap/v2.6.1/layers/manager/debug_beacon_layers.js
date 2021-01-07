@@ -3,7 +3,7 @@ import {geojson_utils as GeojsonUtils} from '../../../dependencies';
 import {unit_beacon_cirle_layer} from '../functional/debug_beacon/unit_beacon_cirle_layer';
 import {unit_beacon_symbol_layer} from '../functional/debug_beacon/unit_beacon_symbol_layer';
 import {unit_functional_layer} from '../functional/unit_functional_layer';
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 class debug_beacon_layers {
     name: string;

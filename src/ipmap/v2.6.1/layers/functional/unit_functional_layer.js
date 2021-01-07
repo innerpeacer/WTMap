@@ -1,5 +1,5 @@
 // @flow
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 class unit_functional_layer {
     name: string;

@@ -1,7 +1,7 @@
 // @flow
 import {unit_base_layer} from './unit_base_layer';
 import {extend, clone} from '../../../dependencies';
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 const DefaultIPExtrusionLayer = {
     'layout': {

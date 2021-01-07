@@ -15,10 +15,10 @@ import {base_layers} from './base_layers';
 import {location_layers} from './location_layers';
 import {debug_beacon_layers} from './debug_beacon_layers';
 import {route_layers} from './route_layers';
-import {IPMap} from '../../map/map';
-import {unit_base_layer} from '../base/unit_base_layer';
-import {unit_functional_layer} from '../functional/unit_functional_layer';
-import {locator as Locator} from '../../locator/locator';
+import type {IPMap} from '../../map/map';
+import type {unit_base_layer} from '../base/unit_base_layer';
+import type {unit_functional_layer} from '../functional/unit_functional_layer';
+import type {locator as Locator} from '../../locator/locator';
 
 type   BaseLayerType = base_layers | route_layers | debug_beacon_layers | location_layers
 

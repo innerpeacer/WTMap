@@ -1,8 +1,8 @@
 // @flow
 import {geojson_utils as GeojsonUtils} from '../../../dependencies';
 import {unit_location_layer} from '../functional/unit_location_layer';
-import {unit_functional_layer} from '../functional/unit_functional_layer';
-import {IPMap} from '../../map/map';
+import type {unit_functional_layer} from '../functional/unit_functional_layer';
+import type {IPMap} from '../../map/map';
 
 class location_layers {
     name: string;

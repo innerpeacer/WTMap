@@ -1,7 +1,7 @@
 // @flow
 import {unit_functional_layer} from '../unit_functional_layer';
 import {extend, clone} from '../../../../dependencies';
-import {IPMap} from '../../../map/map';
+import type {IPMap} from '../../../map/map';
 
 const DefaultRouteLineLayer = {
     'layout': {

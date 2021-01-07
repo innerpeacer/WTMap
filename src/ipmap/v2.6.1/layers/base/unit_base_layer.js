@@ -1,6 +1,6 @@
 // @flow
 import {extend} from '../../../dependencies';
-import {IPMap} from '../../map/map';
+import type {IPMap} from '../../map/map';
 
 class unit_base_layer {
     buildingID: string;
