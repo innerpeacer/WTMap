@@ -1,13 +1,13 @@
 // @flow
 
-import { extend, bindAll } from '../util/util';
-import { Event, Evented } from '../util/evented';
+import {extend, bindAll} from '../util/util';
+import {Event, Evented} from '../util/evented';
 import DOM from '../util/dom';
 import LngLat from '../geo/lng_lat';
 import Point from '@mapbox/point-geometry';
 import window from '../util/window';
 import smartWrap from '../util/smart_wrap';
-import { type Anchor, anchorTranslate, applyAnchorClass } from './anchor';
+import {type Anchor, anchorTranslate, applyAnchorClass} from './anchor';
 
 import type Map from './map';
 import type {LngLatLike} from '../geo/lng_lat';
@@ -16,8 +16,10 @@ import type {PointLike} from '@mapbox/point-geometry';
 const defaultOptions = {
     closeButton: true,
     closeOnClick: true,
+    withTip: true,
     className: '',
-    maxWidth: "240px"
+    contentClassName: '',
+    maxWidth: '240px'
 };
 
 export type Offset = number | PointLike | {[Anchor]: PointLike};
@@ -25,9 +27,11 @@ export type Offset = number | PointLike | {[Anchor]: PointLike};
 export type PopupOptions = {
     closeButton?: boolean,
     closeOnClick?: boolean,
+    withTip?: boolean,
     anchor?: Anchor,
     offset?: Offset,
     className?: string,
+    contentClassName?: string,
     maxWidth?: string
 };
 
@@ -283,6 +287,10 @@ export default class Popup extends Evented {
         }
 
         this._content = DOM.create('div', 'mapboxgl-popup-content', this._container);
+        if (this.options.contentClassName) {
+            this.options.contentClassName.split(' ').forEach(name =>
+                this._content.classList.add(name));
+        }
 
         if (this.options.closeButton) {
             this._closeButton = DOM.create('button', 'mapboxgl-popup-close-button', this._content);
@@ -294,11 +302,15 @@ export default class Popup extends Evented {
     }
 
     _update() {
-        if (!this._map || !this._lngLat || !this._content) { return; }
+        if (!this._map || !this._lngLat || !this._content) {
+            return;
+        }
 
         if (!this._container) {
             this._container = DOM.create('div', 'mapboxgl-popup', this._map.getContainer());
-            this._tip       = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            if (this.options.withTip) {
+                this._tip = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            }
             this._container.appendChild(this._content);
             if (this.options.className) {
                 this.options.className.split(' ').forEach(name =>
