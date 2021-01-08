@@ -53,6 +53,7 @@ const defaultOptions = {
 
     localIdeographFontFamily: false,
     // maxZoom: 22,
+    fadeDuration: 0,
 
     usePbf: true,
     enableMotion: false,

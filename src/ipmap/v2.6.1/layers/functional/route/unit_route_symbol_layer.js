@@ -33,6 +33,7 @@ class unit_route_symbol_layer extends unit_functional_layer {
     asArrow(): unit_route_symbol_layer {
         this.setLayoutProperties({
             'icon-image': 'icon_route_arrow',
+            'icon-ignore-placement': true,
             'icon-size': 1,
             'icon-rotate': ['get', 'angle']
         });
