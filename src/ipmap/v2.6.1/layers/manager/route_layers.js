@@ -86,6 +86,11 @@ class route_layers {
     routeStopCircleLayer: unit_functional_layer;
     routeStopSymbolLayer: unit_functional_layer;
 
+    routeStartEndName: string;
+    routeStartEndSourceID: string;
+    routeFocusStartEndSymbolLayer: unit_functional_layer;
+    routeOffFocusStartEndSymbolLayer: unit_functional_layer;
+
     sourceIDs: Array<string>;
     unitLayers: Array<unit_functional_layer>;
 
@@ -154,8 +159,20 @@ class route_layers {
             sourceID: this.routeStopSourceID
         }).asStop();
 
-        this.sourceIDs = [this.routeWholeLineSourceID, this.wholeRouteArrowSourceID, this.routeSegmentLineSourceID, this.routePassedSegmentLineSourceID, this.segmentRouteArrowSourceID, this.routeStopSourceID];
-        this.unitLayers = [this.routeWholeBorderLineLayer, this.routeWholeLineLayer, this.routeSegmentBorderLineLayer, this.routeSegmentLineLayer, this.routePassedSegmentLineLayer, this.wholeRouteArrowLayer, this.segmentRouteArrowLayer, this.routeStopCircleLayer, this.routeStopSymbolLayer];
+        // ============ stops ============
+        this.routeStartEndName = `${this.name}-start-end`;
+        this.routeStartEndSourceID = `${this.routeStartEndName}-source`;
+        this.routeFocusStartEndSymbolLayer = new unit_route_symbol_layer({
+            name: `${this.routeStartEndName}-focus`,
+            sourceID: this.routeStartEndSourceID
+        }).asFocusStartEnd();
+        this.routeOffFocusStartEndSymbolLayer = new unit_route_symbol_layer({
+            name: `${this.routeStartEndName}-off-focus`,
+            sourceID: this.routeStartEndSourceID
+        }).asOffFocusStartEnd();
+
+        this.sourceIDs = [this.routeWholeLineSourceID, this.wholeRouteArrowSourceID, this.routeSegmentLineSourceID, this.routePassedSegmentLineSourceID, this.segmentRouteArrowSourceID, this.routeStopSourceID, this.routeStartEndSourceID];
+        this.unitLayers = [this.routeWholeBorderLineLayer, this.routeWholeLineLayer, this.routeSegmentBorderLineLayer, this.routeSegmentLineLayer, this.routePassedSegmentLineLayer, this.wholeRouteArrowLayer, this.segmentRouteArrowLayer, this.routeStopCircleLayer, this.routeStopSymbolLayer, this.routeFocusStartEndSymbolLayer, this.routeOffFocusStartEndSymbolLayer];
     }
 
     getSourceIDs(): Array<string> {
@@ -171,6 +188,7 @@ class route_layers {
         if (wholeResult != null) {
             map.getSource(this.routeWholeLineSourceID).setData(wholeResult.getGeojsonFeatures());
             map.getSource(this.routeStopSourceID).setData(multiResult.rearrangedStopData);
+            map.getSource(this.routeStartEndSourceID).setData(wholeResult.getStartEndData().geojson);
 
             routeAnimationObject.globalWholeRouteResult = wholeResult;
             routeAnimationObject.globalWholeRouteArrowSourceID = this.wholeRouteArrowSourceID;
