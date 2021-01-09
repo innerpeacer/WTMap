@@ -12,16 +12,6 @@
 <body>
 
 <style>
-    .pop-class {
-        /*background: red;*/
-        /*padding: 1px;*/
-    }
-
-    .pop-content-class {
-        /*background: green;*/
-        padding: 2px 5px;
-    }
-
     .control-div {
         position: absolute;
         right: 2px;
@@ -47,7 +37,6 @@
 </div>
 
 <script>
-    console.log(wtmap);
     var buildingID = getParameter('buildingID');
     if (buildingID == null) buildingID = '00270007';
 
@@ -73,7 +62,6 @@
     var currentPoint;
     var locationPoint;
 
-    console.log(wtmap.WTMap);
     let mapOptions = {
         container: 'map',
         buildingID: buildingID,
@@ -85,7 +73,6 @@
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
     var map = new wtmap.WTMap(mapOptions);
-    console.log(map);
 
     map.showTileBoundaries = true;
     map.on('click', function(evt) {
@@ -105,7 +92,7 @@
     });
 
     map.on('mapready', function(evt) {
-        console.log('mapready');
+        // console.log('mapready');
         initFloorSwitch(map);
         initLayers(map);
         showParams();
@@ -216,12 +203,9 @@
         map.getSource('params').setData(createParamData(stopPoints));
         map.getSource('startEnd').setData(createStartEndData(startPoint, endPoint));
 
-        let startInfo = wtmap.MapInfo.searchMapInfo(map.mapInfoArray, startPoint.floor);
-        console.log(map.mapInfoArray);
-        console.log(startPoint.floor);
-        console.log(startInfo);
-        startPop.setHTML(getStartPopup(startInfo.floorName));
-        startPop.setLngLat(startPoint.getCoord());
+        // let startInfo = wtmap.MapInfo.searchMapInfo(map.mapInfoArray, startPoint.floor);
+        // startPop.setHTML(getStartPopup(startInfo.floorName));
+        // startPop.setLngLat(startPoint.getCoord());
     }
 
 </script>

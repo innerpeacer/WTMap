@@ -30,6 +30,7 @@ import {getStyle, getSpritePath} from '../config/default_style';
 import {orientation_handler as OrientationHandler} from '../motion/orientation_handler';
 import {motion_handler as MotionHandler} from '../motion/motion_handler';
 
+import {popup_manager as PopupManager} from '../popup/popup_manager';
 import {event_manager as EventManager} from '../utils/event_manager';
 
 import {layer_manager as LayerManager} from '../layers/manager/layer_manager';
@@ -127,6 +128,7 @@ class IPMap extends BoxMap {
 
 
         this._msRouteManager = new IPMultiStopRouteManager(options);
+        this._popupManager = new PopupManager(this);
 
         // if (dataVersion) {
         //     CacheVersion.useVersion(dataVersion);
@@ -261,6 +263,7 @@ class IPMap extends BoxMap {
         // console.log('showRoute');
         let map = this;
         map._layerManager.showRoute(map._routeResult, location, segment);
+        map._popupManager.showRoutePopup(map._routeResult);
     }
 
     resetRoute() {
@@ -272,6 +275,7 @@ class IPMap extends BoxMap {
     hideRoute() {
         let map = this;
         map._layerManager.hideRoute();
+        map._popupManager.hideRoutePopup();
     }
 
     __requestRoute(start: PointLikeType, end: PointLikeType, stops: Array<PointLikeType>, callback: CallbackType, errorCallback: CallbackType, params: Object) {
