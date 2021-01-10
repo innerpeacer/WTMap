@@ -49,6 +49,7 @@ class popup_manager {
 
     popClicked(evt: Object) {
         // console.log('popup_manager.popClicked');
+        if (!this.map._routePopupInteraction) return;
         let routePopup: RoutePopup = evt.target;
         let targetFloor;
         if (routePopup.type === PopupType.From) {

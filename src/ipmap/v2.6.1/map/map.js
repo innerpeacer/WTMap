@@ -108,6 +108,7 @@ class IPMap extends BoxMap {
         this._use3D = options.use3D;
         this._useFile = options._useFile;
 
+        this._routePopupInteraction = true;
         this.styleReady = false;
         this.city = null;
         this.building = null;
@@ -166,6 +167,10 @@ class IPMap extends BoxMap {
             map._themeReady = true;
         }
         map._requestCBM();
+    }
+
+    enableRoutePopupInteraction(enabled: boolean) {
+        this._routePopupInteraction = !!enabled;
     }
 
     enableOrientation() {
