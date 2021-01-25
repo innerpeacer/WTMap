@@ -20,7 +20,7 @@ function yLat(y) {
 }
 
 // maxBounds = [lng1, lat1, lng2, lat2]
-function getActualBounds(maxBounds: Array<number>, width, height) {
+function getActualBounds(maxBounds: Array<number>, width: number, height: number): Array<number> {
     let pixels = [lngX(maxBounds[0]), latY(maxBounds[1]), lngX(maxBounds[2]), latY(maxBounds[3])];
 
     let pixelSize = {x: Math.abs(pixels[0] - pixels[2]), y: Math.abs(pixels[1] - pixels[3])};
@@ -42,9 +42,47 @@ function getActualBounds(maxBounds: Array<number>, width, height) {
     return [xLng(actualPixels[0]), yLat(actualPixels[1]), xLng(actualPixels[2]), yLat(actualPixels[3])];
 }
 
+function getFullVisibleBounds(maxBounds: Array<number>, width: number, height: number): Array<number> {
+    let pixels = [lngX(maxBounds[0]), latY(maxBounds[1]), lngX(maxBounds[2]), latY(maxBounds[3])];
+
+    let pixelSize = {x: Math.abs(pixels[0] - pixels[2]), y: Math.abs(pixels[1] - pixels[3])};
+    let pixelCenter = {x: (pixels[0] + pixels[2]) * 0.5, y: (pixels[1] + pixels[3]) * 0.5};
+
+    let pixelScaleX = width / pixelSize.x;
+    let pixelScaleY = height / pixelSize.y;
+
+    let actualPixels = [pixels[0], pixels[1], pixels[2], pixels[3]];
+    // This line is Only difference with function of getActualBounds
+    if (pixelScaleX > pixelScaleY) {
+        let actualSizeX = pixelSize.y * width / height;
+        actualPixels[0] = pixelCenter.x - actualSizeX * 0.5;
+        actualPixels[2] = pixelCenter.x + actualSizeX * 0.5;
+    } else {
+        let actualSizeY = pixelSize.x * height / width;
+        actualPixels[1] = pixelCenter.y - actualSizeY * 0.5;
+        actualPixels[3] = pixelCenter.y + actualSizeY * 0.5;
+    }
+    return [xLng(actualPixels[0]), yLat(actualPixels[1]), xLng(actualPixels[2]), yLat(actualPixels[3])];
+}
+
 function calculateZoomForMaxBounds(maxBounds: Array<number>, width: number, height: number): number {
     let actualBounds = getActualBounds(maxBounds, width, height);
     return calculateZoom(actualBounds, width, height);
+}
+
+function calculateMaxBounds(bounds: Array<number>, width: number, height: number): Array<Array<number>> {
+    let actualBounds = getActualBounds(bounds, width, height);
+    return [[Math.min(actualBounds[0], actualBounds[2]), Math.min(actualBounds[1], actualBounds[3])], [Math.max(actualBounds[0], actualBounds[2]), Math.max(actualBounds[1], actualBounds[3])]];
+}
+
+function calculateZoomForFullVisibleBounds(maxBounds: Array<number>, width: number, height: number): number {
+    let fullVisibleBounds = getFullVisibleBounds(maxBounds, width, height);
+    return calculateZoom(fullVisibleBounds, width, height);
+}
+
+function calculateFullVisibleBounds(bounds: Array<number>, width: number, height: number): Array<Array<number>> {
+    let fullVisibleBounds = getFullVisibleBounds(bounds, width, height);
+    return [[Math.min(fullVisibleBounds[0], fullVisibleBounds[2]), Math.min(fullVisibleBounds[1], fullVisibleBounds[3])], [Math.max(fullVisibleBounds[0], fullVisibleBounds[2]), Math.max(fullVisibleBounds[1], fullVisibleBounds[3])]];
 }
 
 function calculateZoom(bounds, width, height) {
@@ -67,4 +105,9 @@ function scaleToZoom(scale) {
     return Math.log(scale) / Math.LN2;
 }
 
-export {calculateZoomForMaxBounds};
+export {
+    calculateMaxBounds,
+    calculateFullVisibleBounds,
+    calculateZoomForMaxBounds,
+    calculateZoomForFullVisibleBounds
+};

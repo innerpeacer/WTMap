@@ -21,7 +21,12 @@ import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit
 
 import {getCBMPath, getThemePbfPath, getTilePath} from '../data/path_manager';
 
-import {calculateZoomForMaxBounds as CalculateZoomForMaxBounds} from '../utils/ip_zoom_calc';
+import {
+    calculateMaxBounds,
+    calculateFullVisibleBounds,
+    calculateZoomForMaxBounds as CalculateZoomForMaxBounds,
+    calculateZoomForFullVisibleBounds as CalculateZoomForFullVisibleBounds
+} from '../utils/ip_zoom_calc';
 
 import {locator as IndoorLocator} from '../locator/locator';
 import {web_gps_updater} from '../locator/web_gps_updater';
@@ -438,8 +443,8 @@ class IPMap extends BoxMap {
         // console.log(initBounds);
 
         let buildingExtent = map.building.buildingExtent;
-        let initBounds = this._initBounds = buildingExtent.getExtendedBounds2(0.2);
-        this._baseZoom = CalculateZoomForMaxBounds(initBounds, this._canvas.width, this._canvas.height);
+        let initBounds = this._initBounds = buildingExtent.getExtendedBounds2(0.05);
+        this._baseZoom = CalculateZoomForFullVisibleBounds(initBounds, this._canvas.width, this._canvas.height);
 
         let theme = (this.__useCustomTheme && !this._themeFailed) ? this.customTheme : this.defaultTheme;
         this._useTheme(theme);
@@ -521,8 +526,11 @@ class IPMap extends BoxMap {
             // console.log(c);
             let lngLat = c.getLngLat();
 
-            let maxBounds = result.mapInfo.getExtendedBounds(0.2);
-            map.setMaxBounds(maxBounds);
+            let maxBounds = result.mapInfo.getExtendedBounds2(0.05);
+            let fullVisibleBounds = calculateFullVisibleBounds(maxBounds, map._canvas.width, map._canvas.height);
+            let fullVisibleZoom = CalculateZoomForFullVisibleBounds(maxBounds, map._canvas.width, map._canvas.height);
+            map.setMaxBounds(fullVisibleBounds);
+            map.setZoom(fullVisibleZoom);
 
             map.setCenter([lngLat.lng, lngLat.lat]);
             if (options && options.rezoom) map.setZoom(10);
