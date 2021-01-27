@@ -14,7 +14,7 @@ class unit_fill_layer extends unit_base_layer {
 
         this.layer = extend(clone(DefaultFillLayer), this.layer);
         this.setPaintProperties({
-            'fill-color': this.symbol.fillColor,
+            'fill-color': ['case', ['boolean', ['feature-state', 'highlight'], false], ['feature-state', 'highlight-color'], this.symbol.fillColor],
             'fill-opacity': this.symbol.fillOpacity
         });
     }

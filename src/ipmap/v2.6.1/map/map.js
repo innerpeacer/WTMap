@@ -128,6 +128,8 @@ class IPMap extends BoxMap {
         this._wtWgs84Converter = null;
         this.__abort = false;
 
+        this._highlighted = [];
+
         let map = this;
         this.resourceBuildingID = this.buildingID;
         options._dataRootDir = options._mDataRoot;
@@ -573,6 +575,44 @@ class IPMap extends BoxMap {
 
     _hideLabels() {
         this._layerManager._hideLabels();
+    }
+
+    highlightPoi(pois, options) {
+        console.log('highlightPoi');
+        console.log(pois);
+        console.log(options);
+        this.clearHighlight();
+
+        let highlightColor = '#00ffff';
+        if (options && options.color) {
+            highlightColor = options.color;
+        }
+
+        let poiList = [].concat(pois);
+        for (let i = 0; i < poiList.length; ++i) {
+            let poiID = poiList[i];
+            let featureID = parseInt(poiID.substring(11));
+            this._highlighted.push(featureID);
+            this.setFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'fill',
+                id: featureID
+            }, {
+                highlight: true,
+                'highlight-color': highlightColor
+            });
+        }
+    }
+
+    clearHighlight() {
+        for (let i = 0; i < this._highlighted.length; ++i) {
+            this.removeFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'fill',
+                id: this._highlighted[i]
+            });
+        }
+        this._highlighted = [];
     }
 }
 

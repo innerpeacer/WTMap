@@ -25,7 +25,7 @@ class unit_extrusion_layer extends unit_base_layer {
             'visibility': this.use3D ? 'visible' : 'none'
         });
         this.setPaintProperties({
-            'ipfill-extrusion-color': symbol.fillColor,
+            'ipfill-extrusion-color': ['case', ['boolean', ['feature-state', 'highlight'], false], ['feature-state', 'highlight-color'], symbol.fillColor],
             'ipfill-extrusion-opacity': symbol.fillOpacity,
             'ipfill-extrusion-outline-color': symbol.outlineColor,
             'ipfill-extrusion-outline-opacity': symbol.outlineOpacity,
