@@ -37,6 +37,21 @@ export function altitudeFromMercatorZ(z: number, y: number) {
 }
 
 /**
+ * Determine the Mercator scale factor for a given latitude, see
+ * https://en.wikipedia.org/wiki/Mercator_projection#Scale_factor
+ *
+ * At the equator the scale factor will be 1, which increases at higher latitudes.
+ *
+ * @param {number} lat Latitude
+ * @returns {number} scale factor
+ * @private
+ */
+export function mercatorScale(lat: number) {
+    return 1 / Math.cos(lat * Math.PI / 180);
+}
+
+
+/**
  * A `MercatorCoordinate` object represents a projected three dimensional position.
  *
  * `MercatorCoordinate` uses the web mercator projection ([EPSG:3857](https://epsg.io/3857)) with slightly different units:
@@ -112,6 +127,20 @@ class MercatorCoordinate {
      */
     toAltitude() {
         return altitudeFromMercatorZ(this.z, this.y);
+    }
+
+    /**
+     * Returns the distance of 1 meter in `MercatorCoordinate` units at this latitude.
+     *
+     * For coordinates in real world units using meters, this naturally provides the scale
+     * to transform into `MercatorCoordinate`s.
+     *
+     * @returns {number} Distance of 1 meter in `MercatorCoordinate` units.
+     */
+    meterInMercatorCoordinateUnits() {
+        const circumference = 2 * Math.PI * 6378137;
+        // 1 meter / circumference at equator in meters * Mercator projection scale factor at this latitude
+        return 1 / circumference * mercatorScale(latFromMercatorY(this.y));
     }
 }
 
