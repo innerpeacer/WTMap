@@ -9,6 +9,7 @@ protobuf/signal/
 BRTLocation.debug.js
 Device2.html
 
+gltf/
 inertial.js
 t_y_motion_pbf.js
 *.pbf
