@@ -601,7 +601,7 @@ class IPMap extends BoxMap {
         this._layerManager.extrusionLayer.hide(this);
     }
 
-    highlightPoi(pois, options) {
+    highlightPoi(pois: Array<string>, options: Object) {
         console.log('highlightPoi');
         console.log(pois);
         console.log(options);
