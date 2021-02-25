@@ -113,7 +113,10 @@
                 // this.map.triggerRepaint();
             }
         };
-        map.addLayer(customLayer);
+        map.hideExtrusionLayer();
+        let lastID = map.getLastLayerID('extrusion');
+        let nextOf = map.getNextLayerID(lastID);
+        map.addLayer(customLayer, nextOf);
         map.showLocation(modelOrigin);
     }
 

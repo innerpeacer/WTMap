@@ -238,6 +238,43 @@ class layer_manager {
         if (subLayer === LayerParams.Label.name) return this.labelLayer._getLayerIDList();
         if (subLayer === LayerParams.Extrusion.name) return this.extrusionLayer._getLayerIDList();
     }
+
+    getAllLayerIDs(): Array<string> {
+        let layerIDList = [];
+        this.layers.forEach((layer) => {
+            layerIDList.push(layer.layerID);
+        });
+        return layerIDList;
+    }
+
+    getFirstLayerID(subLayer: string): ?string {
+        let idList = this.getLayerIDs(subLayer);
+        if (idList && idList.length > 0) {
+            return idList[0];
+        }
+        return null;
+    }
+
+    getLastLayerID(subLayer: string): ?string {
+        let idList = this.getLayerIDs(subLayer);
+        if (idList && idList.length > 0) {
+            return idList[idList.length - 1];
+        }
+        return null;
+    }
+
+    getNextLayerID(layerID: ?string): ?string {
+        if (layerID) {
+            let idList = this.getAllLayerIDs();
+            let index = idList.indexOf(layerID);
+            console.log('index: ', index);
+            if (index != -1 || index < idList.length) {
+                return idList[index + 1];
+            }
+            return null;
+        }
+        return null;
+    }
 }
 
 export {layer_manager};

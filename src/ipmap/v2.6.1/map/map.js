@@ -565,6 +565,22 @@ class IPMap extends BoxMap {
         return this._layerManager.getLayerIDs(subLayer);
     }
 
+    getAllLayerIDs(): Array<string> {
+        return this._layerManager.getAllLayerIDs();
+    }
+
+    getFirstLayerID(subLayer: string): ?string {
+        return this._layerManager.getFirstLayerID(subLayer);
+    }
+
+    getLastLayerID(subLayer: string): ?string {
+        return this._layerManager.getLastLayerID(subLayer);
+    }
+
+    getNextLayerID(layerID: ?string): ?string {
+        return this._layerManager.getNextLayerID(layerID);
+    }
+
     showLabels() {
         this._layerManager._showLabels();
     }
@@ -575,6 +591,14 @@ class IPMap extends BoxMap {
 
     _hideLabels() {
         this._layerManager._hideLabels();
+    }
+
+    showExtrusionLayer() {
+        this._layerManager.extrusionLayer.show(this);
+    }
+
+    hideExtrusionLayer() {
+        this._layerManager.extrusionLayer.hide(this);
     }
 
     highlightPoi(pois, options) {
