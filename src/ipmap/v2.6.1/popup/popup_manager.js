@@ -17,12 +17,14 @@ class popup_manager {
     constructor(map: IPMap) {
         console.log('popup_manager.constructor');
         this.map = map;
+        this.routePopupArray = [];
     }
 
     showRoutePopup(routeResult: MultiRouteResult) {
         // console.log('popup_manager.showRoutePopup');
         this.map.on(MapEvent.FloorEnd, this._update.bind(this));
 
+        this.hideRoutePopup();
         this._createPopup(routeResult);
         this._update({mapInfo: this.map.currentMapInfo});
     }
