@@ -80,7 +80,6 @@ class IPMap extends BoxMap {
         // console.log('Version: ' + version);
         options = extend({}, defaultOptions, options);
         if (options._cbmPath == null) options._cbmPath = defaultHostUtils.getHttpHost() + options._apiPath + '/web/GetCBM';
-        if (options._mDataRoot == null) options._mDataRoot = options._resourceRootDir + '/mapdata';
         if (options._apiRouteHost == null && options._apiHost != null) options._apiRouteHost = options._apiHost;
         options.wtStyle = getStyle(options._apiHost, options._resourceRootDir, options.spriteName);
 
@@ -132,8 +131,6 @@ class IPMap extends BoxMap {
 
         let map = this;
         this.resourceBuildingID = this.buildingID;
-        options._dataRootDir = options._mDataRoot;
-
 
         this._msRouteManager = new IPMultiStopRouteManager(options);
         this._popupManager = new PopupManager(this);
