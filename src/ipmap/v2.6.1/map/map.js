@@ -593,6 +593,18 @@ class IPMap extends BoxMap {
         this._layerManager._hideLabels();
     }
 
+    showFillLayers() {
+        this._layerManager.floorLayer.show(this);
+        this._layerManager.roomLayer.show(this);
+        this._layerManager.assetLayer.show(this);
+    }
+
+    hideFillLayers() {
+        this._layerManager.floorLayer.hide(this);
+        this._layerManager.roomLayer.hide(this);
+        this._layerManager.assetLayer.hide(this);
+    }
+
     showExtrusionLayer() {
         this._layerManager.extrusionLayer.show(this);
     }

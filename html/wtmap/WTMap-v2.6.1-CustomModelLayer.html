@@ -14,13 +14,27 @@
 
     console.log(wtmap.version);
     console.log(wtmap.Utils);
-    let buildingID = '05762003';
+    // let buildingID = '05762003';
+    // let modelUrl = 'Model/gltf/05762003/05762003.glb';
+    // let modelOrigin = {
+    //     x: 13532485.272359235,
+    //     y: 3339127.251934905
+    // };
+
+    let buildingID = '00270007';
+    let modelUrl = 'Model/gltf/00270007/00270007.glb';
+    let floorID = '00270007F03';
+    let modelOrigin = {
+        x: 12738336.3188,
+        y: 3582730.7167
+    };
     let use3D = true;
     // use3D = false;
 
     let mapOptions = {
         container: 'map',
         buildingID: buildingID,
+        floorID: floorID,
         // themeID: 'S1',
         use3D: use3D
     };
@@ -44,17 +58,15 @@
     });
 
     function addModel() {
+        map.hideFillLayers();
         map.hideExtrusionLayer();
         let customModelLayer = new wtmap.CustomModelLayer('3d-model', {
             THREE: threemap.THREE
         });
         customModelLayer.addToMap(map);
         customModelLayer.loadModel({
-            url: 'Model/gltf/05762003/05762003.glb',
-            origin: {
-                x: 13532485.272359235,
-                y: 3339127.251934905
-            }
+            url: modelUrl,
+            origin: modelOrigin
         });
     }
 
