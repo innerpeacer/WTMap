@@ -24,6 +24,7 @@
     let buildingID = '00270007';
     let modelUrl = 'Model/gltf/00270007/00270007.glb';
     let floorID = '00270007F03';
+    let customModelLayer;
     let modelOrigin = {
         x: 12738336.3188,
         y: 3582730.7167
@@ -57,10 +58,25 @@
         addModel();
     });
 
+    map.on('floorend', function(evt) {
+        console.log(evt.mapInfo);
+        if (evt.mapInfo.floorNumber === 3) {
+            map.hideFillLayers();
+            map.hideExtrusionLayer();
+            if (customModelLayer) {
+                customModelLayer.show();
+            }
+        } else {
+            map.showFillLayers();
+            map.showExtrusionLayer();
+            if (customModelLayer) {
+                customModelLayer.hide();
+            }
+        }
+    });
+
     function addModel() {
-        map.hideFillLayers();
-        map.hideExtrusionLayer();
-        let customModelLayer = new wtmap.CustomModelLayer('3d-model', {
+        customModelLayer = new wtmap.CustomModelLayer('3d-model', {
             THREE: threemap.THREE
         });
         customModelLayer.addToMap(map);

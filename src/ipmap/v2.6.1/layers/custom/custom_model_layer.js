@@ -110,6 +110,18 @@ class custom_model_layer {
             }
         );
     }
+
+    show() {
+        this.updateModelLayerVisible(true);
+    }
+
+    hide() {
+        this.updateModelLayerVisible(false);
+    }
+
+    updateModelLayerVisible(isVisible: boolean) {
+        this.map.setLayoutProperty(this.modelLayerID, 'visibility', !!isVisible ? 'visible' : 'none');
+    }
 }
 
 export {custom_model_layer};
