@@ -89,6 +89,7 @@
         console.log(currentPoint);
 
         map.getSource('hint').setData(createStartEndData(currentPoint));
+        map.showLocation(currentPoint)
     });
 
     map.on('mapready', function(evt) {

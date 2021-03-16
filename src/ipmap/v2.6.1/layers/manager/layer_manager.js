@@ -127,7 +127,7 @@ class layer_manager {
                 'background-color': 'white'
             }
         };
-        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers, this.routeLayer.unitLayers);
+        this.layers = [].concat(this.floorLayer.unitLayers, this.roomLayer.unitLayers, this.assetLayer.unitLayers, this.routeLayer.unitLayers, this.extrusionLayer.unitLayers, this.facilityLayer.unitLayers, this.labelLayer.unitLayers, this.debugBeaconLayer.unitLayers, this.locationLayer.unitLayers);
     }
 
     setMapInfo(info: MapInfo) {
