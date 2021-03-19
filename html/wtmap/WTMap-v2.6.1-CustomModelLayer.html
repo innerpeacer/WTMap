@@ -22,13 +22,9 @@
     // };
 
     let buildingID = '00270007';
-    let modelUrl = 'Model/gltf/00270007/00270007.glb';
+    let modelRoot = '/WTMapResource/mapdata/model/glb/' + buildingID;
     let floorID = '00270007F03';
     let customModelLayer;
-    let modelOrigin = {
-        x: 12738336.3188,
-        y: 3582730.7167
-    };
     let use3D = true;
     // use3D = false;
 
@@ -60,19 +56,26 @@
 
     map.on('floorend', function(evt) {
         console.log(evt.mapInfo);
-        if (evt.mapInfo.floorNumber === 3) {
-            map.hideFillLayers();
-            map.hideExtrusionLayer();
-            if (customModelLayer) {
-                customModelLayer.show();
+        // if (evt.mapInfo.floorNumber === 3) {
+        //     map.hideFillLayers();
+        //     map.hideExtrusionLayer();
+        //     if (customModelLayer) {
+        //         customModelLayer.show();
+        //     }
+        // } else {
+        //     map.showFillLayers();
+        //     map.showExtrusionLayer();
+        //     if (customModelLayer) {
+        //         customModelLayer.hide();
+        //     }
+        // }
+        customModelLayer.loadModel({
+            url: modelRoot + '/' + evt.mapInfo.mapID + '.glb',
+            origin: {
+                x: map.building.centerX,
+                y: map.building.centerY
             }
-        } else {
-            map.showFillLayers();
-            map.showExtrusionLayer();
-            if (customModelLayer) {
-                customModelLayer.hide();
-            }
-        }
+        });
     });
 
     function addModel() {
@@ -80,10 +83,13 @@
             THREE: threemap.THREE
         });
         customModelLayer.addToMap(map);
-        customModelLayer.loadModel({
-            url: modelUrl,
-            origin: modelOrigin
-        });
+        // customModelLayer.loadModel({
+        //     url: modelUrl,
+        //     origin: {
+        //         x: map.building.centerX,
+        //         y: map.building.centerY
+        //     }
+        // });
     }
 
     map.on('render', function() {

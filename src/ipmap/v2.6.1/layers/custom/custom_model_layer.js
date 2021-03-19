@@ -20,6 +20,7 @@ class custom_model_layer {
     map: IPMap | any;
     camera: Object;
     scene: Object;
+    modelGroup: Object;
     renderer: Object;
 
     gltf: Object;
@@ -43,6 +44,9 @@ class custom_model_layer {
         this.modelLayer.onAdd = (map, gl) => {
             this.camera = new THREE.Camera();
             this.scene = new THREE.Scene();
+
+            this.modelGroup = new THREE.Group();
+            this.scene.add(this.modelGroup);
 
             let directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
             directionalLight.position.set(0.75, 0.75, 1.0).normalize();
@@ -89,6 +93,11 @@ class custom_model_layer {
 
     loadModel(params: Object) {
         // console.log('loadModel');
+        if (this.gltf) {
+            this.modelGroup.remove(this.gltf.scene);
+            this.gltf = null;
+        }
+
         let url = params.url;
         let modelOrigin = this.modelOrigin = LocalPoint.fromXY(params.origin);
         let modelAsMercatorCoordinate = MercatorCoordinate.fromLngLat(modelOrigin.getCoord());
@@ -105,7 +114,7 @@ class custom_model_layer {
         loader.load(
             url,
             (gltf) => {
-                this.scene.add(gltf.scene);
+                this.modelGroup.add(gltf.scene);
                 this.gltf = gltf;
             }
         );
