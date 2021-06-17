@@ -173,6 +173,23 @@ class layer_manager {
         this.layers.forEach((unitLayer) => {
             layers.push(unitLayer.layer);
         });
+        layers = this._reorganizeLayers(layers);
+        return layers;
+    }
+
+    _moveToEnd(array: Array<Object>, obj: Object) {
+        let index = array.indexOf(obj);
+        if (index != -1) {
+            array.splice(index, 1);
+            array.push(obj);
+        }
+    }
+
+    _reorganizeLayers(layers: Array<Object>): Array<Object> {
+        this._moveToEnd(layers, this.routeLayer.routeStopCircleLayer.layer);
+        this._moveToEnd(layers, this.routeLayer.routeStopSymbolLayer.layer);
+        this._moveToEnd(layers, this.routeLayer.routeOffFocusStartEndSymbolLayer.layer);
+        this._moveToEnd(layers, this.routeLayer.routeFocusStartEndSymbolLayer.layer);
         return layers;
     }
 
