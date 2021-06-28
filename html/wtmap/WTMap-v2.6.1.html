@@ -31,22 +31,27 @@
 
     var isEnglish = false;
     var ttt;
+    let flag = true;
     map.on('click', function(evt) {
         console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);
 
-        var fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs('room')});
-        if (fs && fs.length > 0) {
-            let feature = fs[0];
-            // console.log(fs);
-            console.log(fs[0].properties);
-            console.log(fs[0].properties.id);
-            console.log(fs[0].id);
+        // flag ? map.hideLabelLayers() : map.showLabelLayers();
+        flag ? map.hideLabels(['00270007F0110208']) : map.resetHidingLabels();
+        flag = !flag;
 
-            map.highlightPoi([fs[0].properties.POI_ID, '00270007F0110353'], {
-                // color: 'red'
-            });
-        }
+        // var fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs('room')});
+        // if (fs && fs.length > 0) {
+        //     let feature = fs[0];
+        //     // console.log(fs);
+        //     console.log(fs[0].properties);
+        //     console.log(fs[0].properties.id);
+        //     console.log(fs[0].id);
+        //
+        //     map.highlightPoi([fs[0].properties.POI_ID, '00270007F0110353'], {
+        //         // color: 'red'
+        //     });
+        // }
     });
 
     map.on('mapready', function(evt) {

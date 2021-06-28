@@ -38,11 +38,16 @@ class unit_symbol_layer extends unit_base_layer {
                 'icon-anchor': 'bottom',
                 'icon-size': symbol.iconSize
             });
+
+            this.setPaintProperties({
+                'icon-opacity': ['case', ['boolean', ['feature-state', 'hidden']], 0, 1]
+            });
         }
 
         if (symbol.textVisible) {
             this.setPaintProperties({
-                'text-color': symbol.textColor
+                'text-color': symbol.textColor,
+                'text-opacity': ['case', ['boolean', ['feature-state', 'hidden']], 0, 1]
             });
             this.setLayoutProperties({
                 'text-field': ['get', 'NAME'],

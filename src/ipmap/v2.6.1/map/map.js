@@ -128,6 +128,7 @@ class IPMap extends BoxMap {
         this.__abort = false;
 
         this._highlighted = [];
+        this._hiddenLabels = [];
 
         let map = this;
         this.resourceBuildingID = this.buildingID;
@@ -578,16 +579,55 @@ class IPMap extends BoxMap {
         return this._layerManager.getNextLayerID(layerID);
     }
 
-    showLabels() {
-        this._layerManager._showLabels();
+    showLabelLayers() {
+        this._layerManager._showLabelLayers();
     }
 
-    hideLabels() {
-        this._hideLabels();
+    hideLabelLayers() {
+        this._layerManager._hideLabelLayers();
     }
 
-    _hideLabels() {
-        this._layerManager._hideLabels();
+    hideLabels(pois: Array<string>) {
+        console.log('hideLabels');
+        console.log(pois);
+        this.resetHidingLabels();
+
+        let poiList = [].concat(pois);
+        for (let i = 0; i < poiList.length; ++i) {
+            let poiID = poiList[i];
+            let featureID = parseInt(poiID.substring(11));
+            this._hiddenLabels.push(featureID);
+            this.setFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'label',
+                id: featureID
+            }, {
+                hidden: true
+            });
+            this.setFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'facility',
+                id: featureID
+            }, {
+                hidden: true
+            });
+        }
+    }
+
+    resetHidingLabels() {
+        for (let i = 0; i < this._hiddenLabels.length; ++i) {
+            this.removeFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'label',
+                id: this._highlighted[i]
+            });
+            this.removeFeatureState({
+                source: 'innerpeacer',
+                sourceLayer: 'facility',
+                id: this._highlighted[i]
+            });
+        }
+        this._highlighted = [];
     }
 
     showFillLayers() {
@@ -611,9 +651,9 @@ class IPMap extends BoxMap {
     }
 
     highlightPoi(pois: Array<string>, options: Object) {
-        console.log('highlightPoi');
-        console.log(pois);
-        console.log(options);
+        // console.log('highlightPoi');
+        // console.log(pois);
+        // console.log(options);
         this.clearHighlight();
 
         let highlightColor = '#00ffff';

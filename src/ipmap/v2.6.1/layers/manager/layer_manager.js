@@ -223,13 +223,15 @@ class layer_manager {
         });
     }
 
-    _showLabels() {
+    // _showLabels() {
+    _showLabelLayers() {
         this._labelIconLayerArray.forEach((baseLayer) => {
             baseLayer.show(this.map);
         });
     }
 
-    _hideLabels() {
+    // _hideLabels() {
+    _hideLabelLayers() {
         this._labelIconLayerArray.forEach((baseLayer) => {
             baseLayer.hide(this.map);
         });
