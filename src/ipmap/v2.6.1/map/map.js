@@ -497,6 +497,10 @@ class IPMap extends BoxMap {
         this.setPaintProperty('background', 'background-color', color);
     }
 
+    setBackgroundOpacity(opacity: number) {
+        this.setPaintProperty('background', 'background-opacity', opacity);
+    }
+
     setFloor(floor: any, callback: ?CallbackType, errorCallback: ?CallbackType) {
         // console.log('setFloor: ' + floorID);
         let map = this;

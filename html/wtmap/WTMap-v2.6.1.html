@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<div style="width:100%;height:100%;background: #f00" id="bg"></div>
 <div id='map'></div>
 
 <script>
@@ -20,6 +21,7 @@
     let mapOptions = {
         container: 'map',
         buildingID: buildingID,
+        floorID: '00270007F03',
         // themeID: 'S1',
         use3D: use3D
     };
@@ -40,6 +42,7 @@
         flag ? map.hideLabels(['00270007F0110208']) : map.resetHidingLabels();
         flag = !flag;
 
+        map.setBackgroundOpacity(0);
         // var fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs('room')});
         // if (fs && fs.length > 0) {
         //     let feature = fs[0];
