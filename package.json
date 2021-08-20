@@ -1,7 +1,7 @@
 {
     "name": "wtmap",
     "description": "wtmap library",
-    "version": "v2.7.0",
+    "version": "v2.7.1",
     "ipmapVersion": "2.x",
     "mapboxVersion": "1.0.0",
     "repository": {},
