@@ -1,6 +1,6 @@
 // @flow
 import {wtVersion} from './wt_version.js';
-import * as v261 from './v2.6.1/config/output.js';
+import * as v261 from './2.x/config/output.js';
 
 let wtExported: Object = {};
 
