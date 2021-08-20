@@ -1,9 +1,9 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title>WTMap-2.5.1</title>
+    <title>WTMap</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
-    <script src="js/config-dev-2.5.1.js"></script>
+    <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -13,27 +13,24 @@
 
 <script>
     console.log(wtmap.version);
-    var buildingID = "00278880";
+    var buildingID = "00270007";
     var use3D = true;
     // use3D = false;
 
     var style = {};
 
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
-        use3D: use3D,
-        _disableCache: true,
-        _dataVersion: "v5",
-        usePbf: true,
-        // localIdeographFontFamily: true,
-        // brtStyle: "http://47.97.173.242:8080/WTMapResource/style/2.3.0/wt-style.json"
-        // brtStyle: style,
-        // sprite: "http://47.97.173.242:8080/WTMapResource/sprites/WTMapSprite",
-        sprite: "http://localhost:8112/WTMapResource/sprites/MilitaryGames",
-        // sprite: "https://gis.cx9z.com/backend-map/sprites/MilitaryGames/MilitaryGamesSprite",
-        // glyphs: "http://47.97.173.242:8080/WTMapResource/glyphs/{fontstack}/{range}.pbf"
-    });
+        floorID: '00270007F03',
+        // themeID: 'S1',
+        use3D: use3D
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
     map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 

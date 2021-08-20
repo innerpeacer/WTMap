@@ -7,7 +7,7 @@ import type {IPMap} from '../map/map';
 import {
     Evented
 } from '../../dependencies';
-import {Popup} from '../config/inherit';
+import {Popup} from '../inherit';
 
 const PopOffsetSize = 36;
 const PopOffset = {

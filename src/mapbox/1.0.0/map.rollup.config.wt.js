@@ -2,7 +2,7 @@ import fs from 'fs';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import {plugins} from './build/rollup_plugins';
 
-import {wtVersion as ip_version} from "../../ipmap/wt_version.js";
+import {version as ip_version} from '../../../package.json';
 
 const {BUILD, MINIFY} = process.env;
 const minified = MINIFY === 'true';
@@ -42,12 +42,12 @@ export default [{
         format: 'umd',
         sourcemap: production ? true : 'inline',
         indent: false,
-        intro: fs.readFileSync(require.resolve('./ip_rollup/bundle_prelude.js'), 'utf8'),
+        intro: fs.readFileSync(require.resolve('./ip_rollup/bundle_prelude.js'), 'utf8')
     },
     treeshake: false,
     plugins: [
         // Ingest the sourcemaps produced in the first step of the build.
         // This is the only reason we use Rollup for this second pass
         sourcemaps()
-    ],
+    ]
 }];

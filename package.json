@@ -1,7 +1,9 @@
 {
     "name": "wtmap",
     "description": "wtmap library",
-    "version": "1.0.0",
+    "version": "v2.7.0",
+    "ipmapVersion": "2.x",
+    "mapboxVersion": "1.0.0",
     "repository": {},
     "engines": {
         "node": ">=6.4.0"
@@ -23,6 +25,7 @@
         "clear-innerpeacer": "rm -rf node_modules/@innerpeacer",
         "wt-dev": "npm run build-wt --prefix src/mapbox/1.0.0",
         "wt-min": "npm run build-wt-prod-min --prefix src/mapbox/1.0.0",
+        "build": "node scripts/build.js",
         "wt": "npm run build-wt-prod --prefix src/mapbox/1.0.0"
     },
     "files": []

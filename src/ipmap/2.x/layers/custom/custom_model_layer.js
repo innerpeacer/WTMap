@@ -2,7 +2,7 @@
 import {layerIdentifier} from './layer_identifier';
 import {extend, clone} from '../../../dependencies.js';
 import {local_point as LocalPoint} from '@innerpeacer/map-entity-base';
-import {MercatorCoordinate} from '../../config/inherit';
+import {MercatorCoordinate} from '../../inherit';
 import {IPMap} from '../../map/map';
 
 let defaultCustomLayer = {

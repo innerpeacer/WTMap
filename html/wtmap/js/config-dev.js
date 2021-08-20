@@ -1,5 +1,5 @@
 var IP_PROJECT_NAME = "WTMap";
-var wtVersion = "v2.6.1";
+var wtVersion = "v2.7.0";
 
 function getParameter(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");

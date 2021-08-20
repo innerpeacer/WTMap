@@ -17,7 +17,7 @@ import type {
     PointLikeType,
     CallbackType
 } from '../../dependencies.js';
-import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../config/inherit';
+import {BoxMap, CacheVersion, TileCacheDB, GlyphCacheDB} from '../inherit';
 
 import {getCBMPath, getThemePbfPath, getTilePath} from '../data/path_manager';
 
