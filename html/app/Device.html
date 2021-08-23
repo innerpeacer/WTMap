@@ -47,15 +47,15 @@
 <script type="text/javascript">
     var userAgent = window.navigator.userAgent.toLowerCase();
     if (/android/.test(userAgent)) {
-        document.getElementById("agent").innerHTML = "Android";
-        window.addEventListener("deviceorientationabsolute", DeviceOrientationAbsoluteHandler, false);
-        window.addEventListener("deviceorientation", orientationHandler, false);
+        document.getElementById('agent').innerHTML = 'Android';
+        window.addEventListener('deviceorientationabsolute', DeviceOrientationAbsoluteHandler, false);
+        window.addEventListener('deviceorientation', orientationHandler, false);
     } else if (/(iphone|ipad|ipod|ios)/i.test(userAgent)) {
-        document.getElementById("agent").innerHTML = "iOS";
-        window.addEventListener("deviceorientation", orientationHandler, false);
+        document.getElementById('agent').innerHTML = 'iOS';
+        window.addEventListener('deviceorientation', orientationHandler, false);
     } else {
-        document.getElementById("agent").innerHTML = "Browser";
-        window.addEventListener("deviceorientation", orientationHandler, false);
+        document.getElementById('agent').innerHTML = 'Browser';
+        window.addEventListener('deviceorientation', orientationHandler, false);
     }
 
     var lastOrientation;
@@ -66,15 +66,15 @@
     function orientationHandler(event) {
         if (!initAlpha) initAlpha = round2(event.alpha);
 
-        document.getElementById("alpha").innerHTML = round2(event.alpha);
-        document.getElementById("beta").innerHTML = round2(event.beta);
-        document.getElementById("gamma").innerHTML = round2(event.gamma);
+        document.getElementById('alpha').innerHTML = round2(event.alpha);
+        document.getElementById('beta').innerHTML = round2(event.beta);
+        document.getElementById('gamma').innerHTML = round2(event.gamma);
         if (event.webkitCompassHeading) {
-            document.getElementById("heading").innerHTML = round2(event.webkitCompassHeading);
+            document.getElementById('heading').innerHTML = round2(event.webkitCompassHeading);
             // document.getElementById("accuracy").innerHTML = round2(event.webkitCompassAccuracy);
         }
         // document.getElementById("update").innerHTML = "update";
-        document.getElementById("initAlpha").innerHTML = initAlpha;
+        document.getElementById('initAlpha').innerHTML = initAlpha;
 
         lastOrientation = event;
     }
@@ -82,33 +82,33 @@
     function DeviceOrientationAbsoluteHandler(event) {
         if (!initHeading) initHeading = round2(360 - event.alpha);
 
-        document.getElementById("alpha2").innerHTML = round2(event.alpha);
-        document.getElementById("beta2").innerHTML = round2(event.beta);
-        document.getElementById("gamma2").innerHTML = round2(event.gamma);
-        document.getElementById("heading2").innerHTML = round2(360 - event.alpha);
+        document.getElementById('alpha2').innerHTML = round2(event.alpha);
+        document.getElementById('beta2').innerHTML = round2(event.beta);
+        document.getElementById('gamma2').innerHTML = round2(event.gamma);
+        document.getElementById('heading2').innerHTML = round2(360 - event.alpha);
         // document.getElementById("accuracy2").innerHTML = round2(event.webkitCompassAccuracy);
         // document.getElementById("update").innerHTML = "update";
 
         // document.getElementById("delta").innerHTML = "a: " + round2(event.alpha - lastOrientation.alpha) + ", b: " + round2(event.beta - lastOrientation.beta) + ", g: " + round2(event.gamma - lastOrientation.gamma);
-        document.getElementById("delta").innerHTML = "Delta Alpah: " + round2(event.alpha - lastOrientation.alpha);
-        document.getElementById("initHeading").innerHTML = round2(initHeading);
+        document.getElementById('delta').innerHTML = 'Delta Alpah: ' + round2(event.alpha - lastOrientation.alpha);
+        document.getElementById('initHeading').innerHTML = round2(initHeading);
         lastAbsoluteOrientation = event;
     }
 
-    var hint = "";
+    var hint = '';
 
     if (window.DeviceOrientationEvent) {
-        hint += "window.DeviceOrientationEvent<br>";
+        hint += 'window.DeviceOrientationEvent<br>';
     } else {
-        hint += "No window.DeviceOrientationEvent<br>";
+        hint += 'No window.DeviceOrientationEvent<br>';
     }
 
     if (window.DeviceOrientationEvent) {
-        hint += "window.ondeviceorientationabsolute<br>";
+        hint += 'window.ondeviceorientationabsolute<br>';
     } else {
-        hint += "No window.ondeviceorientationabsolute<br>";
+        hint += 'No window.ondeviceorientationabsolute<br>';
     }
-    document.getElementById("hint").innerHTML = hint;
+    document.getElementById('hint').innerHTML = hint;
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title>WTMap</title>
+    <title>WTMap-Gps</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
     <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
@@ -18,22 +18,29 @@
     console.log(wtmap.WebSocketManager);
     let GpsEvent = wtmap.GpsEvent;
     let SocketManager = wtmap.WebSocketManager;
-    console.log(GpsEvent)
-    var buildingID = "05372001";
+    console.log(GpsEvent);
+    var buildingID = '05372001';
     var use3D = true;
 
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
-        use3D: use3D,
+        floorID: '00270007F03',
+        // themeID: 'S1',
+        use3D: use3D
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
+
+    map.on('click', function(evt) {
     });
 
-    map.on("click", function (evt) {
-    });
-
-    map.on("mapready", function (evt) {
-        console.log("mapready");
-        console.log("BaseZoom: " + map.getBaseZoom());
+    map.on('mapready', function(evt) {
+        console.log('mapready');
+        console.log('BaseZoom: ' + map.getBaseZoom());
         initFloorSwitch(map);
 
         initGps();
@@ -57,19 +64,21 @@
     }
 
     function initWebSocket() {
-        console.log('initWebSocket')
+        console.log('initWebSocket');
         let userID = 'innerpeacer';
         let socketUrl = 'wss://gis.cx9z.com/map-location/websocket/queryLocationSocket';
-        let url = socketUrl + "/" + userID + "/" + buildingID;
+        let url = socketUrl + '/' + userID + '/' + buildingID;
         let socketManager = new SocketManager(url);
         socketManager.startUseSocket();
         socketManager.onMessage = (res) => {
             console.log('onMessage');
             let obj = JSON.parse(res.data);
             console.log(obj);
-            let data = JSON.parse(obj.data);
-            console.log(data);
-            console.log(data.beacons);
+            if (obj.data) {
+                let data = JSON.parse(obj.data);
+                console.log(data);
+                console.log(data.beacons);
+            }
         };
     }
 

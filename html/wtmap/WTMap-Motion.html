@@ -3,9 +3,9 @@
     <meta charset='utf-8'/>
     <title>WTMap-Locator</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
-    <script src="js/config-dev-2.5.1.js"></script>
+    <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
-    <script src="vconsole.min.js"></script>
+    <script src="../lib/vconsole.min.js"></script>
 </head>
 <body>
 
@@ -28,30 +28,35 @@
 </div>
 
 <script>
-    var hintLabel = document.getElementById("hint");
+    var hintLabel = document.getElementById('hint');
     new VConsole();
     console.log(wtmap.version);
-    var buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00270003";
+    var buildingID = getParameter('buildingID');
+    if (buildingID == null) buildingID = '00270003';
     var use3D = true;
     use3D = false;
 
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
         use3D: use3D,
         _disableCache: true,
-        _dataVersion: "v5",
+        _dataVersion: 'v5',
         usePbf: true,
         _debugBeacon: true,
         enableOrientation: true,
         enableMotion: true
-    });
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
     var flag = true;
-    map.on("click", function (evt) {
+    map.on('click', function(evt) {
         // console.log("Zoom: " + map.getZoom());
         console.log(evt.lngLat);
         console.log(map.building.initAngle);
@@ -74,7 +79,7 @@
     });
 
     var currentHeading = null;
-    map.on("heading", function (evt) {
+    map.on('heading', function(evt) {
         if (!map.currentMapInfo || !map.currentMapInfo.floorNumber) return;
         currentHeading = evt.heading || 0;
         map.showLocation({
@@ -94,54 +99,54 @@
     }
 
     function eventToString(evt) {
-        var res = "x: " + round2(evt.acceleration.x) + "<br>";
-        res += "y: " + round2(evt.acceleration.y) + "<br>";
-        res += "z: " + round2(evt.acceleration.z) + "<br>";
+        var res = 'x: ' + round2(evt.acceleration.x) + '<br>';
+        res += 'y: ' + round2(evt.acceleration.y) + '<br>';
+        res += 'z: ' + round2(evt.acceleration.z) + '<br>';
 
-        res += "x: " + round2(evt.gravity.x) + "<br>";
-        res += "y: " + round2(evt.gravity.y) + "<br>";
-        res += "z: " + round2(evt.gravity.z) + "<br>";
+        res += 'x: ' + round2(evt.gravity.x) + '<br>';
+        res += 'y: ' + round2(evt.gravity.y) + '<br>';
+        res += 'z: ' + round2(evt.gravity.z) + '<br>';
 
-        res += "r-alpha: " + round2(evt.rotationRate.alpha) + "<br>";
-        res += "r-beta: " + round2(evt.rotationRate.beta) + "<br>";
-        res += "r-gamma: " + round2(evt.rotationRate.gamma) + "<br>";
+        res += 'r-alpha: ' + round2(evt.rotationRate.alpha) + '<br>';
+        res += 'r-beta: ' + round2(evt.rotationRate.beta) + '<br>';
+        res += 'r-gamma: ' + round2(evt.rotationRate.gamma) + '<br>';
 
         var acc = evt.acceleration;
         var yz = acc.y * acc.y + acc.z * acc.z;
         if (yz > maxYZ) maxYZ = yz;
-        res += "maxYZ: " + round2(maxYZ) + "<br>";
-        res += "YZ: " + round2(yz) + "<br>";
-        res += "interval: " + evt.interval + "<br>";
+        res += 'maxYZ: ' + round2(maxYZ) + '<br>';
+        res += 'YZ: ' + round2(yz) + '<br>';
+        res += 'interval: ' + evt.interval + '<br>';
 
         return res;
     }
 
-    map.on("motion", function (evt) {
+    map.on('motion', function(evt) {
         // console.log(evt);
         hintLabel.innerHTML = eventToString(evt);
     });
 
-    map.on("mapready", function (evt) {
+    map.on('mapready', function(evt) {
         // console.log("mapready");
         initFloorSwitch(map);
     });
 
-    map.on("floorend", function (evt) {
+    map.on('floorend', function(evt) {
         // console.log(evt.mapInfo);
     });
 
-    map.on("wheel", function () {
+    map.on('wheel', function() {
 //        console.log("wheel");
     });
 
-    map.on("error", function (error) {
-        console.log("map-error");
-        console.log(error)
+    map.on('error', function(error) {
+        console.log('map-error');
+        console.log(error);
     });
 
-    map.on("locator-ready", function () {
+    map.on('locator-ready', function() {
         // console.log("locator-ready");
-        let beaconInfo = map._locator._biteMe("_getBeaconInfo");
+        let beaconInfo = map._locator._biteMe('_getBeaconInfo');
         if (beaconInfo) {
             console.log(beaconInfo.uuid);
             console.log(beaconInfo.major);
@@ -151,9 +156,9 @@
 
     // ------ reactive with native ------------
     function nativeToJs() {
-        console.log("nativeToJs called");
+        console.log('nativeToJs called');
         map.panBy([50, 50]);
-        return "nativeToJs called";
+        return 'nativeToJs called';
     }
 
     function jsToNative(obj) {
@@ -163,7 +168,7 @@
     }
 
     function scan(data) {
-        console.log("scan called");
+        console.log('scan called');
         console.log(data);
 
         var res = map.didRangeBeacons(data);
@@ -173,8 +178,8 @@
             map.showLocation(location, {center: map.currentMapInfo.floorNumber !== location.floor});
             return res;
         }
-        console.log("no location");
-        return "no location";
+        console.log('no location');
+        return 'no location';
     }
 
 </script>

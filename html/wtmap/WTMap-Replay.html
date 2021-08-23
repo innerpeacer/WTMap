@@ -1,14 +1,14 @@
 <html>
 <head>
     <meta charset='utf-8'/>
-    <title>WTMap</title>
+    <title>WTMap-Replay</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
     <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
-    <!--    <script src="sample1.js"></script>-->
-    <!--    <script src="sample2.js"></script>-->
-    <!--    <script src="sample3.js"></script>-->
-    <script src="sample4.js"></script>
+    <!--        <script src="data/sample1.js"></script>-->
+    <!--        <script src="data/sample2.js"></script>-->
+    <!--        <script src="data/sample3.js"></script>-->
+    <script src="data/sample4.js"></script>
 </head>
 <body>
 
@@ -17,13 +17,13 @@
 <script>
     console.log(wtmap.version);
     console.log(wtmap.Utils);
-    console.log(samples)
+    console.log(samples);
     let sampleList = samples.bleList;
-    console.log(sampleList)
-    console.log(sampleList[0])
+    console.log(sampleList);
+    console.log(sampleList[0]);
 
     // var buildingID = "00270007";
-    var buildingID = "02502002";
+    var buildingID = '02502002';
     // var buildingID = "05712010";
     var use3D = true;
     // use3D = false;
@@ -32,7 +32,7 @@
         container: 'map',
         buildingID: buildingID,
         _debugBeacon: true,
-        use3D: use3D,
+        use3D: use3D
     };
     let defaultHost = window.location.protocol + '//' + window.location.host;
     if (defaultHost === 'http://localhost:8112') {
@@ -42,13 +42,13 @@
 
     var isEnglish = false;
     var ttt;
-    map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
+    map.on('click', function(evt) {
+        console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);
 
         // setInterval(replay, 100);
 
-        showSample(manualIndex++)
+        showSample(manualIndex++);
     });
 
     let manualIndex = 87;
@@ -61,16 +61,16 @@
         let sample = sampleList[sampleIndex];
         let sampleTimestamp = sample.timestamp;
         if (lastTimeStamp == null) {
-            startTime = sampleTimestamp
-            lastTimeStamp = sampleTimestamp
-            console.log("Start: ", sampleTimestamp);
+            startTime = sampleTimestamp;
+            lastTimeStamp = sampleTimestamp;
+            console.log('Start: ', sampleTimestamp);
         } else {
             let delta = sampleTimestamp - lastTimeStamp;
             // console.log("Delta: ", (delta).toFixed(1), "s");
             let date = new Date(sampleTimestamp * 1000);
             // console.log(date);
-            console.log("Index: ", sampleIndex, ", 时间: ", (sampleTimestamp - startTime).toFixed(1), "s， 间隔: ", (delta).toFixed(1), "s, Beacon数: ", sample.beacons.length);
-            lastTimeStamp = sampleTimestamp
+            console.log('Index: ', sampleIndex, ', 时间: ', (sampleTimestamp - startTime).toFixed(1), 's， 间隔: ', (delta).toFixed(1), 's, Beacon数: ', sample.beacons.length);
+            lastTimeStamp = sampleTimestamp;
         }
 
         let res = map.didRangeBeacons(sample.beacons);
@@ -83,29 +83,29 @@
     function replay() {
         // console.log('replay');
         if (index < sampleList.length) {
-            showSample(index++)
+            showSample(index++);
         }
     }
 
-    map.on("mapready", function (evt) {
-        console.log("mapready");
-        console.log("BaseZoom: " + map.getBaseZoom());
+    map.on('mapready', function(evt) {
+        console.log('mapready');
+        console.log('BaseZoom: ' + map.getBaseZoom());
         initFloorSwitch(map);
     });
 
-    map.on("floorend", function () {
+    map.on('floorend', function() {
         // map.setZoom(20);
         // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
 
-    map.on("wheel", function () {
+    map.on('wheel', function() {
 //        console.log("wheel");
     });
 
-    map.on("error", function (error) {
-        console.log("map-error");
-        console.log(error)
-    })
+    map.on('error', function(error) {
+        console.log('map-error');
+        console.log(error);
+    });
 </script>
 
 </body>

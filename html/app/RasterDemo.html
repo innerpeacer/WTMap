@@ -3,9 +3,9 @@
     <meta charset='utf-8'/>
     <title>WTMap-Raster</title>
     <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
-    <script src="js/config-dev-2.5.1.js"></script>
-    <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
-    <script src="dat.gui.min.js"></script>
+    <script src="../wtmap/js/config-dev.js"></script>
+    <link href="../wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
+    <script src="../lib/dat.gui.min.js"></script>
 </head>
 <body>
 
@@ -14,28 +14,32 @@
 <script>
     console.log(wtmap.version);
     // var buildingID = "00270002";
-    buildingID = "05372001";
+    buildingID = '05372001';
     var use3D = true;
     // use3D = false;
 
-    var map = new wtmap.WTMap({
+    let mapOptions = {
         container: 'map',
         buildingID: buildingID,
-        use3D: use3D,
-        // _dataVersion: "v5",
-    });
+        use3D: use3D
+    };
+    let defaultHost = window.location.protocol + '//' + window.location.host;
+    if (defaultHost === 'http://localhost:8112') {
+        mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
+    }
+    var map = new wtmap.WTMap(mapOptions);
     // map.showTileBoundaries = true;
 
     var isEnglish = false;
     var ttt;
-    map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
+    map.on('click', function(evt) {
+        console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);
     });
 
-    map.on("mapready", function (evt) {
-        console.log("mapready");
-        console.log("BaseZoom: " + map.getBaseZoom());
+    map.on('mapready', function(evt) {
+        console.log('mapready');
+        console.log('BaseZoom: ' + map.getBaseZoom());
         initFloorSwitch(map);
 
         addRaster();
@@ -44,7 +48,7 @@
     });
 
     function addRaster() {
-        console.log("addRaster");
+        console.log('addRaster');
 
 //         var rasterLayer = {
 //             id: "raster-layer",
@@ -65,7 +69,7 @@
 
         var defaultHost = window.location.protocol + '//' + window.location.host;
         map.addLayer({
-            'id': "raster-layer",
+            'id': 'raster-layer',
             'type': 'raster',
             'source': {
                 'type': 'raster',
@@ -74,12 +78,12 @@
 //                    "url": "mapbox://" + tileset,
 //                    "tileSize": 512
 //                },
-                "tiles": [defaultHost + "/BrtMapResource/mapdata/rastertile/" + "05372001F01" + "/{z}/{x}/{y}@2x.png"],
+                'tiles': [defaultHost + '/BrtMapResource/mapdata/rastertile/' + '05372001F01' + '/{z}/{x}/{y}@2x.png'],
                 'tileSize': 256
             },
             paint: {
                 'raster-opacity': 1.0,
-                'raster-saturation': 0,
+                'raster-saturation': 0
 //                'raster-contrast':0.1,
 //                'raster-fade-duration':1000
 
@@ -87,23 +91,23 @@
         });
     }
 
-    map.on("floorend", function () {
+    map.on('floorend', function() {
         // map.setZoom(20);
         // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
 
-    map.on("wheel", function () {
+    map.on('wheel', function() {
 //        console.log("wheel");
     });
 
-    map.on("error", function (error) {
-        console.log("map-error");
-        console.log(error)
-    })
+    map.on('error', function(error) {
+        console.log('map-error');
+        console.log(error);
+    });
 
     var gui;
     let params = {
-        opacity: 1.0,
+        opacity: 1.0
     };
 
     function initGui() {
@@ -116,8 +120,8 @@
 
     function updateOpacity() {
         console.log('updateOpacity');
-        console.log(params)
-        map.setPaintProperty("raster-layer", 'raster-opacity', params.opacity);
+        console.log(params);
+        map.setPaintProperty('raster-layer', 'raster-opacity', params.opacity);
     }
 </script>
 
