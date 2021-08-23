@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-Locator</title>
@@ -6,19 +6,18 @@
     <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
     <script src="../lib/vconsole.min.js"></script>
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 100px;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-
-<style>
-    .map-overlay {
-        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        position: absolute;
-        width: 100px;
-        top: 0;
-        right: 0;
-        padding: 10px;
-    }
-</style>
 
 <div id='map'></div>
 <div id='data'>
@@ -28,12 +27,12 @@
 </div>
 
 <script>
-    var hintLabel = document.getElementById('hint');
+    let hintLabel = document.getElementById('hint');
     new VConsole();
     console.log(wtmap.version);
-    var buildingID = getParameter('buildingID');
+    let buildingID = getParameter('buildingID');
     if (buildingID == null) buildingID = '00270003';
-    var use3D = true;
+    let use3D = true;
     use3D = false;
 
     let mapOptions = {
@@ -51,11 +50,11 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
-    var flag = true;
+    let flag = true;
     map.on('click', function(evt) {
         // console.log("Zoom: " + map.getZoom());
         console.log(evt.lngLat);
@@ -78,7 +77,7 @@
         });
     });
 
-    var currentHeading = null;
+    let currentHeading = null;
     map.on('heading', function(evt) {
         if (!map.currentMapInfo || !map.currentMapInfo.floorNumber) return;
         currentHeading = evt.heading || 0;
@@ -92,14 +91,14 @@
         });
     });
 
-    var maxYZ = 0;
+    let maxYZ = 0;
 
     function round2(v) {
         return parseInt(v * 100) / 100;
     }
 
     function eventToString(evt) {
-        var res = 'x: ' + round2(evt.acceleration.x) + '<br>';
+        let res = 'x: ' + round2(evt.acceleration.x) + '<br>';
         res += 'y: ' + round2(evt.acceleration.y) + '<br>';
         res += 'z: ' + round2(evt.acceleration.z) + '<br>';
 
@@ -111,8 +110,8 @@
         res += 'r-beta: ' + round2(evt.rotationRate.beta) + '<br>';
         res += 'r-gamma: ' + round2(evt.rotationRate.gamma) + '<br>';
 
-        var acc = evt.acceleration;
-        var yz = acc.y * acc.y + acc.z * acc.z;
+        let acc = evt.acceleration;
+        let yz = acc.y * acc.y + acc.z * acc.z;
         if (yz > maxYZ) maxYZ = yz;
         res += 'maxYZ: ' + round2(maxYZ) + '<br>';
         res += 'YZ: ' + round2(yz) + '<br>';
@@ -171,9 +170,9 @@
         console.log('scan called');
         console.log(data);
 
-        var res = map.didRangeBeacons(data);
+        let res = map.didRangeBeacons(data);
         if (res && res.location) {
-            var location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
+            let location = {x: res.location.x, y: res.location.y, floor: res.location.floor};
             console.log(location);
             map.showLocation(location, {center: map.currentMapInfo.floorNumber !== location.floor});
             return res;

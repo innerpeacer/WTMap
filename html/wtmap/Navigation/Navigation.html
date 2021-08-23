@@ -16,7 +16,7 @@
 <div id='map'>
 </div>
 <div id="progress-container">
-    <img id="direction" src="" width="64" height="64">
+    <img alt="" id="direction" src="" width="64" height="64">
     <label id="progress"></label>
 </div>
 
@@ -40,8 +40,8 @@
 <script>
     console.log(wtmap);
     let {LocalPoint, NavigationEvent, NavigationHintType, Directions} = wtmap;
-    let buildingID = getParameter("buildingID");
-    if (buildingID == null) buildingID = "00270007";
+    let buildingID = getParameter('buildingID');
+    if (buildingID == null) buildingID = '00270007';
 
     let directionImg = document.getElementById('direction');
 
@@ -92,7 +92,7 @@
     console.log(wtmap.WTMap);
     let mapOptions = {
         container: 'map',
-        buildingID: buildingID,
+        buildingID: buildingID
     };
     let defaultHost = window.location.protocol + '//' + window.location.host;
     if (defaultHost === 'http://localhost:8112') {
@@ -100,7 +100,7 @@
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
     let map = new wtmap.WTMap(mapOptions);
-    map.on("click", function (evt) {
+    map.on('click', function(evt) {
         let lngLat = evt.lngLat;
         currentPoint = LocalPoint.fromLngLat({
             lng: lngLat.lng,
@@ -128,11 +128,11 @@
             }
         }
 
-        map.getSource("hint").setData(createStartEndData(currentPoint));
+        map.getSource('hint').setData(createStartEndData(currentPoint));
     });
 
-    map.on("mapready", function (evt) {
-        console.log("mapready");
+    map.on('mapready', function(evt) {
+        console.log('mapready');
         initFloorSwitch(map);
         initLayers(map);
         showParams();
@@ -192,7 +192,7 @@
         if (evt.hintType === NavigationHintType.DidSwitchFloor) {
             // console.log('DidSwitchFloor')
             console.log(evt);
-            if (map.currentMapInfo.floorNumber != evt.floor.floorNumber) {
+            if (map.currentMapInfo.floorNumber !== evt.floor.floorNumber) {
                 map.setFloor(evt.floor);
             }
             console.log(evt.part.routeLineString.geometry.coordinates);
@@ -231,13 +231,13 @@
     }
 
     function setStart() {
-        console.log("setStart");
+        console.log('setStart');
         startPoint = currentPoint;
         showParams();
     }
 
     function setEnd() {
-        console.log("setEnd");
+        console.log('setEnd');
         endPoint = currentPoint;
         showParams();
     }
@@ -247,25 +247,25 @@
     function requestRoute() {
         showParams();
 
-        map.requestRoute(startPoint, endPoint, stopPoints, function (routeResult) {
-            console.log("routeResult");
+        map.requestRoute(startPoint, endPoint, stopPoints, function(routeResult) {
+            console.log('routeResult');
             console.log(routeResult);
             navigationRoute = routeResult;
             map.showRoute();
-        }, function (error) {
-            console.log("route error callback");
+        }, function(error) {
+            console.log('route error callback');
             console.log(error);
         });
     }
 
     function hideRoute() {
-        console.log("hideRoute");
+        console.log('hideRoute');
         map.hideRoute();
     }
 
     function showParams() {
-        map.getSource("params").setData(createParamData(stopPoints));
-        map.getSource("startEnd").setData(createStartEndData(startPoint, endPoint));
+        map.getSource('params').setData(createParamData(stopPoints));
+        map.getSource('startEnd').setData(createStartEndData(startPoint, endPoint));
     }
 
 </script>

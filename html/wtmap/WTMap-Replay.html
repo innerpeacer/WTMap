@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-Replay</title>
@@ -23,9 +23,9 @@
     console.log(sampleList[0]);
 
     // var buildingID = "00270007";
-    var buildingID = '02502002';
+    let buildingID = '02502002';
     // var buildingID = "05712010";
-    var use3D = true;
+    let use3D = true;
     // use3D = false;
 
     let mapOptions = {
@@ -38,10 +38,10 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
 
-    var isEnglish = false;
-    var ttt;
+    let isEnglish = false;
+    let ttt;
     map.on('click', function(evt) {
         console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);

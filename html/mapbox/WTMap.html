@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title></title>
@@ -29,15 +29,15 @@
 <script>
     console.log(wtmap);
     wtmap.accessToken = 'pk.eyJ1IjoiaW5uZXJwZWFjZXIiLCJhIjoiY2lvdHJpa3dtMDBjanU5bTQ1NGJ5azc3MyJ9.lIu8RdS7tUD3uKvsqIjJlg';
-    var map = new wtmap.Map({
+    let map = new wtmap.Map({
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
         center: [-74.50, 40], // starting position [lng, lat]
         zoom: 9 // starting zoom
     });
     map.showTileBoundaries = true;
-    map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
+    map.on('click', function(evt) {
+        console.log('Zoom: ' + map.getZoom());
 //        console.log("Bounds: "+  map.getBounds());
         console.log(evt.lngLat.lat);
     });

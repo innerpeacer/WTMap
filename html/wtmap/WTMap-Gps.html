@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-Gps</title>
@@ -19,8 +19,8 @@
     let GpsEvent = wtmap.GpsEvent;
     let SocketManager = wtmap.WebSocketManager;
     console.log(GpsEvent);
-    var buildingID = '05372001';
-    var use3D = true;
+    let buildingID = '05372001';
+    let use3D = true;
 
     let mapOptions = {
         container: 'map',
@@ -33,7 +33,7 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
 
     map.on('click', function(evt) {
     });

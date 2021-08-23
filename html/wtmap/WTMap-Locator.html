@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-Locator</title>
@@ -6,19 +6,18 @@
     <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
     <script src="../lib/vconsole.min.js"></script>
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 200px;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-
-<style>
-    .map-overlay {
-        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        position: absolute;
-        width: 200px;
-        top: 0;
-        right: 0;
-        padding: 10px;
-    }
-</style>
 
 <div id='map'></div>
 <div id='data'>
@@ -28,23 +27,23 @@
 </div>
 
 <script>
-    var hintLabel = document.getElementById("hint");
+    let hintLabel = document.getElementById('hint');
     new VConsole();
     console.log(wtmap.version);
-    var buildingID = getParameter("buildingID");
+    let buildingID = getParameter('buildingID');
     // if (buildingID == null) buildingID = "00278880";
-    if (buildingID == null) buildingID = "00270003";
-    var use3D = true;
+    if (buildingID == null) buildingID = '00270003';
+    let use3D = true;
     use3D = false;
 
-    var currentLocation;
-    console.log(wtmap.Utils)
+    let currentLocation;
+    console.log(wtmap.Utils);
     let mapOptions = {
         container: 'map',
         buildingID: buildingID,
         use3D: use3D,
         _disableCache: true,
-        _dataVersion: "v5",
+        _dataVersion: 'v5',
         usePbf: true,
         _debugBeacon: true,
         enableOrientation: true,
@@ -54,92 +53,92 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
     // map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
-    map.on("click", function (evt) {
+    map.on('click', function(evt) {
         // console.log("Zoom: " + map.getZoom());
         // console.log(evt.lngLat);
         // console.log(map.building.initAngle);
-        var beacons = [{
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10194,
-            "minor": 5336,
-            "rssi": -60 + parseInt(Math.random() * 20),
-            "accuracy": 1.4534
+        let beacons = [{
+            'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+            'major': 10194,
+            'minor': 5336,
+            'rssi': -60 + parseInt(Math.random() * 20),
+            'accuracy': 1.4534
         }, {
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10194,
-            "minor": 5335,
-            "rssi": -100 + parseInt(Math.random() * 20),
-            "accuracy": 1.4534
+            'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+            'major': 10194,
+            'minor': 5335,
+            'rssi': -100 + parseInt(Math.random() * 20),
+            'accuracy': 1.4534
         }];
 
         beacons = beacons.concat([{
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10180,
-            "minor": 31223,
-            "rssi": -100 + parseInt(Math.random() * 20),
-            "accuracy": 1.4534
+            'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+            'major': 10180,
+            'minor': 31223,
+            'rssi': -100 + parseInt(Math.random() * 20),
+            'accuracy': 1.4534
         }, {
-            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
-            "major": 10180,
-            "minor": 31222,
-            "rssi": -60 + parseInt(Math.random() * 20),
-            "accuracy": 1.4534
+            'uuid': 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825',
+            'major': 10180,
+            'minor': 31222,
+            'rssi': -60 + parseInt(Math.random() * 20),
+            'accuracy': 1.4534
         }]);
         scan(beacons);
     });
 
 
-    map.on("mapready", function (evt) {
-        console.log("mapready");
+    map.on('mapready', function(evt) {
+        console.log('mapready');
         initFloorSwitch(map);
     });
 
-    map.on("floorend", function (evt) {
+    map.on('floorend', function(evt) {
         // console.log(evt.mapInfo);
     });
 
-    map.on("wheel", function () {
+    map.on('wheel', function() {
 //        console.log("wheel");
     });
 
-    map.on("error", function (error) {
-        console.log("map-error");
-        console.log(error)
+    map.on('error', function(error) {
+        console.log('map-error');
+        console.log(error);
     });
 
-    map.on("location-update", function (res) {
+    map.on('location-update', function(res) {
         // console.log(res);
         map.showLocation(res.location);
 
-        var details = res.details;
-        var hint = "Source: " + res.source + "<br>";
-        hint += "Mode: " + details.mode + "<br>";
-        hint += "Target Mode: " + details.targetMode + "<br>";
-        hint += "Condition:<br> " + details.condition + "<br>";
-        hint += "X: " + round(res.location.x, 1) + ", Y: " + round(res.location.y, 1) + ", floor: " + res.location.floor + "<br>";
-        hint += "Gps: " + details.gpsValid + ", Ble: " + details.bleValid + "<br>";
+        let details = res.details;
+        let hint = 'Source: ' + res.source + '<br>';
+        hint += 'Mode: ' + details.mode + '<br>';
+        hint += 'Target Mode: ' + details.targetMode + '<br>';
+        hint += 'Condition:<br> ' + details.condition + '<br>';
+        hint += 'X: ' + round(res.location.x, 1) + ', Y: ' + round(res.location.y, 1) + ', floor: ' + res.location.floor + '<br>';
+        hint += 'Gps: ' + details.gpsValid + ', Ble: ' + details.bleValid + '<br>';
 
         if (details.bleValid) {
-            hint += "MaxRssi: " + details.maxRssi + ", Count: " + details.beaconCount + ", Index: " + details.index + "<br>";
-            hint += "Avg: " + round(details.averageRssi, 2) + ", Avg2: " + round(details.averageRssi2, 2) + "<br>";
+            hint += 'MaxRssi: ' + details.maxRssi + ', Count: ' + details.beaconCount + ', Index: ' + details.index + '<br>';
+            hint += 'Avg: ' + round(details.averageRssi, 2) + ', Avg2: ' + round(details.averageRssi2, 2) + '<br>';
         }
         showHint(hint);
     });
 
-    map.on("location-update-failed", function (error) {
+    map.on('location-update-failed', function(error) {
         // console.log("location-update-failed: ", error);
         showHint(error.description);
         map.hideLocation();
     });
 
-    map.on("locator-ready", function (event) {
-        console.log("locator-ready");
+    map.on('locator-ready', function(event) {
+        console.log('locator-ready');
         console.log(event);
-        let beaconInfo = map._locator._biteMe("_getBeaconInfo");
+        let beaconInfo = map._locator._biteMe('_getBeaconInfo');
         if (beaconInfo) {
             // console.log(beaconInfo.uuid);
             // console.log(beaconInfo.major);
@@ -149,9 +148,9 @@
 
     // ------ reactive with native ------------
     function nativeToJs() {
-        console.log("nativeToJs called");
+        console.log('nativeToJs called');
         map.panBy([50, 50]);
-        return "nativeToJs called";
+        return 'nativeToJs called';
     }
 
     function jsToNative(obj) {
@@ -161,7 +160,7 @@
     }
 
     function scan(data) {
-        console.log("scan called");
+        console.log('scan called');
         console.log(data);
         let res = map.didRangeBeacons(data);
         console.log(res);

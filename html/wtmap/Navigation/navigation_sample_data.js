@@ -1,4 +1,4 @@
-var SimulationSampleData = [{
+let SimulationSampleData = [{
     "x": 12738085.005804062,
     "y": 3582357.991833308,
     "floor": 1,

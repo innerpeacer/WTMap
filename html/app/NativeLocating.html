@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>NativeLocating</title>
@@ -6,19 +6,18 @@
     <script src="../wtmap/js/config-dev.js"></script>
     <link href="../wtmap/css/floor-switch.css" rel="stylesheet" type="text/css">
     <script src="../lib/vconsole.min.js"></script>
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 200px;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-
-<style>
-    .map-overlay {
-        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-        position: absolute;
-        width: 200px;
-        top: 0;
-        right: 0;
-        padding: 10px;
-    }
-</style>
 
 <div id='map'></div>
 <div id='data'>
@@ -28,15 +27,15 @@
 </div>
 
 <script>
-    var hintLabel = document.getElementById('hint');
+    let hintLabel = document.getElementById('hint');
     new VConsole();
     console.log(wtmap.version);
-    var buildingID = getParameter('buildingID');
+    let buildingID = getParameter('buildingID');
     if (buildingID == null) buildingID = '00278888';
-    var use3D = true;
+    let use3D = true;
     use3D = false;
 
-    var currentLocation;
+    let currentLocation;
     console.log(wtmap.Utils);
     let mapOptions = {
         container: 'map',
@@ -53,7 +52,7 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
 
     map.on('click', function(evt) {
         // console.log("Zoom: " + map.getZoom());

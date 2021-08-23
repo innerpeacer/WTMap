@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap-Raster</title>
@@ -15,7 +15,7 @@
     console.log(wtmap.version);
     // var buildingID = "00270002";
     buildingID = '05372001';
-    var use3D = true;
+    let use3D = true;
     // use3D = false;
 
     let mapOptions = {
@@ -27,11 +27,11 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
     // map.showTileBoundaries = true;
 
-    var isEnglish = false;
-    var ttt;
+    let isEnglish = false;
+    let ttt;
     map.on('click', function(evt) {
         console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);
@@ -67,7 +67,7 @@
 //             }
 //         };
 
-        var defaultHost = window.location.protocol + '//' + window.location.host;
+        let defaultHost = window.location.protocol + '//' + window.location.host;
         map.addLayer({
             'id': 'raster-layer',
             'type': 'raster',
@@ -105,7 +105,7 @@
         console.log(error);
     });
 
-    var gui;
+    let gui;
     let params = {
         opacity: 1.0
     };

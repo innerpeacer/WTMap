@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>WTMap</title>
@@ -13,11 +13,11 @@
 
 <script>
     console.log(wtmap.version);
-    var buildingID = "00270007";
-    var use3D = true;
+    let buildingID = '00270007';
+    let use3D = true;
     // use3D = false;
 
-    var style = {};
+    let style = {};
 
     let mapOptions = {
         container: 'map',
@@ -30,13 +30,13 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
     map.showTileBoundaries = true;
     // map.showCollisionBoxes = true;
 
-    var flag = true;
-    map.on("click", function (evt) {
-        console.log("Zoom: " + map.getZoom());
+    let flag = true;
+    map.on('click', function(evt) {
+        console.log('Zoom: ' + map.getZoom());
         console.log(evt.lngLat);
         console.log(wtmap.AgentUtil.getAgent());
 
@@ -45,31 +45,31 @@
             return;
         }
 
-        var fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs("room")});
+        let fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs('room')});
         if (fs && fs.length > 0) {
             console.log(fs[0].properties);
         }
     });
 
-    map.on("mapready", function (evt) {
+    map.on('mapready', function(evt) {
         // console.log("mapready");
         // console.log("BaseZoom: " + map.getBaseZoom());
         initFloorSwitch(map);
     });
 
-    map.on("floorend", function () {
+    map.on('floorend', function() {
         // map.setZoom(20);
         // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
 
-    map.on("wheel", function () {
+    map.on('wheel', function() {
 //        console.log("wheel");
     });
 
-    map.on("error", function (error) {
-        console.log("map-error");
-        console.log(error)
-    })
+    map.on('error', function(error) {
+        console.log('map-error');
+        console.log(error);
+    });
 </script>
 
 </body>

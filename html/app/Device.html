@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>H5获取指南针方向</title>
     <meta charset="UTF-8"/>
@@ -45,7 +45,7 @@
 </script>
 
 <script type="text/javascript">
-    var userAgent = window.navigator.userAgent.toLowerCase();
+    let userAgent = window.navigator.userAgent.toLowerCase();
     if (/android/.test(userAgent)) {
         document.getElementById('agent').innerHTML = 'Android';
         window.addEventListener('deviceorientationabsolute', DeviceOrientationAbsoluteHandler, false);
@@ -58,10 +58,10 @@
         window.addEventListener('deviceorientation', orientationHandler, false);
     }
 
-    var lastOrientation;
-    var lastAbsoluteOrientation;
-    var initHeading = null;
-    var initAlpha = null;
+    let lastOrientation;
+    let lastAbsoluteOrientation;
+    let initHeading = null;
+    let initAlpha = null;
 
     function orientationHandler(event) {
         if (!initAlpha) initAlpha = round2(event.alpha);
@@ -95,7 +95,7 @@
         lastAbsoluteOrientation = event;
     }
 
-    var hint = '';
+    let hint = '';
 
     if (window.DeviceOrientationEvent) {
         hint += 'window.DeviceOrientationEvent<br>';

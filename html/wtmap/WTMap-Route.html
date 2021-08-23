@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charSet='utf-8'/>
     <title>WTMap-Route</title>
@@ -7,19 +7,17 @@
     <script src="js/config-dev.js"></script>
     <link href="./css/floor-switch.css" rel="stylesheet" type="text/css">
     <script src="js/MultiRouteHelper.js"></script>
-
+    <style>
+        .control-div {
+            position: absolute;
+            right: 2px;
+            bottom: 20px;
+            width: 300px;
+            /*height: 300px;*/
+        }
+    </style>
 </head>
 <body>
-
-<style>
-    .control-div {
-        position: absolute;
-        right: 2px;
-        bottom: 20px;
-        width: 300px;
-        /*height: 300px;*/
-    }
-</style>
 
 <div id='map'></div>
 <div class="control-div">
@@ -37,10 +35,10 @@
 </div>
 
 <script>
-    var buildingID = getParameter('buildingID');
+    let buildingID = getParameter('buildingID');
     if (buildingID == null) buildingID = '00270007';
 
-    var startPoint, endPoint, stopPoints = [];
+    let startPoint, endPoint, stopPoints = [];
     startPoint = wtmap.LocalPoint.fromXY({
         x: 12738359.195406511,
         y: 3582485.152717493,
@@ -59,8 +57,8 @@
         // })
     ];
 
-    var currentPoint;
-    var locationPoint;
+    let currentPoint;
+    let locationPoint;
 
     let mapOptions = {
         container: 'map',
@@ -72,7 +70,7 @@
     if (defaultHost === 'http://localhost:8112') {
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
 
     map.showTileBoundaries = true;
     map.on('click', function(evt) {
@@ -80,7 +78,7 @@
 //        console.log("Bounds: "+  map.getBounds());
         console.log(evt.lngLat.lat);
 
-        var lngLat = evt.lngLat;
+        let lngLat = evt.lngLat;
         currentPoint = wtmap.LocalPoint.fromLngLat({
             lng: lngLat.lng,
             lat: lngLat.lat,
@@ -89,7 +87,7 @@
         console.log(currentPoint);
 
         map.getSource('hint').setData(createStartEndData(currentPoint));
-        map.showLocation(currentPoint)
+        map.showLocation(currentPoint);
     });
 
     map.on('mapready', function(evt) {
@@ -150,7 +148,7 @@
         });
     }
 
-    var status000 = false;
+    let status000 = false;
 
     function hideRoute() {
         console.log('hideRoute');
@@ -189,7 +187,7 @@
         return '<div onclick="startClick()">' + name + '</div>';
     }
 
-    var startPop = new wtmap.Popup({
+    let startPop = new wtmap.Popup({
         closeOnClick: false,
         closeButton: false,
         withTip: false,

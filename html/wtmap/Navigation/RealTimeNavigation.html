@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset='utf-8'/>
     <title>实时导航</title>
@@ -17,7 +17,7 @@
 
 <div id='map'></div>
 <div id="realtime-progress-container">
-    <img id="direction" src="" width="64" height="64">
+    <img alt="" id="direction" src="" width="64" height="64">
     <label id="progress"></label>
 </div>
 <div id="realtime-hint-container">
@@ -44,7 +44,7 @@
     let userID = getParameter('userID');
     if (userID == null) userID = 'innerpeacer';
     let buildingID = getParameter('buildingID');
-    if (buildingID == null) buildingID = "00270007";
+    if (buildingID == null) buildingID = '00270007';
     document.title = userID;
     // let buildingID = "00278880";
 
@@ -114,7 +114,7 @@
     let isLocal = false;
     let mapOptions = {
         container: 'map',
-        buildingID: buildingID,
+        buildingID: buildingID
     };
     let defaultHost = window.location.protocol + '//' + window.location.host;
     if (defaultHost === 'http://localhost:8112') {
@@ -122,10 +122,10 @@
         mapOptions = wtmap.Utils.extend(wtmap.DebugOptions, mapOptions);
     }
 
-    var map = new wtmap.WTMap(mapOptions);
+    let map = new wtmap.WTMap(mapOptions);
 
     let currentPoint;
-    map.on("click", function (evt) {
+    map.on('click', function(evt) {
         let lngLat = evt.lngLat;
         currentPoint = LocalPoint.fromLngLat({
             lng: lngLat.lng,
@@ -143,17 +143,17 @@
                 res.originalLocation.properties = {angle: 90};
                 res.snappedLocation.properties = {
                     'location-icon': 'icon_atm_normal'
-                }
+                };
                 map.showLocations([res.snappedLocation, res.originalLocation]);
             }
         }
 
-        map.getSource("hint").setData(createStartEndData(currentPoint));
+        map.getSource('hint').setData(createStartEndData(currentPoint));
     });
 
-    map.on("mapready", function (evt) {
-        console.log("mapready");
-        console.log("BaseZoom: " + map.getBaseZoom());
+    map.on('mapready', function(evt) {
+        console.log('mapready');
+        console.log('BaseZoom: ' + map.getBaseZoom());
         // initFloorSwitch(map);
 
         initLayers(map);
@@ -168,7 +168,7 @@
 
     function initSocket() {
         console.log('initSocket');
-        let url = "wss:gis.cx9z.com" + '/map-location/websocket/queryLocationSocket/' + userID + '/' + buildingID;
+        let url = 'wss:gis.cx9z.com' + '/map-location/websocket/queryLocationSocket/' + userID + '/' + buildingID;
         console.log(url);
         socketManager = new WebSocketManager(url, {
             onOpen: () => {
@@ -179,7 +179,7 @@
                 map.hideLocation();
             },
             onMessage: (event) => {
-                console.log('on message')
+                console.log('on message');
                 let res = JSON.parse(event.data);
                 console.log(res);
                 if (res.code === 0 && res.data !== null) {
@@ -202,11 +202,11 @@
                         }
                     }
                     if (content.gps && map._wtWgs84Converter) {
-                        console.log('wx gps: ', content.gps)
+                        console.log('wx gps: ', content.gps);
                         currentWxGpsLocation = LocalPoint.fromLngLat(map._wtWgs84Converter.convertGPS(content.gps));
                         wxGpsLocationCount++;
                     }
-                    statusLabel.innerText = "WxGgps: " + wxGpsLocationCount + ", Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+                    statusLabel.innerText = 'WxGgps: ' + wxGpsLocationCount + ', Gps: ' + gpsLocationCount + ', Ble: ' + bleLocationCount;
                 }
             }
         });
@@ -245,13 +245,13 @@
                     if (currentWxGpsLocation != null) {
                         currentWxGpsLocation.properties = {
                             angle: 90
-                        }
+                        };
                     }
                     map.showLocations([currentGpsLocation, currentWxGpsLocation]);
                 }
             }
             gpsLocationCount++;
-            statusLabel.innerText = "WxGgps: " + wxGpsLocationCount + ", Gps: " + gpsLocationCount + ', Ble: ' + bleLocationCount;
+            statusLabel.innerText = 'WxGgps: ' + wxGpsLocationCount + ', Gps: ' + gpsLocationCount + ', Ble: ' + bleLocationCount;
         });
         gpsManager.on(GpsEvent.GpsError, (error) => {
             // console.log(GpsEvent.GpsError);
@@ -297,8 +297,8 @@
     }
 
     function showParams() {
-        map.getSource("params").setData(createParamData(stopPoints));
-        map.getSource("startEnd").setData(createStartEndData(startPoint, endPoint));
+        map.getSource('params').setData(createParamData(stopPoints));
+        map.getSource('startEnd').setData(createStartEndData(startPoint, endPoint));
     }
 </script>
 
@@ -308,13 +308,13 @@
     function requestRoute() {
         showParams();
 
-        map.requestRoute(startPoint, endPoint, stopPoints, function (routeResult) {
-            console.log("routeResult");
+        map.requestRoute(startPoint, endPoint, stopPoints, function(routeResult) {
+            console.log('routeResult');
             console.log(routeResult);
             navigationRoute = routeResult;
             map.showRoute();
-        }, function (error) {
-            console.log("route error callback");
+        }, function(error) {
+            console.log('route error callback');
             console.log(error);
         });
 
@@ -347,7 +347,7 @@
         if (evt.hintType === NavigationHintType.DidSwitchFloor) {
             // console.log('DidSwitchFloor')
             console.log(evt);
-            if (map.currentMapInfo.floorNumber != evt.floor.floorNumber) {
+            if (map.currentMapInfo.floorNumber !== evt.floor.floorNumber) {
                 map.setFloor(evt.floor);
             }
             console.log(evt.part.routeLineString.geometry.coordinates);
@@ -359,19 +359,19 @@
             // console.log(evt);
             directionImg.src = getDirectionImg(evt.direction);
         }
-        progressText.innerText = progressIndex + ": " + evt.description;
+        progressText.innerText = progressIndex + ': ' + evt.description;
     }
 
     function deviatingCallback() {
-        console.log("deviatingCallback");
-        window.alert("偏离导航路线");
+        console.log('deviatingCallback');
+        window.alert('偏离导航路线');
     }
 
     let hintIndex = 0;
 
     function hintCallback(evt) {
         // console.log(evt);
-        hintArray.push(++hintIndex + ": " + evt.description);
+        hintArray.push(++hintIndex + ': ' + evt.description);
         if (hintArray.length > 5) hintArray.shift();
         hintText.innerText = hintArray.join('\n');
         playAudio(evt.description);
@@ -384,7 +384,7 @@
     let isUsingGps = true;
 
     function updateSwitchButton() {
-        switchButton.innerHTML = '切换定位(当前' + (isUsingGps ? 'GPS' : "BLE") + ')';
+        switchButton.innerHTML = '切换定位(当前' + (isUsingGps ? 'GPS' : 'BLE') + ')';
     }
 
     function switchLocationSource() {
