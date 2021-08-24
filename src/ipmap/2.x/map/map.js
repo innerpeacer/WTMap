@@ -501,19 +501,27 @@ class IPMap extends BoxMap {
         this.setPaintProperty('background', 'background-opacity', opacity);
     }
 
-    setFloor(floor: any, callback: ?CallbackType, errorCallback: ?CallbackType) {
-        // console.log('setFloor: ' + floorID);
+    _setFloor(floor: any, options: Object = {}, callback: ?CallbackType, errorCallback: ?CallbackType) {
         let map = this;
         map._targetFloor = floor;
 
         let targetInfo = IPMapInfo.searchMapInfo(this.mapInfoArray, floor);
         if (targetInfo == null) {
-            map.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
+            this.fire(MapEvent.Error, {'description': 'Floor not exist: ' + floor});
             errorCallback && errorCallback({'description': 'Floor not exist: ' + floor});
             return;
         }
 
-        map._loadFloorData({mapInfo: targetInfo}, null, callback);
+        if (targetInfo.floorNumber === map.currentMapInfo.floorNumber) return;
+        map._loadFloorData({mapInfo: targetInfo}, options, callback);
+    }
+
+    setFloor(floor: any, options: ?Object = {}, callback: ?CallbackType, errorCallback: ?CallbackType) {
+        if (typeof options === 'object') {
+            this._setFloor(floor, options, callback, errorCallback);
+        } else {
+            this._setFloor(floor, {}, options, callback);
+        }
     }
 
     _loadFloorData(result: Object, options: Object, callback: ?CallbackType) {
@@ -525,19 +533,30 @@ class IPMap extends BoxMap {
         map._layerManager.setMapInfo(result.mapInfo);
 
         requestAnimationFrame(function() {
-            let c = map.currentMapInfo.getCenter();
-            // console.log('requestAnimationFrame');
-            // console.log(c);
-            let lngLat = c.getLngLat();
-
             let maxBounds = result.mapInfo.getExtendedBounds2(0.05);
             let fullVisibleBounds = calculateFullVisibleBounds(maxBounds, map._canvas.width, map._canvas.height);
             let fullVisibleZoom = CalculateZoomForFullVisibleBounds(maxBounds, map._canvas.width, map._canvas.height);
             map.setMaxBounds(fullVisibleBounds);
-            map.setZoom(fullVisibleZoom);
+            map.setMinZoom(fullVisibleZoom);
 
-            map.setCenter([lngLat.lng, lngLat.lat]);
-            if (options && options.rezoom) map.setZoom(10);
+            let auto = true;
+            if (options.auto != null) auto = !!options.auto;
+            if (options.center != null || options.zoom != null || options.pitch != null || options.bearing != null) auto = false;
+
+            let params = {};
+            params.auto = auto;
+            params.center = auto ? map.currentMapInfo.getCenter().getLngLat() : ((options.center != null) ? options.center : map.getCenter());
+            params.zoom = auto ? fullVisibleZoom : ((options.zoom != null) ? options.zoom : map.getZoom());
+            params.pitch = auto ? 0 : ((options.pitch != null) ? options.pitch : map.getPitch());
+            params.bearing = auto ? 0 : ((options.bearing != null) ? options.bearing : map.getBearing());
+            params.duration = ((options.duration != null) ? options.duration : 1000);
+
+            let animated = !!options.animated;
+            if (animated) {
+                map.easeTo(params);
+            } else {
+                map.jumpTo(params);
+            }
 
             if (map._firstLoad) {
                 if (map._options.maxZoom == null) {

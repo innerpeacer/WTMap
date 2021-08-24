@@ -36,18 +36,29 @@
 
     let flag = true;
     map.on('click', function(evt) {
-        console.log('Zoom: ' + map.getZoom());
-        console.log(evt.lngLat);
-        console.log(wtmap.AgentUtil.getAgent());
+        // console.log('Zoom: ' + map.getZoom());
+        // console.log('click: ', evt.lngLat);
+        // console.log(wtmap.AgentUtil.getAgent());
 
         flag = !flag;
+
+        map.setFloor(flag ? 2 : 3, {
+            zoom: flag ? 20 : 18,
+            // center: evt.lngLat,
+            // bearing: flag ? 30 : 0,
+            // pitch: flag ? 30 : 0,
+            animated: true
+            // duration: 1800
+        }, function() {
+        });
+
         if (flag) {
             return;
         }
 
         let fs = map.queryRenderedFeatures(evt.point, {layers: map.getLayerIDs('room')});
         if (fs && fs.length > 0) {
-            console.log(fs[0].properties);
+            // console.log(fs[0].properties);
         }
     });
 
@@ -58,6 +69,7 @@
     });
 
     map.on('floorend', function() {
+        // console.log('floorend: ', map.getZoom());
         // map.setZoom(20);
         // map.setCenter([114.42998769105293, 30.611772435206305]);
     });
